@@ -424,5 +424,9 @@
 			<Type>shortstring</Type>
 			<Comment>New visitor: how determined? c=Cookie, v=visitorDB, a=anonDB</Comment>
 		</Term>
+		<Term id="urn:vocab:clickstream#connection">
+			<Type>shortstring</Type>
+			<Comment>TPC session server endpoint (IP address and TCP port)</Comment>
+		</Term>
 	</Vocabulary>
 </PionConfig>
