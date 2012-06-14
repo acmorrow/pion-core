@@ -1,5 +1,6 @@
 .deps
 .libs
+pion.log
 INSTALL
 Makefile
 Makefile.in

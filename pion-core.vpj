@@ -1,0 +1,451 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+	Version="10.0"
+	VendorName="SlickEdit"
+	TemplateName="GNU C/C++"
+	WorkingDir=".">
+	<Config
+		Name="Debug"
+		Type="gnuc"
+		DebugCallbackName="gdb"
+		Version="1"
+		OutputFile="%bdpion"
+		CompilerConfigName="Latest Version"
+		ObjectDir="platform/server/.libs"
+		Defines="">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				OutputExts="*.o"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='g++ -c %xup %defd -g -o "%bd%n%oe" %i %f'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				ShowOnMenu="Never"
+				Dialog="_gnuc_options_form Link"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='g++ %xup -g -o "%o" %objs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine="make"/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine=""/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				Dialog="_gnuc_options_form Run/Debug"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveNone"
+				RunFromDir="%rp/platform/server">
+				<Set
+					Name="DYLD_LIBRARY_PATH"
+					Value="../../common/src/.libs:../../net/src/.libs:../../platform/src/.libs:../../platform/server/.libs:../../sqlite/.libs"/>
+				<Exec
+					CmdLine='vsdebugio -prog "%o" %~other'
+					OtherOptions="-c %rp/platform/config/platform.xml"/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				Dialog="_gnuc_options_form Run/Debug"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rp/platform/server">
+				<Set
+					Name="DYLD_LIBRARY_PATH"
+					Value="../../common/src/.libs:../../net/src/.libs:../../platform/src/.libs:../../platform/server/.libs:../../sqlite/.libs"/>
+				<Exec
+					CmdLine='"%o" %~other'
+					OtherOptions="-c %rp/platform/config/platform.xml"/>
+			</Target>
+			<Target
+				Name="dash"
+				MenuCaption="-"
+				Deletable="0">
+				<Exec/>
+			</Target>
+			<Target
+				Name="GNU C Options"
+				MenuCaption="GNU C &amp;Options..."
+				ShowOnMenu="HideIfNoCmdLine"
+				Deletable="0"
+				SaveOption="SaveNone">
+				<Exec
+					CmdLine="gnucoptions"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+		<List Name="GNUC Options">
+			<Item
+				Name="LinkerOutputType"
+				Value="Executable"/>
+		</List>
+		<Includes/>
+		<Libs PreObjects="0"/>
+	</Config>
+	<Config
+		Name="Release"
+		Type="gnuc"
+		DebugCallbackName="gdb"
+		Version="1"
+		OutputFile="%bdpion"
+		CompilerConfigName="Latest Version"
+		ObjectDir="platform/server/.libs"
+		Defines="">
+		<Menu>
+			<Target
+				Name="Compile"
+				MenuCaption="&amp;Compile"
+				Dialog="_gnuc_options_form Compile"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				OutputExts="*.o"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='g++ -c %xup %defd -o "%bd%n%oe" %i %f'/>
+			</Target>
+			<Target
+				Name="Link"
+				MenuCaption="&amp;Link"
+				ShowOnMenu="Never"
+				Dialog="_gnuc_options_form Link"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveCurrent"
+				RunFromDir="%rw">
+				<Exec CmdLine='g++ %xup -o "%o" %objs'/>
+			</Target>
+			<Target
+				Name="Build"
+				MenuCaption="&amp;Build"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine="make"/>
+			</Target>
+			<Target
+				Name="Rebuild"
+				MenuCaption="&amp;Rebuild"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rw">
+				<Exec CmdLine=""/>
+			</Target>
+			<Target
+				Name="Debug"
+				MenuCaption="&amp;Debug"
+				Dialog="_gnuc_options_form Run/Debug"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveNone"
+				RunFromDir="%rp/platform/server">
+				<Set
+					Name="DYLD_LIBRARY_PATH"
+					Value="../../common/src/.libs:../../net/src/.libs:../../platform/src/.libs:../../platform/server/.libs:../../sqlite/.libs"/>
+				<Exec
+					CmdLine='vsdebugio -prog "%o" %~other'
+					OtherOptions="-c %rp/platform/config/platform.xml"/>
+			</Target>
+			<Target
+				Name="Execute"
+				MenuCaption="E&amp;xecute"
+				Dialog="_gnuc_options_form Run/Debug"
+				CaptureOutputWith="ProcessBuffer"
+				Deletable="0"
+				SaveOption="SaveWorkspaceFiles"
+				RunFromDir="%rp/platform/server">
+				<Set
+					Name="DYLD_LIBRARY_PATH"
+					Value="../../common/src/.libs:../../net/src/.libs:../../platform/src/.libs:../../platform/server/.libs:../../sqlite/.libs"/>
+				<Exec
+					CmdLine='"%o" %~other'
+					OtherOptions="-c %rp/platform/config/platform.xml"/>
+			</Target>
+			<Target
+				Name="dash"
+				MenuCaption="-"
+				Deletable="0">
+				<Exec/>
+			</Target>
+			<Target
+				Name="GNU C Options"
+				MenuCaption="GNU C &amp;Options..."
+				ShowOnMenu="HideIfNoCmdLine"
+				Deletable="0"
+				SaveOption="SaveNone">
+				<Exec
+					CmdLine="gnucoptions"
+					Type="Slick-C"/>
+			</Target>
+		</Menu>
+		<List Name="GNUC Options">
+			<Item
+				Name="LinkerOutputType"
+				Value="Executable"/>
+		</List>
+		<Includes/>
+		<Libs PreObjects="0"/>
+	</Config>
+	<Files>
+		<Folder
+			Name="Source Files"
+			Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm">
+			<F N="net/services/AllowNothingService.cpp"/>
+			<F N="platform/src/Codec.cpp"/>
+			<F N="platform/src/CodecFactory.cpp"/>
+			<F N="platform/tests/CodecTests.cpp"/>
+			<F N="platform/src/Comparison.cpp"/>
+			<F N="platform/tests/ComparisonTests.cpp"/>
+			<F N="platform/src/ConfigManager.cpp"/>
+			<F N="platform/tests/ConfigManagerTests.cpp"/>
+			<F N="platform/services/ConfigService.cpp"/>
+			<F N="platform/tests/ConfigServiceTests.cpp"/>
+			<F N="net/services/CookieService.cpp"/>
+			<F N="platform/src/Database.cpp"/>
+			<F N="platform/src/DatabaseInserter.cpp"/>
+			<F N="platform/src/DatabaseManager.cpp"/>
+			<F N="platform/reactors/DatabaseOutputReactor.cpp"/>
+			<F N="net/services/EchoService.cpp"/>
+			<F N="platform/src/Event.cpp"/>
+			<F N="platform/tests/EventTests.cpp"/>
+			<F N="platform/services/FeedService.cpp"/>
+			<F N="platform/tests/FeedServiceTests.cpp"/>
+			<F N="net/services/FileService.cpp"/>
+			<F N="net/tests/FileServiceTests.cpp"/>
+			<F N="platform/reactors/FilterReactor.cpp"/>
+			<F N="platform/tests/FilterReactorTests.cpp"/>
+			<F N="platform/reactors/FissionReactor.cpp"/>
+			<F N="common/tests/PluginsUsedByUnitTests/hasCreateAndDestroy.cpp"/>
+			<F N="common/tests/PluginsUsedByUnitTests/hasCreateButNoDestroy.cpp"/>
+			<F N="common/tests/PluginsUsedByUnitTests/hasNoCreate.cpp"/>
+			<F N="net/services/HelloService.cpp"/>
+			<F N="net/src/HTTPAuth.cpp"/>
+			<F N="net/src/HTTPBasicAuth.cpp"/>
+			<F N="net/src/HTTPCookieAuth.cpp"/>
+			<F N="net/src/HTTPMessage.cpp"/>
+			<F N="net/tests/HTTPMessageTests.cpp"/>
+			<F N="net/src/HTTPParser.cpp"/>
+			<F N="net/tests/HTTPParserTests.cpp"/>
+			<F N="platform/protocols/HTTPProtocol.cpp"/>
+			<F N="net/src/HTTPReader.cpp"/>
+			<F N="net/tests/HTTPRequestTests.cpp"/>
+			<F N="net/tests/HTTPResponseTests.cpp"/>
+			<F N="net/src/HTTPServer.cpp"/>
+			<F N="net/src/HTTPTypes.cpp"/>
+			<F N="net/tests/HTTPTypesTests.cpp"/>
+			<F N="net/src/HTTPWriter.cpp"/>
+			<F N="platform/codecs/JSONCodec.cpp"/>
+			<F N="platform/codecs/LogCodec.cpp"/>
+			<F N="platform/reactors/LogInputReactor.cpp"/>
+			<F N="platform/tests/LogInputReactorTests.cpp"/>
+			<F N="platform/reactors/LogOutputReactor.cpp"/>
+			<F N="net/services/LogService.cpp"/>
+			<F N="platform/server/main.cpp"/>
+			<F N="platform/services/MonitorService.cpp"/>
+			<F N="sqlite/pion-sqlite.c"/>
+			<F N="common/src/PionAdminRights.cpp"/>
+			<F N="common/src/PionAlgorithms.cpp"/>
+			<F N="common/tests/PionAlgorithmsTests.cpp"/>
+			<F N="common/tests/PionBlobTests.cpp"/>
+			<F N="common/tests/PionCommonUnitTests.cpp"/>
+			<F N="common/tests/PionCounterTests.cpp"/>
+			<F N="common/tests/PionDateTimeTests.cpp"/>
+			<F N="net/utils/PionHelloServer.cpp"/>
+			<F N="common/tests/PionIdTests.cpp"/>
+			<F N="common/src/PionLogger.cpp"/>
+			<F N="net/tests/PionNetUnitTests.cpp"/>
+			<F N="platform/tests/PionPerformanceTests.cpp"/>
+			<F N="platform/tests/PionPlatformUnitTests.cpp"/>
+			<F N="common/src/PionPlugin.cpp"/>
+			<F N="common/tests/PionPluginPtrTests.cpp"/>
+			<F N="common/src/PionProcess.cpp"/>
+			<F N="common/src/PionScheduler.cpp"/>
+			<F N="net/utils/PionWebServer.cpp"/>
+			<F N="platform/server/PlatformConfig.cpp"/>
+			<F N="platform/src/PlatformPlugin.cpp"/>
+			<F N="platform/server/PlatformService.cpp"/>
+			<F N="platform/tests/PluginConfigTests.cpp"/>
+			<F N="common/tests/PluginManagerTests.cpp"/>
+			<F N="platform/src/Protocol.cpp"/>
+			<F N="platform/src/ProtocolFactory.cpp"/>
+			<F N="platform/tests/ProtocolTests.cpp"/>
+			<F N="platform/reactors/PythonReactor.cpp"/>
+			<F N="platform/services/QueryService.cpp"/>
+			<F N="platform/tests/QueryServiceTests.cpp"/>
+			<F N="platform/src/ReactionEngine.cpp"/>
+			<F N="platform/src/Reactor.cpp"/>
+			<F N="platform/tests/ReactorTests.cpp"/>
+			<F N="platform/build/regtest/regtest.cpp"/>
+			<F N="platform/src/RuleChain.cpp"/>
+			<F N="platform/reactors/ScriptReactor.cpp"/>
+			<F N="platform/server/ServiceManager.cpp"/>
+			<F N="platform/tests/ServiceManagerTests.cpp"/>
+			<F N="sqlite/shell.c"/>
+			<F N="platform/databases/SQLiteDatabase.cpp"/>
+			<F N="net/src/TCPServer.cpp"/>
+			<F N="net/tests/TCPServerTests.cpp"/>
+			<F N="net/tests/TCPStreamTests.cpp"/>
+			<F N="net/src/TCPTimer.cpp"/>
+			<F N="platform/src/Transform.cpp"/>
+			<F N="platform/reactors/TransformReactor.cpp"/>
+			<F N="platform/tests/TransformReactorTests.cpp"/>
+			<F N="platform/server/UserManager.cpp"/>
+			<F N="platform/tests/UserManagerTests.cpp"/>
+			<F N="platform/src/Vocabulary.cpp"/>
+			<F N="platform/src/VocabularyConfig.cpp"/>
+			<F N="platform/tests/VocabularyConfigTests.cpp"/>
+			<F N="platform/src/VocabularyManager.cpp"/>
+			<F N="platform/tests/VocabularyTests.cpp"/>
+			<F N="net/src/WebServer.cpp"/>
+			<F N="net/tests/WebServerTests.cpp"/>
+			<F N="platform/codecs/XMLCodec.cpp"/>
+			<F N="platform/services/XMLLogService.cpp"/>
+		</Folder>
+		<Folder
+			Name="Header Files"
+			Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
+			<F N="net/services/AllowNothingService.hpp"/>
+			<F N="common/include/boost/lockfree/atomic_int.hpp"/>
+			<F N="common/include/boost/lockfree/detail/branch_hints.hpp"/>
+			<F N="common/include/boost/lockfree/detail/cas.hpp"/>
+			<F N="platform/include/pion/platform/Codec.hpp"/>
+			<F N="platform/include/pion/platform/CodecFactory.hpp"/>
+			<F N="platform/include/pion/platform/Comparison.hpp"/>
+			<F N="platform/include/pion/platform/ConfigManager.hpp"/>
+			<F N="platform/services/ConfigService.hpp"/>
+			<F N="net/services/CookieService.hpp"/>
+			<F N="platform/include/pion/platform/Database.hpp"/>
+			<F N="platform/include/pion/platform/DatabaseInserter.hpp"/>
+			<F N="platform/include/pion/platform/DatabaseManager.hpp"/>
+			<F N="platform/reactors/DatabaseOutputReactor.hpp"/>
+			<F N="net/services/EchoService.hpp"/>
+			<F N="platform/include/pion/platform/Event.hpp"/>
+			<F N="platform/services/FeedService.hpp"/>
+			<F N="common/include/boost/lockfree/fifo.hpp"/>
+			<F N="net/services/FileService.hpp"/>
+			<F N="platform/reactors/FilterReactor.hpp"/>
+			<F N="platform/reactors/FissionReactor.hpp"/>
+			<F N="common/include/boost/lockfree/detail/freelist.hpp"/>
+			<F N="common/tests/PluginsUsedByUnitTests/hasCreateAndDestroy.hpp"/>
+			<F N="common/tests/PluginsUsedByUnitTests/hasCreateButNoDestroy.hpp"/>
+			<F N="common/tests/PluginsUsedByUnitTests/hasNoCreate.hpp"/>
+			<F N="net/services/HelloService.hpp"/>
+			<F N="net/include/pion/net/HTTPAuth.hpp"/>
+			<F N="net/include/pion/net/HTTPBasicAuth.hpp"/>
+			<F N="net/include/pion/net/HTTPCookieAuth.hpp"/>
+			<F N="net/include/pion/net/HTTPMessage.hpp"/>
+			<F N="net/include/pion/net/HTTPParser.hpp"/>
+			<F N="platform/protocols/HTTPProtocol.hpp"/>
+			<F N="net/include/pion/net/HTTPReader.hpp"/>
+			<F N="net/include/pion/net/HTTPRequest.hpp"/>
+			<F N="net/include/pion/net/HTTPRequestReader.hpp"/>
+			<F N="net/include/pion/net/HTTPRequestWriter.hpp"/>
+			<F N="net/include/pion/net/HTTPResponse.hpp"/>
+			<F N="net/include/pion/net/HTTPResponseReader.hpp"/>
+			<F N="net/include/pion/net/HTTPResponseWriter.hpp"/>
+			<F N="net/include/pion/net/HTTPServer.hpp"/>
+			<F N="net/include/pion/net/HTTPTypes.hpp"/>
+			<F N="net/include/pion/net/HTTPWriter.hpp"/>
+			<F N="common/tests/PluginsUsedByUnitTests/InterfaceStub.hpp"/>
+			<F N="platform/codecs/JSONCodec.hpp"/>
+			<F N="platform/codecs/LogCodec.hpp"/>
+			<F N="platform/reactors/LogInputReactor.hpp"/>
+			<F N="platform/reactors/LogOutputReactor.hpp"/>
+			<F N="net/services/LogService.hpp"/>
+			<F N="platform/services/MonitorService.hpp"/>
+			<F N="sqlite/pion-sqlite.h"/>
+			<F N="common/include/pion/PionAdminRights.hpp"/>
+			<F N="common/include/pion/PionAlgorithms.hpp"/>
+			<F N="common/include/pion/PionBlob.hpp"/>
+			<F N="common/include/pion/PionConfig.hpp"/>
+			<F N="common/include/pion/PionCounter.hpp"/>
+			<F N="common/include/pion/PionDateTime.hpp"/>
+			<F N="common/include/pion/PionException.hpp"/>
+			<F N="common/include/pion/PionHashMap.hpp"/>
+			<F N="common/include/pion/PionId.hpp"/>
+			<F N="common/include/pion/PionLockedQueue.hpp"/>
+			<F N="common/include/pion/PionLockFreeQueue.hpp"/>
+			<F N="common/include/pion/PionLogger.hpp"/>
+			<F N="platform/include/pion/platform/PionPlatformUnitTest.hpp"/>
+			<F N="common/include/pion/PionPlugin.hpp"/>
+			<F N="common/include/pion/PionPoolAllocator.hpp"/>
+			<F N="common/include/pion/PionProcess.hpp"/>
+			<F N="common/include/pion/PionScheduler.hpp"/>
+			<F N="common/include/pion/PionUnitTestDefs.hpp"/>
+			<F N="net/include/pion/net/PionUser.hpp"/>
+			<F N="platform/server/PlatformConfig.hpp"/>
+			<F N="platform/include/pion/platform/PlatformPlugin.hpp"/>
+			<F N="platform/server/PlatformService.hpp"/>
+			<F N="platform/include/pion/platform/PluginConfig.hpp"/>
+			<F N="common/include/pion/PluginManager.hpp"/>
+			<F N="common/include/boost/lockfree/detail/prefix.hpp"/>
+			<F N="platform/include/pion/platform/Protocol.hpp"/>
+			<F N="platform/include/pion/platform/ProtocolFactory.hpp"/>
+			<F N="platform/reactors/PythonReactor.hpp"/>
+			<F N="platform/include/pion/platform/Query.hpp"/>
+			<F N="platform/services/QueryService.hpp"/>
+			<F N="platform/include/pion/platform/ReactionEngine.hpp"/>
+			<F N="platform/include/pion/platform/ReactionScheduler.hpp"/>
+			<F N="platform/include/pion/platform/Reactor.hpp"/>
+			<F N="platform/include/pion/platform/RuleChain.hpp"/>
+			<F N="platform/reactors/ScriptReactor.hpp"/>
+			<F N="platform/server/ServiceManager.hpp"/>
+			<F N="platform/databases/SQLiteDatabase.hpp"/>
+			<F N="common/include/boost/lockfree/stack.hpp"/>
+			<F N="common/include/boost/lockfree/detail/tagged_ptr.hpp"/>
+			<F N="common/include/boost/lockfree/detail/tagged_ptr_dcas.hpp"/>
+			<F N="common/include/boost/lockfree/detail/tagged_ptr_ptrcompression.hpp"/>
+			<F N="net/include/pion/net/TCPConnection.hpp"/>
+			<F N="net/include/pion/net/TCPServer.hpp"/>
+			<F N="net/include/pion/net/TCPStream.hpp"/>
+			<F N="net/include/pion/net/TCPTimer.hpp"/>
+			<F N="platform/include/pion/platform/Transform.hpp"/>
+			<F N="platform/reactors/TransformReactor.hpp"/>
+			<F N="platform/server/UserManager.hpp"/>
+			<F N="platform/include/pion/platform/Vocabulary.hpp"/>
+			<F N="platform/include/pion/platform/VocabularyConfig.hpp"/>
+			<F N="platform/include/pion/platform/VocabularyManager.hpp"/>
+			<F N="net/include/pion/net/WebServer.hpp"/>
+			<F N="net/include/pion/net/WebService.hpp"/>
+			<F N="platform/codecs/XMLCodec.hpp"/>
+			<F N="platform/services/XMLLogService.hpp"/>
+		</Folder>
+		<Folder
+			Name="Resource Files"
+			Filters="*.ico;*.cur;*.dlg"/>
+		<Folder
+			Name="Bitmaps"
+			Filters="*.bmp"/>
+		<Folder
+			Name="Other Files"
+			Filters=""/>
+	</Files>
+</Project>
