@@ -180,7 +180,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkCreateConfigFile) {
 }
 
 BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkOpenConfigFile) {
-	setupSimpleConfigFile(F::m_config_file_path);
+	this->setupSimpleConfigFile(F::m_config_file_path);
 	BOOST_CHECK_NO_THROW(F::setConfigFile(F::m_config_file_path));
 	BOOST_CHECK_NO_THROW(F::openConfigFile());
 }
@@ -214,7 +214,7 @@ public:
 	OpenPluginConfig_F() {
 		this->m_plugin = NULL;
 		this->setupSimpleConfigFile(this->m_config_file_path);
-		BOOST_CHECK_NO_THROW(setConfigFile(this->m_config_file_path));
+		BOOST_CHECK_NO_THROW(this->setConfigFile(this->m_config_file_path));
 		BOOST_CHECK_NO_THROW(PluginConfig_F<DefaultConstructablePluginConfig>::openConfigFile());
 	}
 	~OpenPluginConfig_F() {

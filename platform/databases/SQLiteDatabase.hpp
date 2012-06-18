@@ -20,6 +20,7 @@
 #ifndef __PION_SQLITEDATABASE_HEADER__
 #define __PION_SQLITEDATABASE_HEADER__
 
+#include <boost/filesystem/path.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/platform/Database.hpp>
@@ -125,7 +126,7 @@ public:
 				return 85;	// average efficiency for index
 			case DB_FILE_SIZE:
 				{
-					boost::filesystem::path f(dbPartition(m_database_name, m_partition).c_str(), boost::filesystem::native );
+					boost::filesystem::path f(dbPartition(m_database_name, m_partition).c_str());
   					if (!boost::filesystem::exists(f) || !boost::filesystem::is_regular(f))
 						return 0;
 					return boost::filesystem::file_size(f);

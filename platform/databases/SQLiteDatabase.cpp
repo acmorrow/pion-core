@@ -273,9 +273,7 @@ void SQLiteDatabase::dropTable(std::string& table_name, unsigned partition)
 //		  throw SQLiteAPIException(strerror(errno) + ":" + dbPartition(table_name, partition));
 		open(partition);
 	} else {
-		if (unlink(dbPartition(m_database_name, partition).c_str()))
-		  // throw SQLiteAPIException(strerror(errno) + dbPartition(table_name, partition));
-		  ;
+		unlink(dbPartition(m_database_name, partition).c_str());
 	}
 }
 

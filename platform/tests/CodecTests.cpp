@@ -293,7 +293,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkReadWithEventOfWrongType) {
 BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkSetConfig) {
 	// Prepare some valid input for Codec::setConfig().
 	std::string event_type_1 = "urn:vocab:clickstream#http-event";
-	parseConfig("<PionConfig><Codec>"
+	this->parseConfig("<PionConfig><Codec>"
 					"<EventType>" + event_type_1 + "</EventType>"
 				"</Codec></PionConfig>",
 				F::m_config_ptr);
@@ -311,7 +311,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkSetConfig) {
 }
 
 BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkSetConfigWithRepeatedFieldTermsWithTheSameName) {
-	parseConfig("<PionConfig><Codec>"
+	this->parseConfig("<PionConfig><Codec>"
 					"<EventType>urn:vocab:clickstream#http-event</EventType>"
 					"<Field term=\"urn:vocab:test#plain-old-int\">A</Field>"
 					"<Field term=\"urn:vocab:test#plain-old-int\">A</Field>"
@@ -327,7 +327,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkSetConfigWithRepeatedFieldTermsWithTh
 }
 
 BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkSetConfigWithRepeatedFieldTermsWithDifferentNames) {
-	parseConfig("<PionConfig><Codec>"
+	this->parseConfig("<PionConfig><Codec>"
 					"<EventType>urn:vocab:clickstream#http-event</EventType>"
 					"<Field term=\"urn:vocab:test#plain-old-int\">A</Field>"
 					"<Field term=\"urn:vocab:test#plain-old-int\">B</Field>"
@@ -345,7 +345,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkSetConfigWithRepeatedFieldTermsWithDi
 // This is definitely ambiguous for a JSONCodec.  (It can't distinguish between big-int and plain-old-int.)
 // It's not ambiguous for a LogCodec, but it's still probably not a good idea to have two columns with the same name.
 BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkSetConfigWithRepeatedFieldNames) {
-	parseConfig("<PionConfig><Codec>"
+	this->parseConfig("<PionConfig><Codec>"
 					"<EventType>urn:vocab:clickstream#http-event</EventType>"
 					"<Field term=\"urn:vocab:test#plain-old-int\">A</Field>"
 					"<Field term=\"urn:vocab:test#big-int\">A</Field>"
@@ -414,7 +414,7 @@ protected:
 private:
 	void initFixture(const std::string& config_str) {
 		// Create and parse a valid Codec configuration string.
-		parseConfig(config_str, this->m_config_ptr);
+		this->parseConfig(config_str, this->m_config_ptr);
 
 		initVocabularyManager();
 		makeConfiguredCodecPtr();
@@ -632,7 +632,7 @@ public:
 		this->m_vocab_ptr = this->m_vocab_mgr.getVocabulary();
 
 		// Reconfigure the Codec, with a different event type and a field using the new term.
-		parseConfig("<PionConfig><Codec>"
+		this->parseConfig("<PionConfig><Codec>"
 						"<EventType>" + EVENT_TYPE_2 + "</EventType>"
 						"<Field term=\"urn:vocab:test#plain-old-int\">A</Field>"
 						"<Field term=\"urn:vocab:test#float-term-1\">B</Field>"
@@ -1417,7 +1417,7 @@ public:
 
 		// Configure the Codec with one field for every Term.
 		// Delimiters are ignored by Codecs that don't need them, e.g. JSONCodec or XMLCodec.
-		parseConfig("<PionConfig><Codec>"
+		this->parseConfig("<PionConfig><Codec>"
 						"<EventType>urn:vocab:v1#object-term-1</EventType>"
 						"<Field term=\"urn:vocab:v1#null-term-1\">null-1</Field>"
 						"<Field term=\"urn:vocab:v1#int8-term-1\">int8-1</Field>"

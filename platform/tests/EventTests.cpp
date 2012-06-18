@@ -150,13 +150,13 @@ public:
 	~EventTests_F() {
 	}
 	void addAllTerms() {
-		m_vocabulary.addTerm(m_null_term);
-		m_vocabulary.addTerm(m_plain_int_term);
-		m_vocabulary.addTerm(m_big_int_term);
-		m_vocabulary.addTerm(m_fixed_term);
-		m_vocabulary.addTerm(m_string_term);
-		m_vocabulary.addTerm(m_date_term);
-		m_vocabulary.addTerm(m_object_term);
+		m_null_term.term_ref = m_vocabulary.addTerm(m_null_term);
+		m_plain_int_term.term_ref = m_vocabulary.addTerm(m_plain_int_term);
+		m_big_int_term.term_ref = m_vocabulary.addTerm(m_big_int_term);
+		m_fixed_term.term_ref = m_vocabulary.addTerm(m_fixed_term);
+		m_string_term.term_ref = m_vocabulary.addTerm(m_string_term);
+		m_date_term.term_ref = m_vocabulary.addTerm(m_date_term);
+		m_object_term.term_ref = m_vocabulary.addTerm(m_object_term);
 	}
 
 	EventFactory		m_event_factory;
@@ -460,6 +460,8 @@ BOOST_AUTO_TEST_CASE(checkParameterValueConstructedFromValue) {
 }
 
 BOOST_AUTO_TEST_CASE(testAllSetStringOverloadsWithValidUTF8Data) {
+	addAllTerms();
+
 	EventPtr e1(m_event_factory.create(m_object_term.term_ref));
 	e1->setString(m_string_term.term_ref, ASCII_STRING_1.c_str(), ASCII_STRING_1.size());
 	BOOST_CHECK_EQUAL(e1->getString(m_string_term.term_ref), ASCII_STRING_1);
@@ -478,6 +480,8 @@ BOOST_AUTO_TEST_CASE(testAllSetStringOverloadsWithValidUTF8Data) {
 }	
 
 BOOST_AUTO_TEST_CASE(testAllSetStringOverloadsWithInvalidUTF8Data) {
+	addAllTerms();
+
 	EventPtr e1(m_event_factory.create(m_object_term.term_ref));
 	e1->setString(m_string_term.term_ref, INVALID_UTF8_STRING_1.c_str(), INVALID_UTF8_STRING_1.size());
 	BOOST_CHECK_EQUAL(e1->getString(m_string_term.term_ref), CLEANSED_UTF8_STRING_1);

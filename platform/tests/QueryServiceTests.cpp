@@ -99,7 +99,7 @@ public:
 		PionPlatformUnitTest::cleanup_cache_files();
 		PionPlatformUnitTest::cleanup_log_files();
 		BOOST_CHECK(timestampedLogFiles().size() == 0);
-		boost::filesystem::remove("logs/combined-2.log");
+		boost::filesystem::remove(get_log_file_dir() + "combined-2.log");
 
 		m_platform_cfg.setConfigFile(PLATFORM_CONFIG_FILE);
 		m_platform_cfg.openConfigFile();
@@ -353,7 +353,7 @@ BOOST_AUTO_TEST_CASE(testSendRotateQueryToLogOutputReactorWithSomeInput) {
 	BOOST_CHECK_EQUAL(boost::filesystem::file_size(NEW_OUTPUT_LOG_FILE), 0UL);
 
 	// Create another log file for the LogInputReactor to find, and give it time to find and process it.
-	boost::filesystem::copy_file("logs/comb-log-2.log", "logs/combined-2.log");
+	boost::filesystem::copy_file(get_log_file_dir() + "comb-log-2.log", get_log_file_dir() + "combined-2.log");
 	int expected_total_events_in = NUM_LINES_IN_DEFAULT_LOG_FILE + NUM_LINES_IN_COMB_LOG_2;
 	PionPlatformUnitTest::checkReactorEventsIn(m_platform_cfg.getReactionEngine(), log_output_reactor_id, expected_total_events_in, 5);
 
@@ -466,12 +466,12 @@ BOOST_AUTO_TEST_CASE(testRotateQueryWithJsonCodec) {
 	BOOST_CHECK_EQUAL(boost::filesystem::file_size(timestamped_log_files[0]), 452UL);
 
 	// Check that a new log file was created and is empty.
-	std::string log_output_file = "logs/new.json";
+	std::string log_output_file = get_log_file_dir() + "new.json";
 	BOOST_CHECK(boost::filesystem::exists(log_output_file));
 	BOOST_CHECK_EQUAL(boost::filesystem::file_size(log_output_file), 0UL);
 
 	// Create another log file for the LogInputReactor to find, and give it time to find and process it.
-	boost::filesystem::copy_file("logs/comb-log-2.log", "logs/combined-2.log");
+	boost::filesystem::copy_file(get_log_file_dir() + "comb-log-2.log", get_log_file_dir() + "combined-2.log");
 	int expected_total_events_in = NUM_LINES_IN_DEFAULT_LOG_FILE + NUM_LINES_IN_COMB_LOG_2;
 	PionPlatformUnitTest::checkReactorEventsIn(m_platform_cfg.getReactionEngine(), xml_log_output_reactor_id, expected_total_events_in, 5);
 
@@ -513,12 +513,12 @@ BOOST_AUTO_TEST_CASE(testRotateQueryWithXmlCodec) {
 	BOOST_CHECK_EQUAL(boost::filesystem::file_size(timestamped_log_files[0]), 619UL);
 
 	// Check that a new log file was created and is empty.
-	std::string log_output_file = "logs/new.xml";
+	std::string log_output_file = get_log_file_dir() + "new.xml";
 	BOOST_CHECK(boost::filesystem::exists(log_output_file));
 	BOOST_CHECK_EQUAL(boost::filesystem::file_size(log_output_file), 0UL);
 
 	// Create another log file for the LogInputReactor to find, and give it time to find and process it.
-	boost::filesystem::copy_file("logs/comb-log-2.log", "logs/combined-2.log");
+	boost::filesystem::copy_file(get_log_file_dir() + "comb-log-2.log", get_log_file_dir() + "combined-2.log");
 	int expected_total_events_in = NUM_LINES_IN_DEFAULT_LOG_FILE + NUM_LINES_IN_COMB_LOG_2;
 	PionPlatformUnitTest::checkReactorEventsIn(m_platform_cfg.getReactionEngine(), xml_log_output_reactor_id, expected_total_events_in, 5);
 
