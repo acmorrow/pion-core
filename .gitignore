@@ -43,3 +43,5 @@ IntermediateOutput/
 *.user
 *.suo
 BuildLog.htm
+pion-core.xcodeproj/xcuserdata/
+pion-core.xcodeproj/project.xcworkspace/xcuserdata/

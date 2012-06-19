@@ -2772,6 +2772,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E36D8C0A0D29D75C00B4C134 /* Build configuration list for PBXNativeTarget "pion" */;
 			buildPhases = (
+				E30FA10B15902AED00E15E36 /* ShellScript */,
 				E36D8BE40D29D6DC00B4C134 /* Sources */,
 				E36D8BE50D29D6DC00B4C134 /* Frameworks */,
 			);
@@ -3444,6 +3445,19 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		E30FA10B15902AED00E15E36 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if !(test -d \"$PROJECT_DIR/platform/config\"); then\n    $PROJECT_DIR/common/build/make_config.pl $PROJECT_DIR/platform/build/config $PROJECT_DIR/platform/config\nfi";
+		};
 		E3CCF5270DCA791B001F51CB /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -5461,9 +5475,9 @@
 					"-lz",
 					"-lbz2",
 					"-lxml2",
-					"-licui18n.46.1",
-					"-licuuc.46.1",
-					"-licudata.46.1",
+					"-licui18n",
+					"-licuuc",
+					"-licudata",
 					"-lboost_unit_test_framework",
 				);
 				PRODUCT_NAME = PionPlatformUnitTests;
@@ -5488,9 +5502,9 @@
 					"-lz",
 					"-lbz2",
 					"-lxml2",
-					"-licui18n.46.1",
-					"-licuuc.46.1",
-					"-licudata.46.1",
+					"-licui18n",
+					"-licuuc",
+					"-licudata",
 					"-lboost_unit_test_framework",
 				);
 				PRODUCT_NAME = PionPlatformUnitTests;
