@@ -64,7 +64,7 @@ struct PionPlatformUnitTestsConfig {
 
 		pion::PionPlugin::resetPluginDirectories();
 #if defined(PION_XCODE)
-		pion::PionPlugin::addPluginDirectory("../../../pion-core/bin/Debug");
+		pion::PionPlugin::addPluginDirectory("../../bin/Debug");
 #else
 		// same for Unix and Windows (including Cygwin)
 		pion::PionPlugin::addPluginDirectory("../codecs/.libs");

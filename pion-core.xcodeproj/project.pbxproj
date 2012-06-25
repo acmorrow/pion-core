@@ -2790,7 +2790,6 @@
 			buildPhases = (
 				E36D8BE40D29D6DC00B4C134 /* Sources */,
 				E36D8BE50D29D6DC00B4C134 /* Frameworks */,
-				E305E05E1599037C005D9841 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -3461,19 +3460,6 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		E305E05E1599037C005D9841 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if !(test -f \"$PROJECT_DIR/platform/config/platform.xml\"); then\n    $PROJECT_DIR/common/build/make_config.pl $PROJECT_DIR/platform/build/config $PROJECT_DIR/platform/config PION_PLUGINS_DIRECTORY=\"./\"\nfi";
-		};
 		E3CCF5270DCA791B001F51CB /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
