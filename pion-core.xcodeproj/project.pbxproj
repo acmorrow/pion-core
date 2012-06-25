@@ -7,6 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E305E04C1598F80E005D9841 /* ComparisonTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C408450D3E9242008A4BFC /* ComparisonTests.cpp */; };
+		E305E04D1598FDA6005D9841 /* CodecTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E326EF890D2D733700BBCE56 /* CodecTests.cpp */; };
+		E305E04E1598FDA6005D9841 /* ConfigManagerTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306A9100D665D750069A023 /* ConfigManagerTests.cpp */; };
+		E305E04F1598FDA6005D9841 /* ConfigServiceTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3EF11D70D74D84300A17A90 /* ConfigServiceTests.cpp */; };
+		E305E0501598FDA6005D9841 /* EventTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36D88E60D29BBC800B4C134 /* EventTests.cpp */; };
+		E305E0511598FDA6005D9841 /* FeedServiceTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306A90E0D665D660069A023 /* FeedServiceTests.cpp */; };
+		E305E0521598FDA6005D9841 /* FilterReactorTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E370CDA0158D8E0500E46EE9 /* FilterReactorTests.cpp */; };
+		E305E0531598FDA6005D9841 /* LogInputReactorTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E35C1C960E689D80003EEAD7 /* LogInputReactorTests.cpp */; };
+		E305E0551598FDA6005D9841 /* PluginConfigTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3642B1A0DF5E7F700C79941 /* PluginConfigTests.cpp */; };
+		E305E0561598FDA6005D9841 /* ProtocolTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33513130E2EC8E600B508BC /* ProtocolTests.cpp */; };
+		E305E0571598FDA6005D9841 /* QueryServiceTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E370CDA1158D8E0500E46EE9 /* QueryServiceTests.cpp */; };
+		E305E0581598FDA6005D9841 /* ReactorTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E378EE710D4A6B06002658FA /* ReactorTests.cpp */; };
+		E305E0591598FDA6005D9841 /* ServiceManagerTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3642B1B0DF5E7F700C79941 /* ServiceManagerTests.cpp */; };
+		E305E05A1598FDA6005D9841 /* TransformReactorTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E370CDA2158D8E0500E46EE9 /* TransformReactorTests.cpp */; };
+		E305E05B1598FDA6005D9841 /* UserManagerTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3642B1C0DF5E7F700C79941 /* UserManagerTests.cpp */; };
+		E305E05C1598FDA6005D9841 /* VocabularyConfigTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36D88E80D29BBC800B4C134 /* VocabularyConfigTests.cpp */; };
+		E305E05D1598FDA6005D9841 /* VocabularyTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36D88E90D29BBC800B4C134 /* VocabularyTests.cpp */; };
 		E306A8220D6647260069A023 /* libpion-common.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E36F2E260CA789CD00120C6D /* libpion-common.dylib */; };
 		E306A8230D6647260069A023 /* libpion-net.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E36D8A5F0D29C9D800B4C134 /* libpion-net.dylib */; };
 		E306A82A0D6647670069A023 /* FileService.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36D8A320D29C7A300B4C134 /* FileService.cpp */; };
@@ -198,7 +215,6 @@
 		E370CF7C158E77BA00E46EE9 /* pion-sqlite.h in Headers */ = {isa = PBXBuildFile; fileRef = E370CF7A158E77BA00E46EE9 /* pion-sqlite.h */; };
 		E370CF81158E789D00E46EE9 /* libpion-sqlite.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E370CF6F158E769300E46EE9 /* libpion-sqlite.dylib */; };
 		E370CF82158E7B8400E46EE9 /* libpion-server.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3FF965C0D579ABB001E075B /* libpion-server.dylib */; };
-		E370CF83158EDB5400E46EE9 /* ComparisonTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C408450D3E9242008A4BFC /* ComparisonTests.cpp */; };
 		E3A9CE190D33EDCB0094ECEE /* Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A9CE130D33EDCB0094ECEE /* Codec.cpp */; };
 		E3A9CE1A0D33EDCB0094ECEE /* Database.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A9CE140D33EDCB0094ECEE /* Database.cpp */; };
 		E3A9CE1B0D33EDCB0094ECEE /* Reactor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A9CE150D33EDCB0094ECEE /* Reactor.cpp */; };
@@ -2772,9 +2788,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E36D8C0A0D29D75C00B4C134 /* Build configuration list for PBXNativeTarget "pion" */;
 			buildPhases = (
-				E30FA10B15902AED00E15E36 /* ShellScript */,
 				E36D8BE40D29D6DC00B4C134 /* Sources */,
 				E36D8BE50D29D6DC00B4C134 /* Frameworks */,
+				E305E05E1599037C005D9841 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -3445,7 +3461,7 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		E30FA10B15902AED00E15E36 /* ShellScript */ = {
+		E305E05E1599037C005D9841 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3456,7 +3472,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if !(test -d \"$PROJECT_DIR/platform/config\"); then\n    $PROJECT_DIR/common/build/make_config.pl $PROJECT_DIR/platform/build/config $PROJECT_DIR/platform/config\nfi";
+			shellScript = "if !(test -f \"$PROJECT_DIR/platform/config/platform.xml\"); then\n    $PROJECT_DIR/common/build/make_config.pl $PROJECT_DIR/platform/build/config $PROJECT_DIR/platform/config PION_PLUGINS_DIRECTORY=\"./\"\nfi";
 		};
 		E3CCF5270DCA791B001F51CB /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3796,8 +3812,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E305E04D1598FDA6005D9841 /* CodecTests.cpp in Sources */,
+				E305E04E1598FDA6005D9841 /* ConfigManagerTests.cpp in Sources */,
+				E305E04F1598FDA6005D9841 /* ConfigServiceTests.cpp in Sources */,
+				E305E0501598FDA6005D9841 /* EventTests.cpp in Sources */,
+				E305E0511598FDA6005D9841 /* FeedServiceTests.cpp in Sources */,
+				E305E0521598FDA6005D9841 /* FilterReactorTests.cpp in Sources */,
+				E305E0531598FDA6005D9841 /* LogInputReactorTests.cpp in Sources */,
+				E305E0551598FDA6005D9841 /* PluginConfigTests.cpp in Sources */,
+				E305E0561598FDA6005D9841 /* ProtocolTests.cpp in Sources */,
+				E305E0571598FDA6005D9841 /* QueryServiceTests.cpp in Sources */,
+				E305E0581598FDA6005D9841 /* ReactorTests.cpp in Sources */,
+				E305E0591598FDA6005D9841 /* ServiceManagerTests.cpp in Sources */,
+				E305E05A1598FDA6005D9841 /* TransformReactorTests.cpp in Sources */,
+				E305E05B1598FDA6005D9841 /* UserManagerTests.cpp in Sources */,
+				E305E05C1598FDA6005D9841 /* VocabularyConfigTests.cpp in Sources */,
+				E305E05D1598FDA6005D9841 /* VocabularyTests.cpp in Sources */,
+				E305E04C1598F80E005D9841 /* ComparisonTests.cpp in Sources */,
 				E3EF11F00D74DB2A00A17A90 /* PionPlatformUnitTests.cpp in Sources */,
-				E370CF83158EDB5400E46EE9 /* ComparisonTests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

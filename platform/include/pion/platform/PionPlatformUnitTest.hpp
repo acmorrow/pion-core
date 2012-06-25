@@ -74,12 +74,7 @@ struct PionPlatformUnitTest
 	/// returns the path to the unit test vocabulary config path
 	static const std::string& get_vocabulary_path(void)
 	{
-	#if defined(PION_XCODE)
-		static const std::string TESTS_VOCABULARY_PATH("../../platform/tests/config/vocabularies/");
-	#else
 		static const std::string TESTS_VOCABULARY_PATH("config/vocabularies/");
-	#endif
-		
 		return TESTS_VOCABULARY_PATH;
 	}
 
