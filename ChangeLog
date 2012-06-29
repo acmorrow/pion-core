@@ -1,3 +1,13 @@
+Version 4.0.13 (2012-06-29)
+===========================
+
+* Sniffer reactor - Added support for Camellia ciphersuites (PION-1176)
+* Clickstream reactor - removed false positives in robot detection (PION-1187)
+* Clickstream reactor - fixed problems running multiple instances (PION-1165)
+* Analytics reactors - fixed problems running multiple instances (PION-1164)
+* Enterprise database - fixed uncaught exceptions in Oracle driver (PION-1169)
+
+
 Version 4.0.11 (2012-02-22)
 ===========================
 
