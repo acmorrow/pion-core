@@ -343,7 +343,7 @@ void LogInputReactor::checkForLogFiles(void)
 			// re-calculate the full path to the file
 			bfs::path full_path(m_log_directory);
 			full_path /= *log_itr;
-			m_log_file = full_path.file_string();
+			m_log_file = full_path.string();
 
 			PION_LOG_DEBUG(m_logger, "Found a new log file to consume: " << m_log_file);
 			m_current_stream_data = StreamData(
@@ -509,9 +509,9 @@ void LogInputReactor::getLogFilesInLogDirectory(LogFileCollection& files)
 	bfs::path dir_path(m_log_directory);
 	for (bfs::directory_iterator itr(dir_path); itr!=bfs::directory_iterator(); ++itr) {
 		if (bfs::is_regular(itr->status())) {
-			const std::string filename(itr->path().leaf());
+			const std::string filename(itr->path().filename().string());
 			if (boost::regex_search(filename, m_log_regex)) {
-				if (! m_tail_f || (m_open_streams.find(itr->path().file_string()) == m_open_streams.end()))
+				if (! m_tail_f || (m_open_streams.find(itr->path().string()) == m_open_streams.end()))
 					files.insert(filename);
 			}
 		}
@@ -526,13 +526,13 @@ void LogInputReactor::recordLogFileAsDone() {
 	bfs::path log_file_path(m_log_file);
 	boost::mutex::scoped_lock logs_consumed_lock(m_logs_consumed_mutex);
 	m_log_file.clear();
-	m_logs_consumed.insert(log_file_path.leaf());
+	m_logs_consumed.insert(log_file_path.filename().string());
 	std::ofstream history_cache(m_history_cache_filename.c_str(), std::ios::out | std::ios::app);
 	if (! history_cache)
 		throw PionException("Unable to open history cache file for writing.");
 	{
 		// signal finished processing log
-		std::string log_leaf = log_file_path.leaf();
+		std::string log_leaf = log_file_path.filename().string();
 		signal("FinishedLog", (void*) &log_leaf);
 	}
 	history_cache << log_file_path.leaf() << std::endl;

@@ -112,7 +112,7 @@ public:
 		for (boost::filesystem::directory_iterator itr(dir_path); itr != boost::filesystem::directory_iterator(); ++itr) {
 			std::string basename = boost::filesystem::basename(itr->path());
 			if (basename.substr(0, 6) == "new-20") {
-				timestamped_log_files.push_back(itr->path().file_string());
+				timestamped_log_files.push_back(itr->path().string());
 			}
 		}
 		return timestamped_log_files;

@@ -409,7 +409,7 @@ std::string ConfigManager::createFilename(const std::string& file_path)
 {
 	boost::filesystem::path new_path(file_path);
 	new_path /= createFilename();
-	return boost::filesystem::system_complete(new_path).file_string();
+	return boost::filesystem::system_complete(new_path).string();
 }
 	
 std::string ConfigManager::resolveRelativePath(const std::string& base_path_to_file,
@@ -424,7 +424,7 @@ std::string ConfigManager::resolveRelativePath(const std::string& base_path_to_f
 	new_path.remove_leaf();
 	new_path /= orig_path;
 	new_path.normalize();
-	return new_path.file_string();
+	return new_path.string();
 }
 
 std::string ConfigManager::resolveRelativeDataPath(const std::string& orig_path) const
@@ -436,7 +436,7 @@ std::string ConfigManager::resolveRelativeDataPath(const std::string& orig_path)
 	boost::filesystem::path new_path(boost::filesystem::system_complete(getDataDirectory()));
 	new_path /= orig_path;
 	new_path.normalize();
-	return new_path.file_string();
+	return new_path.string();
 }
 
 void ConfigManager::verifyDirectory(const std::string& element, std::string& dir) const

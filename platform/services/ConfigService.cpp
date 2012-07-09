@@ -505,7 +505,7 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 				for (boost::filesystem::directory_iterator it(database_directory); it != end; ++it) {
 					if (boost::filesystem::is_directory(*it)) {
 						// Skip directories starting with a '.'.
-						if (it->path().leaf().substr(0, 1) == ".") continue;
+						if (it->path().filename().string().substr(0, 1) == ".") continue;
 
 						ss << "<Database>"
 						   << "<Plugin>" << it->path().leaf() << "</Plugin>"
@@ -651,7 +651,7 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 				for (boost::filesystem::directory_iterator it(protocol_directory); it != end; ++it) {
 					if (boost::filesystem::is_directory(*it)) {
 						// Skip directories starting with a '.'.
-						if (it->path().leaf().substr(0, 1) == ".") continue;
+						if (it->path().filename().string().substr(0, 1) == ".") continue;
 
 						ss << "<Protocol>"
 						   << "<Plugin>" << it->path().leaf() << "</Plugin>"
@@ -800,14 +800,14 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 				for (boost::filesystem::directory_iterator it(reactor_directory); it != end; ++it) {
 					if (boost::filesystem::is_directory(*it)) {
 						// Skip directories starting with a '.'.
-						if (it->path().leaf().substr(0, 1) == ".") continue;
+						if (it->path().filename().string().substr(0, 1) == ".") continue;
 
 						// Iterate through all the subdirectories of the subdirectory (e.g. LogReactor).
 						boost::filesystem::directory_iterator end_2;
 						for (boost::filesystem::directory_iterator it2(*it); it2 != end_2; ++it2) {
 							if (boost::filesystem::is_directory(*it2)) {
 								// Skip directories starting with a '.'.
-								if (it2->path().leaf().substr(0, 1) == ".") continue;
+								if (it2->path().filename().string().substr(0, 1) == ".") continue;
 
 								ss << "<Reactor>"
 								   << "<ReactorType>" << it->path().leaf() << "</ReactorType>"
@@ -1218,7 +1218,7 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 				for (boost::filesystem::directory_iterator it(service_directory); it != end; ++it) {
 					if (boost::filesystem::is_directory(*it)) {
 						// Skip directories starting with a '.'.
-						if (it->path().leaf().substr(0, 1) == ".") continue;
+						if (it->path().filename().string().substr(0, 1) == ".") continue;
 
 						ss << "<Service>"
 						   << "<Plugin>" << it->path().leaf() << "</Plugin>"
