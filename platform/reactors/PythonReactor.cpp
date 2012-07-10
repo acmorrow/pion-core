@@ -18,9 +18,6 @@
 //
 
 // NOTE: According to API docs, Python.h must be #include'd FIRST
-// HOWEVER: we get compile errors with gcc on OSX 10.7 if Python.h is included
-// before thread.hpp because it tries to use getpagesize() before it is defined
-#include <boost/thread/thread.hpp>
 #include <Python.h>
 #include <frameobject.h>
 #include <cstring>

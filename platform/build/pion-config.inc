@@ -123,10 +123,13 @@ else
 		# and doesn't work at all on 10.6+
 		case "$build_os" in
 		*darwin*)
-			#PYTHON_LSPEC="-Wl,-F. -F/System/Library/Frameworks -u PyMac_Error -framework Python"
+			## strip out i386 archive support so that it links OK
+			## unfortunately this doesn't work for some reason....
+			#PYTHON_LSPEC="`echo $PYTHON_LSPEC | sed 's#-arch i386##g'`"
+			#AC_SUBST(PYTHON_LSPEC)
 			# force use of Python 2.5 so it works on both 10.5 and 10.6
-			PYTHON_CSPEC="-I/usr/include/python2.5"
-			PYTHON_LSPEC="-u PyMac_Error -lpython2.5"
+			PYTHON_CSPEC="-I/usr/include/python2.7"
+			PYTHON_LSPEC="-u PyMac_Error -lpython2.7"
 			;;
 		*)
 			AZ_PYTHON_PREFIX( )
