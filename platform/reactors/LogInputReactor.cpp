@@ -343,8 +343,11 @@ void LogInputReactor::checkForLogFiles(void)
 			// re-calculate the full path to the file
 			bfs::path full_path(m_log_directory);
 			full_path /= *log_itr;
-			m_log_file = full_path.string();
-
+# if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
+            m_log_file = full_path.string();
+#else
+            m_log_file = full_path.file_string();
+#endif 
 			PION_LOG_DEBUG(m_logger, "Found a new log file to consume: " << m_log_file);
 			m_current_stream_data = StreamData(
 				boost::shared_ptr<boost::iostreams::filtering_istream>(new boost::iostreams::filtering_istream), 
@@ -509,9 +512,17 @@ void LogInputReactor::getLogFilesInLogDirectory(LogFileCollection& files)
 	bfs::path dir_path(m_log_directory);
 	for (bfs::directory_iterator itr(dir_path); itr!=bfs::directory_iterator(); ++itr) {
 		if (bfs::is_regular(itr->status())) {
-			const std::string filename(itr->path().filename().string());
+# if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
+            const std::string filename(itr->path().filename().string());
+#else
+            const std::string filename(itr->path().leaf());
+#endif 
 			if (boost::regex_search(filename, m_log_regex)) {
-				if (! m_tail_f || (m_open_streams.find(itr->path().string()) == m_open_streams.end()))
+# if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
+                if (! m_tail_f || (m_open_streams.find(itr->path().string()) == m_open_streams.end()))
+#else
+                if (! m_tail_f || (m_open_streams.find(itr->path().file_string()) == m_open_streams.end()))
+#endif 
 					files.insert(filename);
 			}
 		}
@@ -526,13 +537,21 @@ void LogInputReactor::recordLogFileAsDone() {
 	bfs::path log_file_path(m_log_file);
 	boost::mutex::scoped_lock logs_consumed_lock(m_logs_consumed_mutex);
 	m_log_file.clear();
-	m_logs_consumed.insert(log_file_path.filename().string());
+# if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
+    m_logs_consumed.insert(log_file_path.filename().string());
+#else
+    m_logs_consumed.insert(log_file_path.leaf());
+#endif 
 	std::ofstream history_cache(m_history_cache_filename.c_str(), std::ios::out | std::ios::app);
 	if (! history_cache)
 		throw PionException("Unable to open history cache file for writing.");
 	{
 		// signal finished processing log
-		std::string log_leaf = log_file_path.filename().string();
+# if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
+        std::string log_leaf = log_file_path.filename().string();
+#else
+        std::string log_leaf = log_file_path.leaf();
+#endif 
 		signal("FinishedLog", (void*) &log_leaf);
 	}
 	history_cache << log_file_path.leaf() << std::endl;

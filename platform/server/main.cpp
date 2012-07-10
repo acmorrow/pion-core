@@ -81,7 +81,11 @@ int parse_args(int argc, char *argv[], bool& run_as_daemon, bool& lock_memory, s
 			} else if (argv[argnum][1] == 'M') {
 				lock_memory = true;
 			} else if (argv[argnum][1] == 'c' && argv[argnum][2] == '\0' && argnum+1 < argc) {
-				platform_config_file = boost::filesystem::system_complete(argv[++argnum]).normalize().string();
+# if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
+                platform_config_file = boost::filesystem::system_complete(argv[++argnum]).normalize().string();
+#else
+                platform_config_file = boost::filesystem::system_complete(argv[++argnum]).normalize().file_string();
+#endif 
 			} else if (strncmp(argv[argnum], "--version", 9) == 0 || strncmp(argv[argnum], "-version", 8) == 0) {
 				std::cout << "pion version " << PION_VERSION << std::endl;
 				return 1;
