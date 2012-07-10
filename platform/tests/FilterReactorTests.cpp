@@ -67,6 +67,7 @@ public:
 		// Create and initialize a ReactionEngine.
 		m_reaction_engine = new ReactionEngine(m_vocab_mgr, m_codec_factory, m_protocol_factory, m_database_mgr);
 		m_reaction_engine->setConfigFile(m_reactor_config_file);
+		m_reaction_engine->setNumThreads(1);
 		m_reaction_engine->createConfigFile();
 	}
 	virtual ~ReactionEngineReadyToAddReactors2_F() {

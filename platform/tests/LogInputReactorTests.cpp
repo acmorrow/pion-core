@@ -101,6 +101,7 @@ public:
 		// Create and initialize a ReactionEngine.
 		m_reaction_engine = new ReactionEngine(m_vocab_mgr, m_codec_factory, m_protocol_factory, m_database_mgr);
 		m_reaction_engine->setConfigFile(m_reactor_config_file);
+		m_reaction_engine->setNumThreads(1);
 		m_reaction_engine->createConfigFile();
 
 		// Add a LogInputReactor, since that's what we're testing here.
@@ -447,6 +448,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkConsumedFilesSkippedAfterEngineReload
 	// Create a new ReactionEngine, using the config file created in the constructor.
 	F::m_reaction_engine = new ReactionEngine(F::m_vocab_mgr, F::m_codec_factory, F::m_protocol_factory, F::m_database_mgr);
 	F::m_reaction_engine->setConfigFile(F::m_reactor_config_file);
+	F::m_reaction_engine->setNumThreads(1);
 	F::m_reaction_engine->openConfigFile();
 
 	// Start the LogInputReactor.  (The ReactionEngine and LogOutputReactor were started by openConfigFile().)
@@ -554,6 +556,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterEngi
 	// Create a new ReactionEngine, using the config file created in the constructor.
 	F::m_reaction_engine = new ReactionEngine(F::m_vocab_mgr, F::m_codec_factory, F::m_protocol_factory, F::m_database_mgr);
 	F::m_reaction_engine->setConfigFile(F::m_reactor_config_file);
+	F::m_reaction_engine->setNumThreads(1);
 	F::m_reaction_engine->openConfigFile();
 
 	// Start the LogInputReactor.  (The ReactionEngine and LogOutputReactor were started by openConfigFile().)
@@ -701,6 +704,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkConsumedFilesSkippedAfterEngineReload
 	// Create a new ReactionEngine, using the config file created in the constructor.
 	F::m_reaction_engine = new ReactionEngine(F::m_vocab_mgr, F::m_codec_factory, F::m_protocol_factory, F::m_database_mgr);
 	F::m_reaction_engine->setConfigFile(F::m_reactor_config_file);
+	F::m_reaction_engine->setNumThreads(1);
 	F::m_reaction_engine->openConfigFile();
 
 	// Start the LogInputReactors.  (The ReactionEngine and LogOutputReactor were started by openConfigFile().)
@@ -873,6 +877,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedCompressedFileResume
 	// Create a new ReactionEngine, using the config file created in the constructor.
 	F::m_reaction_engine = new ReactionEngine(F::m_vocab_mgr, F::m_codec_factory, F::m_protocol_factory, F::m_database_mgr);
 	F::m_reaction_engine->setConfigFile(F::m_reactor_config_file);
+	F::m_reaction_engine->setNumThreads(1);
 	F::m_reaction_engine->openConfigFile();
 
 	// Start the LogInputReactor.  (The ReactionEngine and LogOutputReactor were started by openConfigFile().)
@@ -1015,6 +1020,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterEngi
 	// Create a new ReactionEngine, using the config file created in the constructor.
 	F::m_reaction_engine = new ReactionEngine(F::m_vocab_mgr, F::m_codec_factory, F::m_protocol_factory, F::m_database_mgr);
 	F::m_reaction_engine->setConfigFile(F::m_reactor_config_file);
+	F::m_reaction_engine->setNumThreads(1);
 	F::m_reaction_engine->openConfigFile();
 
 	// Start the LogInputReactors.  (The ReactionEngine and LogOutputReactor were started by openConfigFile().)
