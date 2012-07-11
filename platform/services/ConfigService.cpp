@@ -507,13 +507,17 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 						// Skip directories starting with a '.'.
 # if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
                         if (it->path().filename().string().substr(0, 1) == ".") continue;
+                        ss << "<Database>"
+                        << "<Plugin>" << it->path().filename().string() << "</Plugin>"
+                        << "</Database>";
 #else
                         if (it->path().leaf().substr(0, 1) == ".") continue;
+                        ss << "<Database>"
+                        << "<Plugin>" << it->path().leaf() << "</Plugin>"
+                        << "</Database>";
 #endif 
 
-						ss << "<Database>"
-						   << "<Plugin>" << it->path().leaf() << "</Plugin>"
-						   << "</Database>";
+						
 					}
 				}
 
@@ -657,13 +661,16 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 						// Skip directories starting with a '.'.
 # if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
                         if (it->path().filename().string().substr(0, 1) == ".") continue;
+                        ss << "<Protocol>"
+                        << "<Plugin>" << it->path().filename().string() << "</Plugin>"
+                        << "</Protocol>";
 #else
                         if (it->path().leaf().substr(0, 1) == ".") continue;
+                        ss << "<Protocol>"
+                        << "<Plugin>" << it->path().leaf() << "</Plugin>"
+                        << "</Protocol>";
 #endif 
 
-						ss << "<Protocol>"
-						   << "<Plugin>" << it->path().leaf() << "</Plugin>"
-						   << "</Protocol>";
 					}
 				}
 
@@ -1246,9 +1253,15 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
                         if (it->path().leaf().substr(0, 1) == ".") continue;
 #endif 
 
+# if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
 						ss << "<Service>"
-						   << "<Plugin>" << it->path().leaf() << "</Plugin>"
+						   << "<Plugin>" << it->path().filename().string() << "</Plugin>"
 						   << "</Service>";
+#else
+                        ss << "<Service>"
+                        << "<Plugin>" << it->path().leaf() << "</Plugin>"
+                        << "</Service>";
+#endif 
 					}
 				}
 
