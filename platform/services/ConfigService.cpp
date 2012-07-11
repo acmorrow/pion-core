@@ -821,14 +821,20 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 								// Skip directories starting with a '.'.
 # if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
                                 if (it2->path().filename().string().substr(0, 1) == ".") continue;
+                                ss << "<Reactor>"
+                                << "<ReactorType>" << it->path().filename().string() << "</ReactorType>"
+                                << "<Plugin>" << it2->path().filename().string() << "</Plugin>"
+                                << "</Reactor>";
+
 #else
                                 if (it2->path().leaf().substr(0, 1) == ".") continue;
+                                ss << "<Reactor>"
+                                << "<ReactorType>" << it->path().leaf() << "</ReactorType>"
+                                << "<Plugin>" << it2->path().leaf() << "</Plugin>"
+                                << "</Reactor>";
+
 #endif 
 
-								ss << "<Reactor>"
-								   << "<ReactorType>" << it->path().leaf() << "</ReactorType>"
-								   << "<Plugin>" << it2->path().leaf() << "</Plugin>"
-								   << "</Reactor>";
 							}
 						}
 					}
