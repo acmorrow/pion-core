@@ -17,8 +17,8 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <functional>
 #include <sstream>
-#include <boost/bind.hpp>
 #include <pion/PionId.hpp>
 #include <pion/net/HTTPResponse.hpp>
 #include <pion/net/HTTPResponseWriter.hpp>
@@ -97,7 +97,7 @@ FeedWriter::~FeedWriter()
 				  << " (" << getConnectionId() << ')');
 }
 	
-void FeedWriter::writeEvent(EventPtr& e)
+void FeedWriter::writeEvent(EventPtr e)
 {
 	PION_LOG_DEBUG(m_logger, "Sending event to " << getConnectionInfo()
 				   << " (" << getConnectionId() << ')');
@@ -111,7 +111,7 @@ void FeedWriter::writeEvent(EventPtr& e)
 		PION_LOG_DEBUG(m_logger, "Lost connection to " << getConnectionInfo()
 					  << " (" << getConnectionId() << ')');
 		// connection was lost -> tell ReactionEngine to remove the connection
-		m_reaction_engine.post(boost::bind(&ReactionEngine::removeTempConnection,
+		m_reaction_engine.post(std::bind(&ReactionEngine::removeTempConnection,
 										   &m_reaction_engine, getConnectionId()));
 	} else {
 		try {
@@ -121,7 +121,7 @@ void FeedWriter::writeEvent(EventPtr& e)
 			// stop sending Events if we encounter an exception
 			PION_LOG_WARN(m_logger, "Error sending event to " << getConnectionInfo()
 						  << " (" << getConnectionId() << "):" << ex.what());
-			m_reaction_engine.post(boost::bind(&ReactionEngine::removeTempConnection,
+			m_reaction_engine.post(std::bind(&ReactionEngine::removeTempConnection,
 											   &m_reaction_engine, getConnectionId()));
 		}
 	}
@@ -133,8 +133,8 @@ void FeedWriter::start(void)
 	boost::mutex::scoped_lock send_lock(m_mutex);
 
 	// tell the ReactionEngine to start sending us Events
-	Reactor::EventHandler event_handler(boost::bind(&FeedWriter::writeEvent,
-													shared_from_this(), _1));
+	Reactor::EventHandler event_handler(std::bind(&FeedWriter::writeEvent,
+													shared_from_this(), std::placeholders::_1));
 	m_reaction_engine.addTempConnectionOut(getReactorId(), getConnectionId(),
 										   getConnectionInfo(),
 										   event_handler);
@@ -178,7 +178,7 @@ void FeedReader::start(void)
 	m_reactor_ptr =
 		m_reaction_engine.addTempConnectionIn(getReactorId(), getConnectionId(),
 											  getConnectionInfo(),
-											  boost::bind(&FeedReader::reactorWasRemoved,
+											  std::bind(&FeedReader::reactorWasRemoved,
 														  shared_from_this()));
 	
 	// send the HTTP response after the connection is created
@@ -280,14 +280,14 @@ void FeedService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 												reactor_id, codec_ptr, tcp_conn)); 
 
 		// schedule another thread to start reading events
-		getConfig().getServiceManager().post(boost::bind(&FeedReader::start,
+		getConfig().getServiceManager().post(std::bind(&FeedReader::start,
 														 reader_ptr));
 		
 	} else if (request->getMethod() == HTTPTypes::REQUEST_METHOD_HEAD) {
 		
 		// request is just checking if the reactor is valid -> return OK
 		HTTPResponseWriterPtr response_writer(HTTPResponseWriter::create(tcp_conn, *request,
-											  boost::bind(&TCPConnection::finish, tcp_conn)));
+											  std::bind(&TCPConnection::finish, tcp_conn)));
 		response_writer->send();
 
 	} else {

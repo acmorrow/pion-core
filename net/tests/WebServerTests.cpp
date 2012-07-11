@@ -7,10 +7,10 @@
 // See http://www.boost.org/LICENSE_1_0.txt
 //
 
+#include <functional>
 #include <pion/PionConfig.hpp>
 #include <boost/asio.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/bind.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -130,10 +130,10 @@ ChunkedPostRequestSender::ChunkedPostRequestSender(pion::net::TCPConnectionPtr& 
 void ChunkedPostRequestSender::send(void)
 {
 	if (m_chunk_iterator == m_chunks.end()) {
-		m_writer->sendFinalChunk(boost::bind(&ChunkedPostRequestSender::handleWrite,
+		m_writer->sendFinalChunk(std::bind(&ChunkedPostRequestSender::handleWrite,
 											 shared_from_this(),
-											 boost::asio::placeholders::error,
-											 boost::asio::placeholders::bytes_transferred));
+											 std::placeholders::_1,
+											 std::placeholders::_2));
 		return;
 	}
 
@@ -141,15 +141,15 @@ void ChunkedPostRequestSender::send(void)
 	m_writer->writeNoCopy(m_chunk_iterator->second, m_chunk_iterator->first);
 	
 	if (++m_chunk_iterator == m_chunks.end()) {
-		m_writer->sendFinalChunk(boost::bind(&ChunkedPostRequestSender::handleWrite,
+		m_writer->sendFinalChunk(std::bind(&ChunkedPostRequestSender::handleWrite,
 											 shared_from_this(),
-											 boost::asio::placeholders::error,
-											 boost::asio::placeholders::bytes_transferred));
+											 std::placeholders::_1,
+											 std::placeholders::_2));
 	} else {
-		m_writer->sendChunk(boost::bind(&ChunkedPostRequestSender::handleWrite,
+		m_writer->sendChunk(std::bind(&ChunkedPostRequestSender::handleWrite,
 										shared_from_this(),
-										boost::asio::placeholders::error,
-										boost::asio::placeholders::bytes_transferred));
+										std::placeholders::_1,
+										std::placeholders::_2));
 	}
 }
 
@@ -918,9 +918,10 @@ public:
 	void readAsyncResponse(TCPConnectionPtr& tcp_conn)
 	{
 		HTTPRequest http_request("GET");
+		void(ContentResponseWithoutLengthTests_F::* checkResponse)(HTTPResponsePtr&, TCPConnectionPtr&, const boost::system::error_code&) = &ContentResponseWithoutLengthTests_F::checkResponse;
 		HTTPResponseReaderPtr reader_ptr(HTTPResponseReader::create(tcp_conn, http_request,
-																	boost::bind(&ContentResponseWithoutLengthTests_F::checkResponse,
-																	this, _1, _2, _3)));
+																	std::bind(checkResponse,
+																	this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)));
 		reader_ptr->receive();
 	}
 
@@ -959,8 +960,8 @@ BOOST_FIXTURE_TEST_SUITE(ContentResponseWithoutLengthTests_S, ContentResponseWit
 
 BOOST_AUTO_TEST_CASE(checkSendContentWithoutLengthAndReceiveSyncResponse) {
 	// startup the server 
-	m_server.addResource("/big", boost::bind(&ContentResponseWithoutLengthTests_F::sendResponseWithContentButNoLength,
-											 this, _1, _2));
+	m_server.addResource("/big", std::bind(&ContentResponseWithoutLengthTests_F::sendResponseWithContentButNoLength,
+											 this, std::placeholders::_1, std::placeholders::_2));
 	m_server.start();
 	
 	// open a connection
@@ -985,8 +986,8 @@ BOOST_AUTO_TEST_CASE(checkSendContentWithoutLengthAndReceiveSyncResponse) {
 
 BOOST_AUTO_TEST_CASE(checkSendContentWithoutLengthAndReceiveAsyncResponse) {
 	// startup the server 
-	m_server.addResource("/big", boost::bind(&ContentResponseWithoutLengthTests_F::sendResponseWithContentButNoLength,
-											 this, _1, _2));
+	m_server.addResource("/big", std::bind(&ContentResponseWithoutLengthTests_F::sendResponseWithContentButNoLength,
+											 this, std::placeholders::_1, std::placeholders::_2));
 	m_server.start();
 	
 	// open a connection
@@ -998,7 +999,7 @@ BOOST_AUTO_TEST_CASE(checkSendContentWithoutLengthAndReceiveAsyncResponse) {
 	// send an HTTP request
 	boost::mutex::scoped_lock async_lock(m_mutex);
 	HTTPRequestWriterPtr request_ptr(HTTPRequestWriter::create(tcp_conn,
-									 boost::bind(&ContentResponseWithoutLengthTests_F::readAsyncResponse,
+									 std::bind(&ContentResponseWithoutLengthTests_F::readAsyncResponse,
 												 this, tcp_conn)));
 	request_ptr->getRequest().setResource("/big");
 	request_ptr->send();

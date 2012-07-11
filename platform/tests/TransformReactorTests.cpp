@@ -259,7 +259,7 @@ public:
 
 	typedef std::map<Vocabulary::TermRef, std::string> ExpectedTerms;
 
-	void MockEventHandler(EventPtr& e, const ExpectedTerms& expected_terms) {
+	void MockEventHandler(EventPtr e, const ExpectedTerms& expected_terms) {
 		if (m_num_events_validated > 0)
 			return;
 
@@ -272,7 +272,7 @@ public:
 
 	void sendEventAndValidateOutput(EventPtr e, const std::string& transformer_id) {
 		// Add an Event handler to check that the output of the TransformReactor is as expected.
-		Reactor::EventHandler eventValidator = boost::bind(&TransformReactorEventValidator_F::MockEventHandler, this, _1, m_expected_terms);
+		Reactor::EventHandler eventValidator = std::bind(&TransformReactorEventValidator_F::MockEventHandler, this, std::placeholders::_1, m_expected_terms);
 		m_reaction_engine->addTempConnectionOut(transformer_id, PionId().to_string(), "blah", eventValidator);
 
 		// Start the ReactionEngine and send the input Event to the TransformReactor.

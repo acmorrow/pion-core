@@ -217,7 +217,8 @@ void DatabaseInserter::start(void)
 	
 		// spawn a new thread that will be used to save events to the database
 		PION_LOG_DEBUG(m_logger, "Starting worker thread: " << m_database_id);
-		m_thread.reset(new boost::thread(boost::bind(&DatabaseInserter::insertEvents, this)));
+		void(DatabaseInserter::* insertEvents)(void) = &DatabaseInserter::insertEvents;
+		m_thread.reset(new boost::thread(std::bind(insertEvents, this)));
 
 		// wait for the worker thread to startup
 		m_swapped_queue.wait(queue_lock);

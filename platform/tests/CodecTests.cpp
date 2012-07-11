@@ -17,6 +17,8 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <fstream>
+#include <functional>
 #include <pion/PionConfig.hpp>
 #include <pion/PionPlugin.hpp>
 #include <pion/platform/PluginConfig.hpp>
@@ -27,9 +29,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/mpl/list.hpp>
-#include <boost/bind.hpp>
 #include <boost/regex.hpp>
-#include <fstream>
 
 #ifdef PION_WIN32
 #define OSEOL "\r\n"

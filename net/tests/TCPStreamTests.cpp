@@ -7,10 +7,9 @@
 // See http://www.boost.org/LICENSE_1_0.txt
 //
 
+#include <functional>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/thread.hpp>
-#include <boost/function.hpp>
 #include <boost/test/unit_test.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionScheduler.hpp>
@@ -29,7 +28,7 @@ class TCPStreamTests_F {
 public:
 	
 	/// data type for a function that handles TCPStream connections
-	typedef boost::function1<void,TCPStream&>	ConnectionHandler;
+	typedef std::function<void(TCPStream&)>	ConnectionHandler;
 	
 	
 	// default constructor and destructor
@@ -100,8 +99,8 @@ BOOST_AUTO_TEST_CASE(checkTCPConnectToAnotherStream) {
 	boost::unique_lock<boost::mutex> accept_lock(m_accept_mutex);
 
 	// schedule another thread to listen for a TCP connection
-	ConnectionHandler conn_handler(boost::bind(&TCPStreamTests_F::sendHello, _1));
-	boost::thread listener_thread(boost::bind(&TCPStreamTests_F::acceptConnection,
+	ConnectionHandler conn_handler(std::bind(&TCPStreamTests_F::sendHello, std::placeholders::_1));
+	boost::thread listener_thread(std::bind(&TCPStreamTests_F::acceptConnection,
 											  this, conn_handler) );
 	m_scheduler.addActiveUser();
 	m_accept_ready.wait(accept_lock);
@@ -159,8 +158,8 @@ BOOST_AUTO_TEST_CASE(checkSendAndReceiveBiggerThanBuffers) {
 	boost::unique_lock<boost::mutex> accept_lock(m_accept_mutex);
 
 	// schedule another thread to listen for a TCP connection
-	ConnectionHandler conn_handler(boost::bind(&TCPStreamBufferTests_F::sendBigBuffer, this, _1));
-	boost::thread listener_thread(boost::bind(&TCPStreamBufferTests_F::acceptConnection,
+	ConnectionHandler conn_handler(std::bind(&TCPStreamBufferTests_F::sendBigBuffer, this, std::placeholders::_1));
+	boost::thread listener_thread(std::bind(&TCPStreamBufferTests_F::acceptConnection,
 											  this, conn_handler) );
 	m_scheduler.addActiveUser();
 	m_accept_ready.wait(accept_lock);

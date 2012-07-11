@@ -20,10 +20,9 @@
 #ifndef __PION_EVENT_HEADER__
 #define __PION_EVENT_HEADER__
 
+#include <functional>
 #include <list>
 #include <vector>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #ifdef _MSC_VER
 	#pragma warning(push)
 	#pragma warning(disable: 4181) // qualifier applied to reference type
@@ -392,7 +391,7 @@ public:
 	/// clear all data contained within the Event
 	inline void clear(void) {
 		tree_algo::clear_and_dispose(&m_param_tree,
-			boost::bind(&BasicEvent<CharType,AllocType>::destroyParameter, this, _1));
+			std::bind(&BasicEvent<CharType,AllocType>::destroyParameter, this, std::placeholders::_1));
 	}
 
 	/**
@@ -441,7 +440,7 @@ public:
 	 *
 	 * @param f callback function triggered for each parameter
 	 */
-	inline void for_each(boost::function2<void, Vocabulary::TermRef, const ParameterValue&> f) const {
+	inline void for_each(std::function<void(Vocabulary::TermRef, const ParameterValue&)> f) const {
 		for (ParameterNode *node_ptr = tree_algo::begin_node(&m_param_tree);
 			node_ptr != tree_algo::end_node(&m_param_tree);
 			node_ptr = tree_algo::next_node(node_ptr))

@@ -21,8 +21,8 @@
 #define __PION_PIONPLATFORMUNITTEST_HEADER__
 
 #include <fstream>
+#include <functional>
 #include <libxml/tree.h>
-#include <boost/function.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <pion/PionScheduler.hpp>

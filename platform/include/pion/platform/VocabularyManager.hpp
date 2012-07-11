@@ -20,8 +20,8 @@
 #ifndef __PION_VOCABULARYMANAGER_HEADER__
 #define __PION_VOCABULARYMANAGER_HEADER__
 
+#include <functional>
 #include <string>
-#include <boost/bind.hpp>
 #include <boost/signal.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
@@ -190,8 +190,8 @@ public:
 	void setVocabularyConfig(const std::string& vocab_id,
 							 const xmlNodePtr config_ptr)
 	{
-		updateVocabulary(vocab_id, boost::bind(&VocabularyConfig::setConfig,
-											   _1, config_ptr));
+		updateVocabulary(vocab_id, std::bind(&VocabularyConfig::setConfig,
+											   std::placeholders::_1, config_ptr));
 	}
 	
 	/**
@@ -203,8 +203,8 @@ public:
 	inline void setName(const std::string& vocab_id,
 						const std::string& new_name)
 	{
-		updateVocabulary(vocab_id, boost::bind(&VocabularyConfig::setName,
-											   _1, boost::cref(new_name)));
+		updateVocabulary(vocab_id, std::bind(&VocabularyConfig::setName,
+											   std::placeholders::_1, std::cref(new_name)));
 	}
 	
 	/**
@@ -216,8 +216,8 @@ public:
 	inline void setComment(const std::string& vocab_id,
 						   const std::string& new_comment)
 	{
-		updateVocabulary(vocab_id, boost::bind(&VocabularyConfig::setComment,
-											   _1, boost::cref(new_comment)));
+		updateVocabulary(vocab_id, std::bind(&VocabularyConfig::setComment,
+											   std::placeholders::_1, std::cref(new_comment)));
 	}
 	
 	/**
@@ -228,8 +228,8 @@ public:
 	 */
 	inline void setLocked(const std::string& vocab_id, bool locked_setting)
 	{
-		updateVocabulary(vocab_id, boost::bind(&VocabularyConfig::setLocked,
-											   _1, locked_setting));
+		updateVocabulary(vocab_id, std::bind(&VocabularyConfig::setLocked,
+											   std::placeholders::_1, locked_setting));
 	}
 	
 	/**
@@ -241,8 +241,9 @@ public:
 	inline void addTerm(const std::string& vocab_id,
 						const Vocabulary::Term& new_term)
 	{
-		updateVocabulary(vocab_id, boost::bind(&VocabularyConfig::addTerm,
-											   _1, boost::cref(new_term)));
+		void(VocabularyConfig::* addTerm)(const Vocabulary::Term&) = &VocabularyConfig::addTerm;
+		updateVocabulary(vocab_id, std::bind(addTerm,
+											   std::placeholders::_1, std::cref(new_term)));
 	}
 	
 	/**
@@ -257,8 +258,9 @@ public:
 						const std::string& term_id,
 						const xmlNodePtr config_ptr)
 	{
-		updateVocabulary(vocab_id, boost::bind(&VocabularyConfig::addTerm,
-											   _1, boost::cref(term_id), config_ptr));
+		void(VocabularyConfig::* addTerm)(const std::string&, const xmlNodePtr) = &VocabularyConfig::addTerm;
+		updateVocabulary(vocab_id, std::bind(addTerm,
+											   std::placeholders::_1, std::cref(term_id), config_ptr));
 	}
 	
 	/**
@@ -270,8 +272,9 @@ public:
 	inline void updateTerm(const std::string& vocab_id,
 						   const Vocabulary::Term& t)
 	{
-		updateVocabulary(vocab_id, boost::bind(&VocabularyConfig::updateTerm,
-											   _1, boost::cref(t)));
+		void(VocabularyConfig::* updateTerm)(const Vocabulary::Term&) = &VocabularyConfig::updateTerm;
+		updateVocabulary(vocab_id, std::bind(updateTerm,
+											   std::placeholders::_1, std::cref(t)));
 	}
 	
 	/**
@@ -286,8 +289,9 @@ public:
 						   const std::string& term_id,
 						   const xmlNodePtr config_ptr)
 	{
-		updateVocabulary(vocab_id, boost::bind(&VocabularyConfig::updateTerm,
-											   _1, boost::cref(term_id), config_ptr));
+		void(VocabularyConfig::* updateTerm)(const std::string&, const xmlNodePtr) = &VocabularyConfig::updateTerm;
+		updateVocabulary(vocab_id, std::bind(updateTerm,
+											   std::placeholders::_1, std::cref(term_id), config_ptr));
 	}
 	
 	/**
@@ -299,8 +303,8 @@ public:
 	inline void removeTerm(const std::string& vocab_id,
 						   const std::string& term_id)
 	{
-		updateVocabulary(vocab_id, boost::bind(&VocabularyConfig::removeTerm,
-											   _1, boost::cref(term_id)));
+		updateVocabulary(vocab_id, std::bind(&VocabularyConfig::removeTerm,
+											   std::placeholders::_1, std::cref(term_id)));
 	}
 	
 	/**

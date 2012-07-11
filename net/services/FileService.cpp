@@ -7,8 +7,8 @@
 // See http://www.boost.org/LICENSE_1_0.txt
 //
 
+#include <functional>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -156,7 +156,7 @@ void FileService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 			" is not in the configured directory.</p>\n"
 			"</body></html>\n";
 		HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-									 boost::bind(&TCPConnection::finish, tcp_conn)));
+									 std::bind(&TCPConnection::finish, tcp_conn)));
 		writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_FORBIDDEN);
 		writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_FORBIDDEN);
 		if (request->getMethod() != HTTPTypes::REQUEST_METHOD_HEAD) {
@@ -182,7 +182,7 @@ void FileService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 			" is a directory.</p>\n"
 			"</body></html>\n";
 		HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-									 boost::bind(&TCPConnection::finish, tcp_conn)));
+									 std::bind(&TCPConnection::finish, tcp_conn)));
 		writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_FORBIDDEN);
 		writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_FORBIDDEN);
 		if (request->getMethod() != HTTPTypes::REQUEST_METHOD_HEAD) {
@@ -368,7 +368,7 @@ void FileService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 
 			// prepare a response and set the Content-Type
 			HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-										 boost::bind(&TCPConnection::finish, tcp_conn)));
+										 std::bind(&TCPConnection::finish, tcp_conn)));
 			writer->getResponse().setContentType(response_file.getMimeType());
 
 			// set Last-Modified header to enable client-side caching
@@ -413,7 +413,7 @@ void FileService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 				" is not allowed on this server.</p>\n"
 				"</body></html>\n";
 			HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-										 boost::bind(&TCPConnection::finish, tcp_conn)));
+										 std::bind(&TCPConnection::finish, tcp_conn)));
 			writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_METHOD_NOT_ALLOWED);
 			writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_METHOD_NOT_ALLOWED);
 			writer->writeNoCopy(NOT_ALLOWED_HTML_START);
@@ -423,7 +423,7 @@ void FileService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 			writer->send();
 		} else {
 			HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-										 boost::bind(&TCPConnection::finish, tcp_conn)));
+										 std::bind(&TCPConnection::finish, tcp_conn)));
 			if (request->getMethod() == HTTPTypes::REQUEST_METHOD_POST
 				|| request->getMethod() == HTTPTypes::REQUEST_METHOD_PUT)
 			{
@@ -536,7 +536,7 @@ void FileService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 			" is not implemented on this server.</p>\n"
 			"</body></html>\n";
 		HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-									 boost::bind(&TCPConnection::finish, tcp_conn)));
+									 std::bind(&TCPConnection::finish, tcp_conn)));
 		writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_NOT_IMPLEMENTED);
 		writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_NOT_IMPLEMENTED);
 		writer->writeNoCopy(NOT_IMPLEMENTED_HTML_START);
@@ -559,7 +559,7 @@ void FileService::sendNotFoundResponse(HTTPRequestPtr& http_request,
 		" was not found on this server.</p>\n"
 		"</body></html>\n";
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *http_request,
-								 boost::bind(&TCPConnection::finish, tcp_conn)));
+								 std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_NOT_FOUND);
 	writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_NOT_FOUND);
 	if (http_request->getMethod() != HTTPTypes::REQUEST_METHOD_HEAD) {
@@ -784,7 +784,7 @@ DiskFileSender::DiskFileSender(DiskFile& file, pion::net::HTTPRequestPtr& reques
 							   pion::net::TCPConnectionPtr& tcp_conn,
 							   unsigned long max_chunk_size)
 	: m_logger(PION_GET_LOGGER("pion.FileService.DiskFileSender")), m_disk_file(file),
-	m_writer(pion::net::HTTPResponseWriter::create(tcp_conn, *request, boost::bind(&TCPConnection::finish, tcp_conn))),
+	m_writer(pion::net::HTTPResponseWriter::create(tcp_conn, *request, std::bind(&TCPConnection::finish, tcp_conn))),
 	m_max_chunk_size(max_chunk_size), m_file_bytes_to_send(0), m_bytes_sent(0)
 {
 	PION_LOG_DEBUG(m_logger, "Preparing to send file"
@@ -881,23 +881,23 @@ void DiskFileSender::send(void)
 		// this is the last piece of data to send
 		if (m_bytes_sent > 0) {
 			// send last chunk in a series
-			m_writer->sendFinalChunk(boost::bind(&DiskFileSender::handleWrite,
+			m_writer->sendFinalChunk(std::bind(&DiskFileSender::handleWrite,
 												 shared_from_this(),
-												 boost::asio::placeholders::error,
-												 boost::asio::placeholders::bytes_transferred));
+												 std::placeholders::_1,
+												 std::placeholders::_2));
 		} else {
 			// sending entire file at once
-			m_writer->send(boost::bind(&DiskFileSender::handleWrite,
+			m_writer->send(std::bind(&DiskFileSender::handleWrite,
 									   shared_from_this(),
-									   boost::asio::placeholders::error,
-									   boost::asio::placeholders::bytes_transferred));
+									   std::placeholders::_1,
+									   std::placeholders::_2));
 		}
 	} else {
 		// there will be more data -> send a chunk
-		m_writer->sendChunk(boost::bind(&DiskFileSender::handleWrite,
+		m_writer->sendChunk(std::bind(&DiskFileSender::handleWrite,
 										shared_from_this(),
-										boost::asio::placeholders::error,
-										boost::asio::placeholders::bytes_transferred));
+										std::placeholders::_1,
+										std::placeholders::_2));
 	}
 }
 

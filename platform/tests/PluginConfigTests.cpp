@@ -17,6 +17,7 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <functional>
 #include <pion/PionConfig.hpp>
 #include <pion/PionPlugin.hpp>
 #include <pion/PionUnitTestDefs.hpp>
@@ -29,7 +30,6 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/mpl/list.hpp>
-#include <boost/bind.hpp>
 #include <boost/cast.hpp>
 #include <libxml/tree.h>
 #include <fstream>
@@ -283,7 +283,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkGetPluginNameReturnsPluginName) {
 }
 
 BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkRegisterForUpdates) {
-	BOOST_CHECK_NO_THROW(F::registerForUpdates(boost::bind(&MockCallback)));
+	BOOST_CHECK_NO_THROW(F::registerForUpdates(std::bind(&MockCallback)));
 
 	BOOST_CHECK_NO_THROW(F::setConfigFile(F::m_config_file_path));
 	BOOST_CHECK_NO_THROW(F::openConfigFile());

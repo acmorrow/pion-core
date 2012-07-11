@@ -31,7 +31,7 @@ void WebServer::addService(const std::string& resource, WebService *service_ptr)
 	// from memory before they are caught
 	try {
 		m_services.add(clean_resource, service_ptr);
-		HTTPServer::addResource(clean_resource, boost::ref(*service_ptr));
+		HTTPServer::addResource(clean_resource, std::ref(*service_ptr));
 	} catch (std::exception& e) {
 		throw WebServiceException(resource, e.what());
 	}
@@ -46,7 +46,7 @@ void WebServer::loadService(const std::string& resource, const std::string& serv
 	// from memory before they are caught
 	try {
 		service_ptr = m_services.load(clean_resource, service_name);
-		HTTPServer::addResource(clean_resource, boost::ref(*service_ptr));
+		HTTPServer::addResource(clean_resource, std::ref(*service_ptr));
 		service_ptr->setResource(clean_resource);
 	} catch (std::exception& e) {
 		throw WebServiceException(resource, e.what());
@@ -61,7 +61,7 @@ void WebServer::setServiceOption(const std::string& resource,
 	// from memory before they are caught
 	const std::string clean_resource(stripTrailingSlash(resource));
 	try {
-		m_services.run(clean_resource, boost::bind(&WebService::setOption, _1, name, value));
+		m_services.run(clean_resource, std::bind(&WebService::setOption, std::placeholders::_1, name, value));
 	} catch (PluginManager<WebService>::PluginNotFoundException&) {
 		throw ServiceNotFoundException(resource);
 	} catch (std::exception& e) {

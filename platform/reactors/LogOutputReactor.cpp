@@ -185,7 +185,7 @@ void LogOutputReactor::stop(void)
 {
 	ConfigWriteLock cfg_lock(*this);
 	// if left unhandled, can cause crash on Windows platform 
-	// when invoked via PluginManager::run(boost::bind(&Reactor::stop, _1))
+	// when invoked via PluginManager::run(std::bind(&Reactor::stop, std::placeholders::_1))
 	try {
 		if (m_is_running) {
 			closeLogFileNoLock();

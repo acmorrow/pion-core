@@ -17,10 +17,10 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <vector>
+#include <functional>
 #include <iostream>
+#include <vector>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
@@ -155,7 +155,7 @@ private:
 	/// schedules a timer to print out the value of the counter
 	inline void scheduleSample(void) {
 		m_timer.expires_from_now(boost::posix_time::seconds(1));
-		m_timer.async_wait(boost::bind(&PerformanceTest::getSample, this));
+		m_timer.async_wait(std::bind(&PerformanceTest::getSample, this));
 	}
 
 	/// gets a sample and prints out the value of the counter
@@ -234,7 +234,7 @@ public:
 
 	/// starts the performance test
 	virtual void start(void) {
-		m_consumer_ptr.reset(new boost::thread(boost::bind(&HashValueTest::produce, this)));
+		m_consumer_ptr.reset(new boost::thread(std::bind(&HashValueTest::produce, this)));
 	}
 
 protected:
@@ -328,12 +328,12 @@ public:
 	/// starts the performance test
 	virtual void start(void) {
 		for (unsigned int n = 0; n < ConsumerThreads; ++n) {
-			m_consumer_threads.push_back(ThreadPtr(new boost::thread(boost::bind(&AllocTest::consume,
-				this, boost::ref(m_consumer_counters[n])))));
+			m_consumer_threads.push_back(ThreadPtr(new boost::thread(std::bind(&AllocTest::consume,
+				this, std::ref(m_consumer_counters[n])))));
 		}
 		for (unsigned int n = 0; n < ProducerThreads; ++n) {
-			m_producer_threads.push_back(ThreadPtr(new boost::thread(boost::bind(&AllocTest::produce,
-				this, boost::ref(m_producer_counters[n])))));
+			m_producer_threads.push_back(ThreadPtr(new boost::thread(std::bind(&AllocTest::produce,
+				this, std::ref(m_producer_counters[n])))));
 		}
 	}
 	
@@ -411,7 +411,7 @@ protected:
 
 
 /// data type used to represent an item of work
-typedef boost::function0<void>	WorkItem;
+typedef std::function<void()>	WorkItem;
 
 
 ///
@@ -450,8 +450,8 @@ protected:
 	
 	/// thread function used to produce work
 	virtual void produce(boost::uint64_t& thread_counter) {
-		WorkItem work(boost::bind(&AllocTest<ProducerThreads, ConsumerThreads>::bumpCounter, this,
-								  boost::ref(AllocTest<ProducerThreads, ConsumerThreads>::m_consumer_counters[0])));
+		WorkItem work(std::bind(&AllocTest<ProducerThreads, ConsumerThreads>::bumpCounter, this,
+								  std::ref(AllocTest<ProducerThreads, ConsumerThreads>::m_consumer_counters[0])));
 		while (PerformanceTest::isRunning()) {
 			if (ConsumerThreads > 0)
 				m_service.post(work);
@@ -469,7 +469,7 @@ protected:
         if (PerformanceTest::isRunning()) {
             // schedule this again to make sure the service doesn't complete
             m_timer.expires_from_now(boost::posix_time::seconds(KEEP_RUNNING_TIMER_SECONDS));
-            m_timer.async_wait(boost::bind(&WorkTestIoService<ProducerThreads, ConsumerThreads>::keepRunning, this));
+            m_timer.async_wait(std::bind(&WorkTestIoService<ProducerThreads, ConsumerThreads>::keepRunning, this));
         }
     }
 	
@@ -504,7 +504,7 @@ protected:
 	
 	/// thread function used to produce work
 	virtual void produce(boost::uint64_t& thread_counter) {
-		WorkItem work(boost::bind(&AllocTest<ProducerThreads, ConsumerThreads>::doNothing, this));
+		WorkItem work(std::bind(&AllocTest<ProducerThreads, ConsumerThreads>::doNothing, this));
 		while (PerformanceTest::isRunning()) {
 			if (ConsumerThreads > 0)
 				m_queue.push(work);
@@ -560,7 +560,7 @@ protected:
 		// make sure the consumer gets work after m_is_running == false
 		if (ConsumerThreads > 0)
 			WorkTestSleepingQueue<ProducerThreads, ConsumerThreads>::m_queue.push(
-				boost::bind(&AllocTest<ProducerThreads, ConsumerThreads>::doNothing, this));
+				std::bind(&AllocTest<ProducerThreads, ConsumerThreads>::doNothing, this));
 		
 		// stop the threads
 		AllocTest<ProducerThreads, ConsumerThreads>::stopTest();

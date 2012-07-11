@@ -7,12 +7,11 @@
 // See http://www.boost.org/LICENSE_1_0.txt
 //
 
+#include <functional>
 #include <pion/PionConfig.hpp>
 #include <pion/PionScheduler.hpp>
 #include <pion/net/TCPServer.hpp>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/function/function1.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/test/unit_test.hpp>
 #include <pion/net/HTTPRequest.hpp>
@@ -49,8 +48,8 @@ public:
 		static const std::string HELLO_MESSAGE("Hello there!\n");
 		tcp_conn->setLifecycle(pion::net::TCPConnection::LIFECYCLE_CLOSE);	// make sure it will get closed
 		tcp_conn->async_write(boost::asio::buffer(HELLO_MESSAGE),
-							  boost::bind(&HelloServer::handleWrite, this, tcp_conn,
-										  boost::asio::placeholders::error));
+							  std::bind(&HelloServer::handleWrite, this, tcp_conn,
+										  std::placeholders::_1));
 	}
 
 	
@@ -68,9 +67,9 @@ private:
 		if (write_error) {
 			tcp_conn->finish();
 		} else {
-			tcp_conn->async_read_some(boost::bind(&HelloServer::handleRead, this, tcp_conn,
-												  boost::asio::placeholders::error,
-												  boost::asio::placeholders::bytes_transferred));
+			tcp_conn->async_read_some(std::bind(&HelloServer::handleRead, this, tcp_conn,
+												  std::placeholders::_1,
+												  std::placeholders::_2));
 		}
 	}
 	
@@ -92,7 +91,7 @@ private:
 			throw int(1);
 		} else {
 			tcp_conn->async_write(boost::asio::buffer(GOODBYE_MESSAGE),
-								  boost::bind(&pion::net::TCPConnection::finish, tcp_conn));
+								  std::bind(&pion::net::TCPConnection::finish, tcp_conn));
 		}
 	}
 };
@@ -282,7 +281,7 @@ public:
 
 	void setExpectations(const std::map<std::string, std::string>& expectedHeaders, 
 						 const std::string& expectedContent,
-						 boost::function1<bool, HTTPRequest&> additional_request_test = NULL)
+						 std::function<bool(HTTPRequest&)> additional_request_test = NULL)
 	{
 		m_expectedHeaders = expectedHeaders;
 		m_expectedContent = expectedContent;
@@ -292,7 +291,7 @@ public:
 private:
 	std::map<std::string, std::string> m_expectedHeaders;
 	std::string m_expectedContent;
-	boost::function1<bool, HTTPRequest&> m_additional_request_test;
+	std::function<bool(HTTPRequest&)> m_additional_request_test;
 };
 
 

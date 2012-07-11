@@ -17,8 +17,8 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <functional>
 #include "QueryService.hpp"
-#include <boost/bind.hpp>
 #include <pion/net/HTTPResponseWriter.hpp>
 #include <pion/net/PionUser.hpp>
 #include "PlatformConfig.hpp"
@@ -100,7 +100,7 @@ void QueryService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_con
 
 	// Set Content-type to "text/xml"
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, response_ptr,
-															boost::bind(&TCPConnection::finish, tcp_conn)));
+															std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setContentType(HTTPTypes::CONTENT_TYPE_XML);
 
 	writer->write(ss.str());

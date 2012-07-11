@@ -602,7 +602,7 @@ BOOST_AUTO_TEST_CASE(checkReactorSignalCallbacks) {
 	// subscribe to signal
 	boost::signals::scoped_connection conn =
 		m_reaction_engine.subscribe(m_log_reader_id, "FinishedLog",
-		boost::bind(&ReactionEngineAlreadyRunningTests_F::finishedLog, this, _1, _2, _3));
+		std::bind(&ReactionEngineAlreadyRunningTests_F::finishedLog, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
 	// The Reactor should not be running yet (tested in checkReactorOfTypeCollectionIsNotRunning).
 	m_reaction_engine.startReactor(m_log_reader_id);

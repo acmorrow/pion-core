@@ -143,7 +143,7 @@ public:
 			m_expected_event_ids.insert(m_curr_event_id);
 	}
 
-	void MockEventHandler(EventPtr& e, const ExpectedEventIds& expected_event_ids) {
+	void MockEventHandler(EventPtr e, const ExpectedEventIds& expected_event_ids) {
 		if (! e.get())
 			return;
 
@@ -156,7 +156,7 @@ public:
 
 	void sendEventsAndValidateOutput(std::list<EventPtr>& events, const std::string& reactor_id) {
 		// Add an Event handler to check that the output of the FilterReactor is as expected.
-		Reactor::EventHandler eventValidator = boost::bind(&FilterReactorEventValidator_F::MockEventHandler, this, _1, m_expected_event_ids);
+		Reactor::EventHandler eventValidator = std::bind(&FilterReactorEventValidator_F::MockEventHandler, this, std::placeholders::_1, m_expected_event_ids);
 		m_reaction_engine->addTempConnectionOut(reactor_id, pion::PionId().to_string(), "blah", eventValidator);
 
 		// Start the ReactionEngine and send the Events to the FilterReactor.

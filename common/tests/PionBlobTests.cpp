@@ -7,12 +7,12 @@
 // See http://www.boost.org/LICENSE_1_0.txt
 //
 
+#include <functional>
 #include <pion/PionConfig.hpp>
 #include <pion/PionPoolAllocator.hpp>
 #include <pion/PionBlob.hpp>
 #include <pion/PionId.hpp>
 #include <pion/PionHashMap.hpp>
-#include <boost/bind.hpp>
 #include <boost/variant.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/scoped_array.hpp>
@@ -258,7 +258,7 @@ BOOST_AUTO_TEST_CASE(checkCreateLotsOfCopiesInMultipleThreads) {
 	BOOST_CHECK(b.unique());
 
 	for (std::size_t n = 0; n < NUM_THREADS; ++n) {
-		threads[n].reset(new boost::thread(boost::bind(&PionBlobTests_F::createCopies, b, BLOB_COPIES)));
+		threads[n].reset(new boost::thread(std::bind(&PionBlobTests_F::createCopies, b, BLOB_COPIES)));
 	}
 
 	BOOST_CHECK(! b.unique());

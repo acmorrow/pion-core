@@ -144,7 +144,7 @@ public:
 	 *
 	 * @param e the Event to possibly (filter) add to the circular buffer
 	 */
-	void writeEvent(pion::platform::EventPtr& e);
+	void writeEvent(pion::platform::EventPtr e);
 
 	/// "set method" for MonitorWriters parameters from query parameters
 	void setQP(const pion::net::HTTPTypes::QueryParams& qp);

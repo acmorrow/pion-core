@@ -11,9 +11,9 @@
 #define __PION_TCPSTREAM_HEADER__
 
 #include <cstring>
+#include <functional>
 #include <istream>
 #include <streambuf>
-#include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
 #include <pion/PionConfig.hpp>
@@ -119,9 +119,9 @@ protected:
 			boost::mutex::scoped_lock async_lock(m_async_mutex);
 			m_bytes_transferred = 0;
 			m_conn_ptr->async_write(boost::asio::buffer(pbase(), bytes_to_send),
-									boost::bind(&TCPStreamBuffer::operationFinished, this,
-												boost::asio::placeholders::error,
-												boost::asio::placeholders::bytes_transferred));
+									std::bind(&TCPStreamBuffer::operationFinished, this,
+												std::placeholders::_1,
+												std::placeholders::_2));
 			m_async_done.wait(async_lock);
 			bytes_sent = m_bytes_transferred;
 			pbump(-bytes_sent);
@@ -157,9 +157,9 @@ protected:
 		m_bytes_transferred = 0;
 		m_conn_ptr->async_read_some(boost::asio::buffer(m_read_buf+PUT_BACK_MAX,
 														TCPConnection::READ_BUFFER_SIZE-PUT_BACK_MAX),
-									boost::bind(&TCPStreamBuffer::operationFinished, this,
-												boost::asio::placeholders::error,
-												boost::asio::placeholders::bytes_transferred));
+									std::bind(&TCPStreamBuffer::operationFinished, this,
+												std::placeholders::_1,
+												std::placeholders::_2));
 		m_async_done.wait(async_lock);
 		if (m_async_error)
 			return traits_type::eof();
@@ -225,9 +225,9 @@ protected:
 				m_bytes_transferred = 0;
 				m_conn_ptr->async_write(boost::asio::buffer(s+bytes_available,
 															n-bytes_available),
-										boost::bind(&TCPStreamBuffer::operationFinished, this,
-													boost::asio::placeholders::error,
-													boost::asio::placeholders::bytes_transferred));
+										std::bind(&TCPStreamBuffer::operationFinished, this,
+													std::placeholders::_1,
+													std::placeholders::_2));
 				m_async_done.wait(async_lock);
 				bytes_sent = bytes_available + m_bytes_transferred;
 			} else {

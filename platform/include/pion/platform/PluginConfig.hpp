@@ -20,8 +20,8 @@
 #ifndef __PION_PLUGINCONFIG_HEADER__
 #define __PION_PLUGINCONFIG_HEADER__
 
+#include <functional>
 #include <libxml/tree.h>
-#include <boost/bind.hpp>
 #include <boost/signal.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
@@ -135,8 +135,8 @@ public:
 	/// this updates the Vocabularies used by all plug-ins
 	inline void updateVocabulary(void) {
 		VocabularyPtr vocab_ptr(m_vocab_mgr.getVocabulary());
-		m_plugins.run(boost::bind(&PluginType::updateVocabulary, _1,
-								  boost::cref(*vocab_ptr)));
+		m_plugins.run(std::bind(&PluginType::updateVocabulary, std::placeholders::_1,
+								  std::cref(*vocab_ptr)));
 	}
 
 	/// returns a copy of the universal Vocabulary
@@ -165,7 +165,7 @@ protected:
 		m_vocab_mgr(vocab_mgr),
 		m_plugin_element(plugin_element)
 	{
-		m_vocab_connection = vocab_mgr.registerForUpdates(boost::bind(&PluginConfig::updateVocabulary, this));
+		m_vocab_connection = vocab_mgr.registerForUpdates(std::bind(&PluginConfig::updateVocabulary, this));
 		setLogger(PION_GET_LOGGER("pion.platform.PluginConfig"));
 	}
 
@@ -286,8 +286,8 @@ inline void PluginConfig<PluginType>::setPluginConfig(const std::string& plugin_
 
 	// update it within memory and the configuration file
 	boost::mutex::scoped_lock plugins_lock(m_mutex);
-	m_plugins.run(plugin_id, boost::bind(&PluginType::setConfig, _1,
-										 boost::cref(*vocab_ptr), config_ptr));
+	m_plugins.run(plugin_id, std::bind(&PluginType::setConfig, std::placeholders::_1,
+										 std::cref(*vocab_ptr), config_ptr));
 	ConfigManager::setPluginConfig(m_plugin_element, plugin_id, config_ptr);
 	
 	// unlock class mutex to prevent deadlock

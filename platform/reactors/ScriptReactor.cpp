@@ -59,7 +59,7 @@ void ScriptReactor::start(void)
 
 		// spawn a new thread that will be used to read events from the script
 		PION_LOG_DEBUG(m_logger, "Starting reader thread: " << getId());
-		m_thread_ptr.reset(new boost::thread(boost::bind(&ScriptReactor::readEvents, this)));
+		m_thread_ptr.reset(new boost::thread(std::bind(&ScriptReactor::readEvents, this)));
 	}
 }
 

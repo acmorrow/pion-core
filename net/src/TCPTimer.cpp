@@ -7,8 +7,8 @@
 // See http://www.boost.org/LICENSE_1_0.txt
 //
 
+#include <functional>
 #include <pion/net/TCPTimer.hpp>
-#include <boost/bind.hpp>
 
 
 namespace pion {	// begin namespace pion
@@ -28,8 +28,8 @@ void TCPTimer::start(const boost::uint32_t seconds)
 	boost::mutex::scoped_lock timer_lock(m_mutex);
 	m_timer_active = true;
 	m_timer.expires_from_now(boost::posix_time::seconds(seconds));
-	m_timer.async_wait(boost::bind(&TCPTimer::timerCallback,
-		shared_from_this(), _1));
+	m_timer.async_wait(std::bind(&TCPTimer::timerCallback,
+		shared_from_this(), std::placeholders::_1));
 }
 
 void TCPTimer::cancel(void)

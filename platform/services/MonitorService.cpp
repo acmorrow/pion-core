@@ -17,8 +17,8 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <functional>
 #include <sstream>
-#include <boost/bind.hpp>
 #include <pion/PionId.hpp>
 #include <pion/PionAlgorithms.hpp>
 #include <pion/net/HTTPResponse.hpp>
@@ -43,7 +43,7 @@ const unsigned				MonitorService::WRITERS = 10;
 const std::string			MonitorService::MONITOR_SERVICE_PERMISSION_TYPE = "MonitorService";
 
 
-void MonitorWriter::writeEvent(EventPtr& e)
+void MonitorWriter::writeEvent(EventPtr e)
 {
 	PION_LOG_DEBUG(m_logger, "Received event via " << getConnectionId());
 	if (e.get() == NULL) {
@@ -91,8 +91,8 @@ void MonitorWriter::start(const HTTPTypes::QueryParams& qp)
 	boost::mutex::scoped_lock writer_lock(m_mutex);
 
 	// tell the ReactionEngine to start sending us Events
-	Reactor::EventHandler event_handler(boost::bind(&MonitorWriter::writeEvent,
-													shared_from_this(), _1));
+	Reactor::EventHandler event_handler(std::bind(&MonitorWriter::writeEvent,
+													shared_from_this(), std::placeholders::_1));
 	m_reaction_engine.addTempConnectionOut(getReactorId(), getConnectionId(),
 										   "MonitorService", event_handler);
 
@@ -167,8 +167,8 @@ std::string MonitorWriter::getStatus(const HTTPTypes::QueryParams& qp)
 			if (m_filtered_events.find(tref) == m_filtered_events.end()) {
 				const Vocabulary::Term& et((*m_vocab_ptr)[tref]);	// term corresponding with Event parameter
 				xml << "<Event><C0>" << et.term_id.substr(URN_VOCAB) << "</C0>";
-				(*i)->for_each(boost::bind(&MonitorWriter::SerializeXML,
-					this, _1, _2, boost::ref(xml), boost::ref(col_map)));
+				(*i)->for_each(std::bind(&MonitorWriter::SerializeXML,
+					this, std::placeholders::_1, std::placeholders::_2, std::ref(xml), std::ref(col_map)));
 				xml << "</Event>";
 				if (xml.tellp() > 1000000) {	// FIXME: Max limit of 1MB (for now)
 					preamble << "<Truncated>" << xml.tellp() << "</Truncated>";
@@ -342,7 +342,7 @@ void MonitorService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_c
 	if (request->getMethod() == HTTPTypes::REQUEST_METHOD_GET) {
 
 		HTTPResponseWriterPtr response_writer(HTTPResponseWriter::create(tcp_conn, *request,
-										  boost::bind(&TCPConnection::finish, tcp_conn)));
+										  std::bind(&TCPConnection::finish, tcp_conn)));
 
 		// Process QueryParameters in start & status
 		const HTTPTypes::QueryParams qp = request->getQueryParams();
@@ -441,7 +441,7 @@ void MonitorService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_c
 		
 		// request is just checking if the reactor is valid -> return OK
 		HTTPResponseWriterPtr response_writer(HTTPResponseWriter::create(tcp_conn, *request,
-											  boost::bind(&TCPConnection::finish, tcp_conn)));
+											  std::bind(&TCPConnection::finish, tcp_conn)));
 		response_writer->send();
 
 	} else {

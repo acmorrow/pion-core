@@ -180,7 +180,7 @@ private:
 
 	/// schedules another thread to read an event from the log file
 	inline void scheduleReadFromLog(void) {
-		getScheduler().getIOService().post(boost::bind(&LogInputReactor::readFromLog, this));
+		getScheduler().getIOService().post(std::bind(&LogInputReactor::readFromLog, this));
 	}
 	
 	/// consumes one log file converting it into Events

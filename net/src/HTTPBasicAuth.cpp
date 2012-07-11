@@ -145,7 +145,7 @@ void HTTPBasicAuth::handleUnauthorized(HTTPRequestPtr& http_request,
 		"<BODY><H1>401 Unauthorized.</H1></BODY>"
 		"</HTML> ";
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *http_request,
-	boost::bind(&TCPConnection::finish, tcp_conn)));
+	std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_UNAUTHORIZED);
 	writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_UNAUTHORIZED);
 	writer->getResponse().addHeader("WWW-Authenticate", "Basic realm=\"" + m_realm + "\"");

@@ -64,9 +64,9 @@ ServiceManager::ServiceManager(const VocabularyManager& vocab_mgr, PlatformConfi
 	setLogger(PION_GET_LOGGER("pion.server.ServiceManager"));
 	m_scheduler.setLogger(PION_GET_LOGGER("pion.server.ServiceManager"));
 	m_scheduler.setNumThreads(DEFAULT_NUM_THREADS);
-	platform_config.getCodecFactory().registerForUpdates(boost::bind(&ServiceManager::updateCodecs, this));
-	platform_config.getDatabaseManager().registerForUpdates(boost::bind(&ServiceManager::updateDatabases, this));
-	platform_config.getReactionEngine().registerForUpdates(boost::bind(&ServiceManager::updateReactors, this));
+	platform_config.getCodecFactory().registerForUpdates(std::bind(&ServiceManager::updateCodecs, this));
+	platform_config.getDatabaseManager().registerForUpdates(std::bind(&ServiceManager::updateDatabases, this));
+	platform_config.getReactionEngine().registerForUpdates(std::bind(&ServiceManager::updateReactors, this));
 }
 
 void ServiceManager::shutdown(void)
@@ -80,8 +80,8 @@ void ServiceManager::shutdown(void)
 
 	// call the stop() method for each web service associated with this server
 	try {
-		m_plugins.run(boost::bind(&PlatformService::stop, _1));
-		m_web_services.run(boost::bind(&WebService::stop, _1));
+		m_plugins.run(std::bind(&PlatformService::stop, std::placeholders::_1));
+		m_web_services.run(std::bind(&WebService::stop, std::placeholders::_1));
 	} catch (std::exception& e) {
 		// catch exceptions thrown by services since their exceptions may be free'd
 		// from memory before they are caught
@@ -200,7 +200,7 @@ void ServiceManager::openConfigFile(void)
 		server_ptr->setAuthentication(auth_ptr);
 
 		// use ServiceManager for handling error responses
-		server_ptr->setServerErrorHandler(boost::bind(&ServiceManager::handleServerError, _1, _2, _3));
+		server_ptr->setServerErrorHandler(std::bind(&ServiceManager::handleServerError, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
 		// get the ssl key for the server (if defined)
 		if (ConfigManager::getConfigOption(SSL_KEY_ELEMENT_NAME, ssl_key,
@@ -263,7 +263,7 @@ void ServiceManager::openConfigFile(void)
 			}
 			
 			// add the service to the HTTP server
-			server_ptr->addResource(service_ptr->getResource(), boost::ref(*service_ptr));
+			server_ptr->addResource(service_ptr->getResource(), std::ref(*service_ptr));
 			
 			// step to the next service definition
 			service_node = service_node->next;
@@ -316,8 +316,8 @@ void ServiceManager::openConfigFile(void)
 
 	// call the start() method for each web service associated with this server
 	try {
-		m_plugins.run(boost::bind(&WebService::start, _1));
-		m_web_services.run(boost::bind(&WebService::start, _1));
+		m_plugins.run(std::bind(&WebService::start, std::placeholders::_1));
+		m_web_services.run(std::bind(&WebService::start, std::placeholders::_1));
 	} catch (std::exception& e) {
 		// catch exceptions thrown by services since their exceptions may be free'd
 		// from memory before they are caught
@@ -386,7 +386,7 @@ void ServiceManager::addWebService(xmlNodePtr service_node, const std::string& s
 	}				
 
 	// add the service to the HTTP server
-	m_servers[server_id]->addResource(http_resource, boost::ref(*service_ptr));
+	m_servers[server_id]->addResource(http_resource, std::ref(*service_ptr));
 }
 
 void ServiceManager::getWebServiceConfig(xmlNodePtr service_node, const std::string& server_id,
@@ -447,27 +447,27 @@ void ServiceManager::writeServersXML(std::ostream& out) const
 
 void ServiceManager::updateCodecs(void)
 {
-	m_plugins.run(boost::bind(&PlatformService::updateCodecs, _1,
-							  boost::ref(m_platform_config)));
+	m_plugins.run(std::bind(&PlatformService::updateCodecs, std::placeholders::_1,
+							  std::ref(m_platform_config)));
 }
 
 void ServiceManager::updateDatabases(void)
 {
-	m_plugins.run(boost::bind(&PlatformService::updateDatabases, _1,
-							  boost::ref(m_platform_config)));
+	m_plugins.run(std::bind(&PlatformService::updateDatabases, std::placeholders::_1,
+							  std::ref(m_platform_config)));
 }
 
 void ServiceManager::updateReactors(void)
 {
-	m_plugins.run(boost::bind(&PlatformService::updateReactors, _1,
-							  boost::ref(m_platform_config)));
+	m_plugins.run(std::bind(&PlatformService::updateReactors, std::placeholders::_1,
+							  std::ref(m_platform_config)));
 }
 	
 void ServiceManager::handleServerError(HTTPRequestPtr& http_request,
 	TCPConnectionPtr& tcp_conn, const std::string& error_msg)
 {
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *http_request,
-															boost::bind(&TCPConnection::finish, tcp_conn)));
+															std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_SERVER_ERROR);
 	writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_SERVER_ERROR);
 	writer->getResponse().setContentType(HTTPTypes::CONTENT_TYPE_TEXT);

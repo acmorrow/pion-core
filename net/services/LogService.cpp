@@ -149,7 +149,7 @@ void LogService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn)
 {
 	// Set Content-type to "text/plain" (plain ascii text)
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-															boost::bind(&TCPConnection::finish, tcp_conn)));
+															std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setContentType(HTTPTypes::CONTENT_TYPE_TEXT);
 	getLogAppender().writeLogEvents(writer);
 	writer->send();

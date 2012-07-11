@@ -8,7 +8,7 @@
 //
 
 #include "EchoService.hpp"
-#include <boost/bind.hpp>
+#include <functional>
 #include <pion/PionAlgorithms.hpp>
 #include <pion/net/HTTPResponseWriter.hpp>
 #include <pion/net/PionUser.hpp>
@@ -48,7 +48,7 @@ void EchoService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 	
 	// Set Content-type to "text/plain" (plain ascii text)
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-															boost::bind(&TCPConnection::finish, tcp_conn)));
+															std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setContentType(HTTPTypes::CONTENT_TYPE_TEXT);
 	
 	// write request information
@@ -81,7 +81,7 @@ void EchoService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 	std::for_each(request->getHeaders().begin(), request->getHeaders().end(),
-				  boost::bind(&writeDictionaryTerm, writer, _1, false));
+				  std::bind(&writeDictionaryTerm, writer, std::placeholders::_1, false));
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 
 	// write query parameters
@@ -89,7 +89,7 @@ void EchoService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 	std::for_each(request->getQueryParams().begin(), request->getQueryParams().end(),
-				  boost::bind(&writeDictionaryTerm, writer, _1, true));
+				  std::bind(&writeDictionaryTerm, writer, std::placeholders::_1, true));
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 	
 	// write cookie parameters
@@ -97,7 +97,7 @@ void EchoService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 	std::for_each(request->getCookieParams().begin(), request->getCookieParams().end(),
-				  boost::bind(&writeDictionaryTerm, writer, _1, false));
+				  std::bind(&writeDictionaryTerm, writer, std::placeholders::_1, false));
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 	
 	// write POST content

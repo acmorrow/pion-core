@@ -10,6 +10,9 @@
 #ifndef __PION_TCPCONNECTION_HEADER__
 #define __PION_TCPCONNECTION_HEADER__
 
+#include <functional>
+#include <string>
+
 #ifdef PION_HAVE_SSL
 	#ifdef PION_XCODE
 		// ignore openssl warnings if building with XCode
@@ -24,10 +27,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
-#include <boost/function.hpp>
-#include <boost/function/function1.hpp>
 #include <pion/PionConfig.hpp>
-#include <string>
 
 
 namespace pion {	// begin namespace pion
@@ -51,7 +51,8 @@ public:
 	enum { READ_BUFFER_SIZE = 8192 };
 	
 	/// data type for a function that handles TCP connection objects
-	typedef boost::function1<void, boost::shared_ptr<TCPConnection> >	ConnectionHandler;
+        /// NOTE(acm): Changed this to const& arg. Is that safe?
+	typedef std::function<void(boost::shared_ptr<TCPConnection>&)>	ConnectionHandler;
 	
 	/// data type for an I/O read buffer
 	typedef boost::array<char, READ_BUFFER_SIZE>	ReadBuffer;
@@ -573,7 +574,12 @@ public:
 	
 	/// This function should be called when a server has finished handling
 	/// the connection
-	inline void finish(void) { if (m_finished_handler) m_finished_handler(shared_from_this()); }
+	inline void finish(void) {
+		if (m_finished_handler) {
+			auto self = shared_from_this();
+			m_finished_handler(self);
+		}
+	}
 
 	/// returns true if the connection is encrypted using SSL
 	inline bool getSSLFlag(void) const { return m_ssl_flag; }

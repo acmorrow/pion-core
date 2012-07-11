@@ -20,10 +20,9 @@
 #ifndef __PION_REACTIONENGINE_HEADER__
 #define __PION_REACTIONENGINE_HEADER__
 
+#include <functional>
 #include <string>
 #include <libxml/tree.h>
-#include <boost/bind.hpp>
-#include <boost/function/function0.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/platform/Event.hpp>
@@ -275,7 +274,7 @@ public:
 	Reactor *addTempConnectionIn(const std::string& reactor_id, 
 								 const std::string& connection_id,
 								 const std::string& connection_info,
-								 boost::function0<void> removed_handler);
+								 std::function<void()> removed_handler);
 	
 	/**
 	 * temporarily connects an Event handler to the output of a Reactor
@@ -509,7 +508,7 @@ public:
 		Reactor *reactor_ptr = m_plugins.get(reactor_id);
 		if (reactor_ptr == NULL)
 			throw ReactorNotFoundException(reactor_id);
-		m_scheduler.post(boost::bind<void>(boost::ref(*reactor_ptr), e));
+		m_scheduler.post(std::bind<void>(std::ref(*reactor_ptr), e));
 	}
 
 	/**
@@ -558,7 +557,7 @@ public:
 	 * @return boost::uint64_t number of operations performed
 	 */
 	inline boost::uint64_t getTotalOperations(void) const {
-		return m_plugins.getStatistic(boost::bind(&Reactor::getEventsIn, _1));
+		return m_plugins.getStatistic(std::bind(&Reactor::getEventsIn, std::placeholders::_1));
 	}
 	
 	/**
@@ -568,7 +567,7 @@ public:
 	 * @return boost::uint64_t number of Events received
 	 */
 	inline boost::uint64_t getEventsIn(const std::string& reactor_id) const {
-		return m_plugins.getStatistic(reactor_id, boost::bind(&Reactor::getEventsIn, _1));
+		return m_plugins.getStatistic(reactor_id, std::bind(&Reactor::getEventsIn, std::placeholders::_1));
 	}
 	
 	/**
@@ -578,7 +577,7 @@ public:
 	 * @return boost::uint64_t number of Events delivered
 	 */
 	inline boost::uint64_t getEventsOut(const std::string& reactor_id) const {
-		return m_plugins.getStatistic(reactor_id, boost::bind(&Reactor::getEventsOut, _1));
+		return m_plugins.getStatistic(reactor_id, std::bind(&Reactor::getEventsOut, std::placeholders::_1));
 	}
 	
 	/// returns the number of events queued in ReactionScheduler
@@ -639,7 +638,7 @@ private:
 					   const std::string& reactor_id,
 					   const std::string& connection_id,
 					   const std::string& connection_info,
-					   boost::function0<void> removed_handler)
+					   std::function<void()> removed_handler)
 			: m_output_connection(output_connection), m_reactor_id(reactor_id),
 			m_connection_id(connection_id), m_connection_info(connection_info),
 			m_removed_handler(removed_handler)
@@ -652,7 +651,7 @@ private:
 		const std::string				m_reactor_id;
 		const std::string				m_connection_id;
 		const std::string				m_connection_info;
-		boost::function0<void>			m_removed_handler;
+		std::function<void()>			m_removed_handler;
 	};
 	
 	/// data type for a collection of temporary connection objects

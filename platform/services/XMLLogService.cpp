@@ -119,7 +119,7 @@ void XMLLogService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 
 	// Set Content-type to "text/xml"
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-															boost::bind(&TCPConnection::finish, tcp_conn)));
+															std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setContentType(HTTPTypes::CONTENT_TYPE_XML);
 
 	const HTTPTypes::QueryParams qp = request->getQueryParams();

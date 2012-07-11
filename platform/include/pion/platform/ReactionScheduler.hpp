@@ -20,9 +20,9 @@
 #ifndef __PION_REACTIONSCHEDULER_HEADER__
 #define __PION_REACTIONSCHEDULER_HEADER__
 
+#include <functional>
 #include <vector>
 #include <boost/shared_ptr.hpp>
-#include <boost/function/function0.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionScheduler.hpp>
@@ -70,13 +70,13 @@ public:
 			keepRunning(m_service, m_timer);
 
 			// start a thread that will be used to handle io_service requests
-			m_service_thread.reset(new boost::thread( boost::bind(&PionScheduler::processServiceWork,
-																  this, boost::ref(m_service)) ));
+			m_service_thread.reset(new boost::thread( std::bind(&PionScheduler::processServiceWork,
+																  this, std::ref(m_service)) ));
 			
 			// start multiple threads to handle async tasks
 			for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
 				boost::shared_ptr<boost::thread> new_thread(new boost::thread(
-					boost::bind(&ReactionScheduler::processReactionQueue, this) ));
+					std::bind(&ReactionScheduler::processReactionQueue, this) ));
 				m_thread_pool.push_back(new_thread);
 			}
 		}
@@ -104,7 +104,7 @@ public:
 	 *
 	 * @param work_func work function to be executed
 	 */
-	virtual void post(boost::function0<void> work_func) {
+	virtual void post(std::function<void()> work_func) {
 		m_reaction_queue.push(work_func);
 	}
 	
@@ -118,7 +118,7 @@ public:
 protected:
 	
 	/// data type for a Reaction (when an Event is delivered to a Reactor)
-	typedef boost::function0<void>		Reaction;
+	typedef std::function<void()>		Reaction;
 
 	/// data type for a thread-safe queue of Reactions
 	typedef PionLockedQueue<Reaction>	ReactionQueue;

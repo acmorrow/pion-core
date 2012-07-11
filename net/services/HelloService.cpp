@@ -24,7 +24,7 @@ void HelloService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_con
 {
 	static const std::string HELLO_HTML = "<html><body>Hello World!</body></html>";
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-															boost::bind(&TCPConnection::finish, tcp_conn)));
+															std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->writeNoCopy(HELLO_HTML);
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);
 	writer->writeNoCopy(HTTPTypes::STRING_CRLF);

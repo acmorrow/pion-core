@@ -29,7 +29,7 @@ void CookieService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 
 	// Set Content-type for HTML and write the header
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *request,
-															boost::bind(&TCPConnection::finish, tcp_conn)));
+															std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setContentType(HTTPTypes::CONTENT_TYPE_HTML);
 	writer->writeNoCopy(HEADER_HTML);
 

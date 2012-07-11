@@ -10,11 +10,10 @@
 #ifndef __PION_PLUGINMANAGER_HEADER__
 #define __PION_PLUGINMANAGER_HEADER__
 
+#include <functional>
 #include <map>
 #include <string>
 #include <boost/cstdint.hpp>
-#include <boost/function.hpp>
-#include <boost/function/function1.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
@@ -46,10 +45,10 @@ public:
 	};
 	
 	/// data type for a function that may be called by the run() method
-	typedef boost::function1<void, PLUGIN_TYPE*>	PluginRunFunction;
+	typedef std::function<void(PLUGIN_TYPE*)>	PluginRunFunction;
 
 	/// data type for a function that may be called by the getStat() method
-	typedef boost::function1<boost::uint64_t, const PLUGIN_TYPE*>	PluginStatFunction;
+	typedef std::function<boost::uint64_t(const PLUGIN_TYPE*)>	PluginStatFunction;
 
 	
 	/// default constructor

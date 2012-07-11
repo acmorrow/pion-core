@@ -10,12 +10,10 @@
 #ifndef __PION_HTTPWRITER_HEADER__
 #define __PION_HTTPWRITER_HEADER__
 
+#include <functional>
 #include <vector>
 #include <string>
 #include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
-#include <boost/function/function0.hpp>
-#include <boost/function/function2.hpp>
 #include <boost/asio.hpp>
 #include <boost/noncopyable.hpp>
 #include <pion/PionConfig.hpp>
@@ -36,10 +34,10 @@ class PION_NET_API HTTPWriter :
 protected:
 	
 	/// function called after the HTTP message has been sent
-	typedef boost::function1<void,const boost::system::error_code&>	FinishedHandler;
+	typedef std::function<void(const boost::system::error_code&)>	FinishedHandler;
 
 	/// data type for a function that handles write operations
-	typedef boost::function2<void,const boost::system::error_code&,std::size_t>	WriteHandler;
+	typedef std::function<void(const boost::system::error_code&,std::size_t)>	WriteHandler;
 	
 	
 	/**

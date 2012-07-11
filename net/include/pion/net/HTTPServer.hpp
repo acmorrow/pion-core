@@ -10,12 +10,10 @@
 #ifndef __PION_HTTPSERVER_HEADER__
 #define __PION_HTTPSERVER_HEADER__
 
+#include <functional>
 #include <map>
 #include <string>
 #include <boost/asio.hpp>
-#include <boost/function.hpp>
-#include <boost/function/function2.hpp>
-#include <boost/function/function3.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
@@ -39,11 +37,11 @@ class PION_NET_API HTTPServer :
 public:
 
 	/// type of function that is used to handle requests
-	typedef boost::function2<void, HTTPRequestPtr&, TCPConnectionPtr&>	RequestHandler;
+	typedef std::function<void(HTTPRequestPtr&, TCPConnectionPtr&)>	RequestHandler;
 
 	/// handler for requests that result in "500 Server Error"
-	typedef boost::function3<void, HTTPRequestPtr&, TCPConnectionPtr&,
-		const std::string&>	ServerErrorHandler;
+	typedef std::function<void(HTTPRequestPtr&, TCPConnectionPtr&,
+		const std::string&)>	ServerErrorHandler;
 
 
 	/// default destructor

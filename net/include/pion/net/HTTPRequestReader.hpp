@@ -10,10 +10,8 @@
 #ifndef __PION_HTTPREQUESTREADER_HEADER__
 #define __PION_HTTPREQUESTREADER_HEADER__
 
+#include <functional>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
-#include <boost/function/function2.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <pion/PionConfig.hpp>
@@ -36,8 +34,8 @@ class HTTPRequestReader :
 public:
 
 	/// function called after the HTTP message has been parsed
-	typedef boost::function3<void, HTTPRequestPtr, TCPConnectionPtr,
-		const boost::system::error_code&>	FinishedHandler;
+	typedef std::function<void(HTTPRequestPtr&, TCPConnectionPtr&,
+		const boost::system::error_code&)>	FinishedHandler;
 
 	
 	// default destructor
@@ -75,10 +73,11 @@ protected:
 		
 	/// Reads more bytes from the TCP connection
 	virtual void readBytes(void) {
-		getTCPConnection()->async_read_some(boost::bind(&HTTPRequestReader::consumeBytes,
+		void(HTTPRequestReader::* pconsumeBytes)(const boost::system::error_code&, std::size_t) = &HTTPRequestReader::consumeBytes;
+		getTCPConnection()->async_read_some(std::bind(pconsumeBytes,
 														shared_from_this(),
-														boost::asio::placeholders::error,
-														boost::asio::placeholders::bytes_transferred));
+														std::placeholders::_1,
+														std::placeholders::_2));
 	}
 
 	/// Called after we have finished reading/parsing the HTTP message

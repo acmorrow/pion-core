@@ -20,9 +20,9 @@
 #ifndef __PION_USERMANAGER_HEADER__
 #define __PION_USERMANAGER_HEADER__
 
+#include <functional>
 #include <string>
 #include <libxml/tree.h>
-#include <boost/bind.hpp>
 #include <boost/signal.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>

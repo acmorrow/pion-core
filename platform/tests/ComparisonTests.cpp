@@ -1281,7 +1281,7 @@ public:
 	}
 	
 	void addValueToCheck(const std::string& str) {
-		ThreadPtr thread_ptr(new boost::thread(boost::bind(
+		ThreadPtr thread_ptr(new boost::thread(std::bind(
 			&ComparisonThreadSafetyTests_F::checkValue, this, str)));
 		m_threads.push_back(thread_ptr);
 	}

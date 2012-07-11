@@ -10,8 +10,8 @@
 #ifndef __PION_HTTPRESPONSEWRITER_HEADER__
 #define __PION_HTTPRESPONSEWRITER_HEADER__
 
+#include <functional>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -132,9 +132,9 @@ protected:
 
 	/// returns a function bound to HTTPWriter::handleWrite()
 	virtual WriteHandler bindToWriteHandler(void) {
-		return boost::bind(&HTTPResponseWriter::handleWrite, shared_from_this(),
-						   boost::asio::placeholders::error,
-						   boost::asio::placeholders::bytes_transferred);
+		return std::bind(&HTTPResponseWriter::handleWrite, shared_from_this(),
+						   std::placeholders::_1,
+						   std::placeholders::_2);
 	}
 
 	/**

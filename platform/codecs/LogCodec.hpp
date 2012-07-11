@@ -20,8 +20,8 @@
 #ifndef __PION_LOGCODEC_HEADER__
 #define __PION_LOGCODEC_HEADER__
 
+#include <functional>
 #include <vector>
-#include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/lexical_cast.hpp>

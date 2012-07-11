@@ -62,9 +62,9 @@ ReactionEngine::ReactionEngine(VocabularyManager& vocab_mgr,
 	setLogger(PION_GET_LOGGER("pion.platform.ReactionEngine"));
 	m_scheduler.setLogger(PION_GET_LOGGER("pion.platform.ReactionEngine"));
 	m_scheduler.setNumThreads(DEFAULT_NUM_THREADS);
-	m_codec_connection = m_codec_factory.registerForUpdates(boost::bind(&ReactionEngine::updateCodecs, this));
-	m_db_connection = m_database_mgr.registerForUpdates(boost::bind(&ReactionEngine::updateDatabases, this));
-	m_protocol_connection = m_protocol_factory.registerForUpdates(boost::bind(&ReactionEngine::updateProtocols, this));
+	m_codec_connection = m_codec_factory.registerForUpdates(std::bind(&ReactionEngine::updateCodecs, this));
+	m_db_connection = m_database_mgr.registerForUpdates(std::bind(&ReactionEngine::updateDatabases, this));
+	m_protocol_connection = m_protocol_factory.registerForUpdates(std::bind(&ReactionEngine::updateProtocols, this));
 }
 
 void ReactionEngine::openConfigFile(void)
@@ -126,7 +126,7 @@ void ReactionEngine::clearReactorStats(const std::string& reactor_id)
 {
 	// convert "plugin not found" exceptions into "reactor not found"
 	try {
-		m_plugins.run(reactor_id, boost::bind(&Reactor::clearStats, _1));
+		m_plugins.run(reactor_id, std::bind(&Reactor::clearStats, std::placeholders::_1));
 	} catch (PluginManager<Reactor>::PluginNotFoundException& /* e */) {
 		throw ReactorNotFoundException(reactor_id);
 	}
@@ -161,7 +161,7 @@ void ReactionEngine::shutdown(void)
 	PION_LOG_DEBUG(m_logger, "threads shutdown; clearing connections");
 	m_temp_connections.clear();
 	m_reactor_connections.clear();
-	m_plugins.run(boost::bind(&Reactor::clearConnections, _1));
+	m_plugins.run(std::bind(&Reactor::clearConnections, std::placeholders::_1));
 	PION_LOG_DEBUG(m_logger, "connections cleared; releasing plugins");
 	this->releasePlugins();
 	PION_LOG_DEBUG(m_logger, "shutdown complete");
@@ -169,23 +169,23 @@ void ReactionEngine::shutdown(void)
 
 void ReactionEngine::clearStats(void)
 {
-	m_plugins.run(boost::bind(&Reactor::clearStats, _1));
+	m_plugins.run(std::bind(&Reactor::clearStats, std::placeholders::_1));
 	PION_LOG_DEBUG(m_logger, "Cleared all reactor statistics");
 }
 	
 void ReactionEngine::updateCodecs(void)
 {
-	m_plugins.run(boost::bind(&Reactor::updateCodecs, _1));
+	m_plugins.run(std::bind(&Reactor::updateCodecs, std::placeholders::_1));
 }
 
 void ReactionEngine::updateDatabases(void)
 {
-	m_plugins.run(boost::bind(&Reactor::updateDatabases, _1));
+	m_plugins.run(std::bind(&Reactor::updateDatabases, std::placeholders::_1));
 }
 
 void ReactionEngine::updateProtocols(void)
 {
-	m_plugins.run(boost::bind(&Reactor::updateProtocols, _1));
+	m_plugins.run(std::bind(&Reactor::updateProtocols, std::placeholders::_1));
 }
 
 void ReactionEngine::restartReactorsThatShouldBeRunning(void)
@@ -199,8 +199,9 @@ void ReactionEngine::restartReactorsThatShouldBeRunning(void)
 			std::string reactor_id;
 			if (getNodeId(reactor_node, reactor_id)) {
 				// attempt to restart the Reactor if necessary
-				m_plugins.run(reactor_id,
-					boost::bind(&Reactor::startOutRunning, _1, reactor_node->children, true));
+				// TODO(acm): Why is this necessary?
+				auto runfunc = std::bind(&Reactor::startOutRunning, std::placeholders::_1, reactor_node->children, true);
+				m_plugins.run(reactor_id, [runfunc](Reactor* reactor) { runfunc(reactor); });
 			}
 	
 			// look for more reactor config nodes
@@ -337,7 +338,7 @@ void ReactionEngine::removeReactor(const std::string& reactor_id)
 Reactor *ReactionEngine::addTempConnectionIn(const std::string& reactor_id, 
 											 const std::string& connection_id,
 											 const std::string& connection_info,
-											 boost::function0<void> removed_handler)
+											 std::function<void()> removed_handler)
 {
 	// make sure that the plug-in configuration file is open
 	if (! configIsOpen())
@@ -377,7 +378,7 @@ void ReactionEngine::addTempConnectionOut(const std::string& reactor_id,
 
 	// if the Reactor is removed, send a null event to the connection
 	EventPtr null_event_ptr;
-	boost::function0<void>	removed_handler(boost::bind(connection_handler, null_event_ptr));
+	std::function<void()>	removed_handler(std::bind(connection_handler, null_event_ptr));
 													
 	// keep track of the temporary connection
 	m_temp_connections.push_back(TempConnection(true, reactor_id, connection_id,
@@ -445,7 +446,7 @@ void ReactionEngine::startReactor(const std::string& reactor_id)
 		throw ReactorNotFoundException(reactor_id);
 
 	// Start the reactor.
-	m_plugins.run(reactor_id, boost::bind(&Reactor::start, _1));
+	m_plugins.run(reactor_id, std::bind(&Reactor::start, std::placeholders::_1));
 
 	// Update the Reactor's run status and save the configuration file.
 	if (! ConfigManager::updateConfigOption(Reactor::RUNNING_ELEMENT_NAME, "true", reactor_node))
@@ -472,7 +473,7 @@ void ReactionEngine::stopReactor(const std::string& reactor_id)
 		throw ReactorNotFoundException(reactor_id);
 
 	// Stop the reactor.
-	m_plugins.run(reactor_id, boost::bind(&Reactor::stop, _1));
+	m_plugins.run(reactor_id, std::bind(&Reactor::stop, std::placeholders::_1));
 
 	// Update the Reactor's run status and save the configuration file.
 	if (! ConfigManager::updateConfigOption(Reactor::RUNNING_ELEMENT_NAME, "false", reactor_node))
@@ -745,7 +746,7 @@ void ReactionEngine::removeReactorsFromWorkspace(const std::string& workspace_id
 
 	// Remove all the Reactors that were found.
 	engine_lock.unlock();
-	std::for_each(reactors_in_workspace.begin(), reactors_in_workspace.end(), boost::bind(&ReactionEngine::removeReactor, this, _1));
+	std::for_each(reactors_in_workspace.begin(), reactors_in_workspace.end(), std::bind(&ReactionEngine::removeReactor, this, std::placeholders::_1));
 }
 
 void ReactionEngine::removeWorkspace(const std::string& workspace_id)
@@ -862,7 +863,7 @@ void ReactionEngine::stopNoLock(void)
 		
 		// stop all reactors
 		PION_LOG_INFO(m_logger, "Stopping all reactors");
-		m_plugins.run(boost::bind(&Reactor::stop, _1));
+		m_plugins.run(std::bind(&Reactor::stop, std::placeholders::_1));
 
 		// notify the thread scheduler that we no longer need it
 		m_scheduler.removeActiveUser();

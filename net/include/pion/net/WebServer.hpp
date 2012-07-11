@@ -10,9 +10,9 @@
 #ifndef __PION_WEBSERVER_HEADER__
 #define __PION_WEBSERVER_HEADER__
 
+#include <functional>
 #include <string>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
@@ -175,7 +175,7 @@ protected:
 	/// called before the TCP server starts listening for new connections
 	virtual void beforeStarting(void) {
 		// call the start() method for each web service associated with this server
-		try { m_services.run(boost::bind(&WebService::start, _1)); }
+		try { m_services.run(std::bind(&WebService::start, std::placeholders::_1)); }
 		catch (std::exception& e) {
 			// catch exceptions thrown by services since their exceptions may be free'd
 			// from memory before they are caught
@@ -186,7 +186,7 @@ protected:
 	/// called after the TCP server has stopped listening for new connections
 	virtual void afterStopping(void) {
 		// call the stop() method for each web service associated with this server
-		try { m_services.run(boost::bind(&WebService::stop, _1)); }
+		try { m_services.run(std::bind(&WebService::stop, std::placeholders::_1)); }
 		catch (std::exception& e) {
 			// catch exceptions thrown by services since their exceptions may be free'd
 			// from memory before they are caught

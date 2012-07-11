@@ -79,8 +79,8 @@ void PionScheduler::keepRunning(boost::asio::io_service& my_service,
 	if (m_is_running) {
 		// schedule this again to make sure the service doesn't complete
 		my_timer.expires_from_now(boost::posix_time::seconds(KEEP_RUNNING_TIMER_SECONDS));
-		my_timer.async_wait(boost::bind(&PionScheduler::keepRunning, this,
-										boost::ref(my_service), boost::ref(my_timer)));
+		my_timer.async_wait(std::bind(&PionScheduler::keepRunning, this,
+										std::ref(my_service), std::ref(my_timer)));
 	}
 }
 
@@ -134,8 +134,8 @@ void PionSingleServiceScheduler::startup(void)
 		
 		// start multiple threads to handle async tasks
 		for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
-			boost::shared_ptr<boost::thread> new_thread(new boost::thread( boost::bind(&PionScheduler::processServiceWork,
-																					   this, boost::ref(m_service)) ));
+			boost::shared_ptr<boost::thread> new_thread(new boost::thread( std::bind(&PionScheduler::processServiceWork,
+																					   this, std::ref(m_service)) ));
 			m_thread_pool.push_back(new_thread);
 		}
 	}
@@ -166,8 +166,8 @@ void PionOneToOneScheduler::startup(void)
 		
 		// start multiple threads to handle async tasks
 		for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
-			boost::shared_ptr<boost::thread> new_thread(new boost::thread( boost::bind(&PionScheduler::processServiceWork,
-																					   this, boost::ref(m_service_pool[n]->first)) ));
+			boost::shared_ptr<boost::thread> new_thread(new boost::thread( std::bind(&PionScheduler::processServiceWork,
+																					   this, std::ref(m_service_pool[n]->first)) ));
 			m_thread_pool.push_back(new_thread);
 		}
 	}

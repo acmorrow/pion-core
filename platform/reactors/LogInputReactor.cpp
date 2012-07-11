@@ -191,7 +191,7 @@ void LogInputReactor::start(void)
 
 		m_is_running = true;
 		m_worker_is_active = true;
-		getScheduler().getIOService().post(boost::bind(&LogInputReactor::checkForLogFiles, this));
+		getScheduler().getIOService().post(std::bind(&LogInputReactor::checkForLogFiles, this));
 	}
 }
 	
@@ -241,12 +241,12 @@ void LogInputReactor::scheduleLogFileCheck(boost::uint32_t seconds)
 	    worker_lock.unlock();
 		finishWorkerThread();
 	} else if (seconds == 0) {
-		getScheduler().getIOService().post(boost::bind(&LogInputReactor::checkForLogFiles, this));
+		getScheduler().getIOService().post(std::bind(&LogInputReactor::checkForLogFiles, this));
 	} else {
 		if (! m_timer_ptr)
 			m_timer_ptr.reset(new boost::asio::deadline_timer(getScheduler().getIOService()));
 		m_timer_ptr->expires_from_now(boost::posix_time::seconds(seconds));
-		m_timer_ptr->async_wait(boost::bind(&LogInputReactor::checkForLogFiles, this));
+		m_timer_ptr->async_wait(std::bind(&LogInputReactor::checkForLogFiles, this));
 	}
 }
 

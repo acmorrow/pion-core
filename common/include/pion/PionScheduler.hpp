@@ -10,10 +10,9 @@
 #ifndef __PION_PIONSCHEDULER_HEADER__
 #define __PION_PIONSCHEDULER_HEADER__
 
+#include <functional>
 #include <vector>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
-#include <boost/function/function0.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
@@ -85,7 +84,7 @@ public:
 	 *
 	 * @param work_func work function to be executed
 	 */
-	virtual void post(boost::function0<void> work_func) {
+	virtual void post(std::function<void()> work_func) {
 		getIOService().post(work_func);
 	}
 	

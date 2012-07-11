@@ -150,7 +150,7 @@ public:
 	 *
 	 * @param e the Event to send over the TCPConnection
 	 */
-	void writeEvent(pion::platform::EventPtr& e);
+	void writeEvent(pion::platform::EventPtr e);
 	
 	/// starts the FeedWriter
 	virtual void start(void);

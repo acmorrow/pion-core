@@ -189,7 +189,7 @@ void HTTPCookieAuth::handleUnauthorized(HTTPRequestPtr& http_request,
 		"<BODY><H1>401 Unauthorized.</H1></BODY>"
 		"</HTML> ";
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *http_request,
-	boost::bind(&TCPConnection::finish, tcp_conn)));
+	std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_UNAUTHORIZED);
 	writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_UNAUTHORIZED);
 	writer->writeNoCopy(CONTENT);
@@ -215,7 +215,7 @@ void HTTPCookieAuth::handleRedirection(HTTPRequestPtr& http_request,
 		"<BODY><H1>302 Found.</H1></BODY>"
 		"</HTML> ";
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *http_request,
-		boost::bind(&TCPConnection::finish, tcp_conn)));
+		std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_FOUND);
 	writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_FOUND);
 	writer->getResponse().addHeader(HTTPTypes::HEADER_LOCATION, redirection_url);
@@ -242,7 +242,7 @@ void HTTPCookieAuth::handleOk(HTTPRequestPtr& http_request,
 {
 	// send 204 (No Content) response
 	HTTPResponseWriterPtr writer(HTTPResponseWriter::create(tcp_conn, *http_request,
-		boost::bind(&TCPConnection::finish, tcp_conn)));
+		std::bind(&TCPConnection::finish, tcp_conn)));
 	writer->getResponse().setStatusCode(HTTPTypes::RESPONSE_CODE_NO_CONTENT);
 	writer->getResponse().setStatusMessage(HTTPTypes::RESPONSE_MESSAGE_NO_CONTENT);
 	// Note: use empty pass "" while setting cookies to workaround IE/FF difference

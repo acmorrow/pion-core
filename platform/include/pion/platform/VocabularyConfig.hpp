@@ -20,9 +20,9 @@
 #ifndef __PION_VOCABULARYCONFIG_HEADER__
 #define __PION_VOCABULARYCONFIG_HEADER__
 
+#include <functional>
 #include <string>
 #include <libxml/tree.h>
-#include <boost/bind.hpp>
 #include <boost/signal.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
@@ -187,9 +187,9 @@ public:
 	 * @param v the Vocabulary object to bind
 	 */
 	inline void bind(Vocabulary& v) {
-		m_signal_add_term.connect(boost::bind(&Vocabulary::addTerm, &v, _1));
-		m_signal_update_term.connect(boost::bind(&Vocabulary::updateTerm, &v, _1));
-		m_signal_remove_term.connect(boost::bind(&Vocabulary::removeTerm, &v, _1));
+		m_signal_add_term.connect(std::bind(&Vocabulary::addTerm, &v, std::placeholders::_1));
+		m_signal_update_term.connect(std::bind(&Vocabulary::updateTerm, &v, std::placeholders::_1));
+		m_signal_remove_term.connect(std::bind(&Vocabulary::removeTerm, &v, std::placeholders::_1));
 		v += m_vocabulary;
 	}
 

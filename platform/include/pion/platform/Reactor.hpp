@@ -20,15 +20,13 @@
 #ifndef __PION_REACTOR_HEADER__
 #define __PION_REACTOR_HEADER__
 
+#include <functional>
 #include <iosfwd>
 #include <string>
 #include <list>
 #include <libxml/tree.h>
-#include <boost/bind.hpp>
 #include <boost/signal.hpp>
 #include <boost/thread.hpp>
-#include <boost/function.hpp>
-#include <boost/function/function1.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/PionScheduler.hpp>
@@ -64,7 +62,8 @@ public:
 
 
 	/// data type for a function that receives Events
-	typedef boost::function1<void, EventPtr>	EventHandler;
+	/// NOTE(acm): Can (should) this be by ref?
+	typedef std::function<void(EventPtr)>	EventHandler;
 
 	/// data type for a collection of uri path branches used for HTTP queries
 	typedef std::vector<std::string>			QueryBranches;
@@ -543,7 +542,7 @@ private:
 		
 		/// constructs a new OutputConnection to a Reactor
 		explicit OutputConnection(Reactor* reactor)
-			: m_reactor_ptr(reactor), m_event_handler(boost::ref(*reactor))
+			: m_reactor_ptr(reactor), m_event_handler(std::ref(*reactor))
 		{}
 
 		/// constructs a new OutputConnection to an EventHandler
@@ -568,7 +567,7 @@ private:
 		
 		/// schedules an Event to be sent over the OutputConnection
 		inline void post(PionScheduler& scheduler, const EventPtr& event_ptr) {
-			scheduler.post(boost::bind<void>(m_event_handler, event_ptr));
+			scheduler.post(std::bind<void>(m_event_handler, event_ptr));
 		}
 
 	private:

@@ -260,7 +260,7 @@ protected:
 			}
 
 			pion::net::HTTPServerPtr server_ptr = m_servers[new_plugin_ptr->getServerId()];
-			server_ptr->addResource(new_plugin_ptr->getResource(), boost::ref(*new_plugin_ptr));
+			server_ptr->addResource(new_plugin_ptr->getResource(), std::ref(*new_plugin_ptr));
 		} catch (PionPlugin::PluginNotFoundException&) {
 			throw;
 		} catch (std::exception& e) {

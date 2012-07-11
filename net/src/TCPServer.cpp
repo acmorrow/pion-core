@@ -7,8 +7,8 @@
 // See http://www.boost.org/LICENSE_1_0.txt
 //
 
+#include <functional>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionAdminRights.hpp>
 #include <pion/net/TCPServer.hpp>
@@ -128,7 +128,7 @@ void TCPServer::stop(bool wait_until_finished)
 		if (! wait_until_finished) {
 			// this terminates any other open connections
 			std::for_each(m_conn_pool.begin(), m_conn_pool.end(),
-						  boost::bind(&TCPConnection::close, _1));
+						  std::bind(&TCPConnection::close, std::placeholders::_1));
 		}
 	
 		// wait for all pending connections to complete
@@ -181,8 +181,8 @@ void TCPServer::listen(void)
 		// create a new TCP connection object
 		TCPConnectionPtr new_connection(TCPConnection::create(getIOService(),
 															  m_ssl_context, m_ssl_flag,
-															  boost::bind(&TCPServer::finishConnection,
-																		  this, _1)));
+															  std::bind(&TCPServer::finishConnection,
+																		  this, std::placeholders::_1)));
 		
 		// prune connections that finished uncleanly
 		pruneConnections();
@@ -192,9 +192,9 @@ void TCPServer::listen(void)
 		
 		// use the object to accept a new connection
 		new_connection->async_accept(m_tcp_acceptor,
-									 boost::bind(&TCPServer::handleAccept,
+									 std::bind(&TCPServer::handleAccept,
 												 this, new_connection,
-												 boost::asio::placeholders::error));
+												 std::placeholders::_1));
 	}
 }
 
@@ -221,9 +221,9 @@ void TCPServer::handleAccept(TCPConnectionPtr& tcp_conn,
 		// handle the new connection
 #ifdef PION_HAVE_SSL
 		if (tcp_conn->getSSLFlag()) {
-			tcp_conn->async_handshake_server(boost::bind(&TCPServer::handleSSLHandshake,
+			tcp_conn->async_handshake_server(std::bind(&TCPServer::handleSSLHandshake,
 														 this, tcp_conn,
-														 boost::asio::placeholders::error));
+														 std::placeholders::_1));
 		} else
 #endif
 			// not SSL -> call the handler immediately
