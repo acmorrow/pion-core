@@ -269,4 +269,17 @@ typedef PionIdGeneratorBase<boost::mt19937>	PionIdGenerator;
 
 }	// end namespace pion
 
+namespace std {
+
+template<>
+struct hash<pion::PionId> {
+public:
+    size_t operator()(const pion::PionId &s) const 
+    {
+      return pion::hash_value(s);
+    }
+};
+} // namespace std
+
+
 #endif

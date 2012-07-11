@@ -151,9 +151,8 @@ public:
 	typedef boost::shared_ptr<XMLField>		XMLFieldPtr;
 
 	/// data type that maps field names to Terms
-	typedef PION_HASH_MAP<std::string,
-		XMLFieldPtr,
-		PION_HASH_STRING>					FieldMap;
+	typedef std::unordered_map<std::string,
+		XMLFieldPtr>					FieldMap;
 
 	/// an ordered list of the fields in the current configuration
 	typedef std::vector<XMLFieldPtr>		CurrentFormat;

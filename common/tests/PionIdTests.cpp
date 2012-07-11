@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(checkHashValues) {
 }
 	
 BOOST_AUTO_TEST_CASE(checkPionIdHashMap) {
-	typedef PION_HASH_MAP<PionId, int, PION_HASH(PionId) >	PionIdHashMap;
+	typedef std::unordered_map<PionId, int>	PionIdHashMap;
 	PionIdHashMap id_map;
 	PionId id1;
 	PionId id2;

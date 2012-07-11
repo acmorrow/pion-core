@@ -453,4 +453,16 @@ struct HashPionIdBlob {
 
 }	// end namespace pion
 
+namespace std {
+
+template<typename CharType, typename AllocType>
+struct hash<pion::PionBlob<CharType,AllocType>> {
+public:
+    size_t operator()(const pion::PionBlob<CharType,AllocType> &s) const 
+    {
+      return pion::hash_value(s);
+    }
+};
+} // namespace std
+
 #endif

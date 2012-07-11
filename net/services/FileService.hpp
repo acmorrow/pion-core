@@ -337,10 +337,10 @@ public:
 protected:
 
 	/// data type for map of file names to cache entries
-	typedef PION_HASH_MAP<std::string, DiskFile, PION_HASH_STRING >		CacheMap;
+	typedef std::unordered_map<std::string, DiskFile>		CacheMap;
 
 	/// data type for map of file extensions to MIME types
-	typedef PION_HASH_MAP<std::string, std::string, PION_HASH_STRING >	MIMETypeMap;
+	typedef std::unordered_map<std::string, std::string>	MIMETypeMap;
 
 	/**
 	 * adds all files within a directory to the cache

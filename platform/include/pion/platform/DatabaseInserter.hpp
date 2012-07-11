@@ -429,7 +429,7 @@ private:
 	pion::platform::RuleChain				m_rules;
 
 	/// Hash map; incomplete, time bounded "unique key" vs. "age" -- for avoiding multiple inserts
-	typedef PION_HASH_MAP<pion::platform::Event::BlobType, boost::uint32_t, PION_HASH(pion::platform::Event::BlobType)> KeyHash;
+	typedef std::unordered_map<pion::platform::Event::BlobType, boost::uint32_t> KeyHash;
 	KeyHash									m_keys;
 
 	/// The term ref, that has a unique index

@@ -25,20 +25,6 @@
 #undef PION_HAVE_MALLOC_TRIM
 
 // -----------------------------------------------------------------------
-// hash_map support
-//
-// At least one of the following options should be defined.
-
-/* Define to 1 if you have the <ext/hash_map> header file. */
-#undef PION_HAVE_EXT_HASH_MAP
-
-/* Define to 1 if you have the <hash_map> header file. */
-#undef PION_HAVE_HASH_MAP
-
-/* Define to 1 if you have the <unordered_map> header file. */
-#undef PION_HAVE_UNORDERED_MAP
-
-// -----------------------------------------------------------------------
 // Logging Options
 //
 // At most one of the logging options below should be defined.  If none of 

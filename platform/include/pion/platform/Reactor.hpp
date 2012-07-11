@@ -305,7 +305,7 @@ protected:
 	typedef boost::shared_ptr<SignalType> SignalPtr;
 	
 	/// data type for a map of signal names to signal object pointers
-	typedef PION_HASH_MAP<std::string, SignalPtr, PION_HASH_STRING> SignalMap;
+	typedef std::unordered_map<std::string, SignalPtr> SignalMap;
 
 
 	/// configuration reader lock -> multiple concurrent "readers" are allowed.

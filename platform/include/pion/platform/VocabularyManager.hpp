@@ -394,7 +394,7 @@ private:
 	typedef boost::shared_ptr<VocabularyConfig>		VocabularyConfigPtr;
 	
 	/// data type that maps Vocabulary identifiers to configuration pointers
-	typedef PION_HASH_MAP<std::string, VocabularyConfigPtr, PION_HASH_STRING >	VocabularyMap;
+	typedef std::unordered_map<std::string, VocabularyConfigPtr>	VocabularyMap;
 	
 	
 	/// default name of the vocabulary config file

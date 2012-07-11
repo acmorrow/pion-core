@@ -241,8 +241,8 @@ private:
 	typedef boost::shared_ptr<LogField>		LogFieldPtr;
 
 	/// data type that maps field names to LogFields
-	typedef PION_HASH_MAP<std::string,
-		LogFieldPtr, PION_HASH_STRING>		FieldMap;
+	typedef std::unordered_map<std::string,
+		LogFieldPtr>		FieldMap;
 
 	/// data type that keeps track of the log file's current field format
 	typedef std::vector<LogFieldPtr>		CurrentFormat;

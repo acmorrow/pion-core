@@ -262,7 +262,7 @@ private:
 
 
 	/// data type that maps strings to Term definition objects
-	typedef PION_HASH_MAP<std::string, TermPtr, PION_HASH_STRING >	TermStringMap;
+	typedef std::unordered_map<std::string, TermPtr>	TermStringMap;
 	
 	/// data type that maps Term reference numbers to Term definition objects
 	typedef std::vector<TermPtr>					TermRefMap;

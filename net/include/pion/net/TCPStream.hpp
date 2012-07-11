@@ -340,9 +340,7 @@ public:
 	 */
 	explicit TCPStream(TCPConnectionPtr& conn_ptr)
 		: m_tcp_buf(conn_ptr)
-#ifdef _MSC_VER
 		, std::basic_iostream<char, std::char_traits<char> >(NULL)
-#endif
 	{
 		// initialize basic_iostream with pointer to the stream buffer
 		std::basic_ios<char,std::char_traits<char> >::init(&m_tcp_buf);
@@ -357,9 +355,7 @@ public:
 	explicit TCPStream(boost::asio::io_service& io_service,
 					   const bool ssl_flag = false)
 		: m_tcp_buf(io_service, ssl_flag)
-#ifdef _MSC_VER
 		, std::basic_iostream<char, std::char_traits<char> >(NULL)
-#endif
 	{
 		// initialize basic_iostream with pointer to the stream buffer
 		std::basic_ios<char,std::char_traits<char> >::init(&m_tcp_buf);
@@ -374,9 +370,7 @@ public:
 	TCPStream(boost::asio::io_service& io_service,
 			  TCPConnection::SSLContext& ssl_context)
 		: m_tcp_buf(io_service, ssl_context)
-#ifdef _MSC_VER
 		, std::basic_iostream<char, std::char_traits<char> >(NULL)
-#endif
 	{
 		// initialize basic_iostream with pointer to the stream buffer
 		std::basic_ios<char,std::char_traits<char> >::init(&m_tcp_buf);

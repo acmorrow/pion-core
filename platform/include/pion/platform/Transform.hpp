@@ -487,7 +487,7 @@ class PION_PLATFORM_API TransformLookup
 	: public Transform
 {
 	/// Define HashMapped, key-value pair array KVP
-	typedef PION_HASH_MAP<std::string, std::string, PION_HASH_STRING>	KVP;
+	typedef std::unordered_map<std::string, std::string>	KVP;
 
 	/// Term to pull out of the source event
 	Vocabulary::Term			m_lookup_term;

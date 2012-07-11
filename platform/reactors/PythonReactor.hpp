@@ -280,7 +280,7 @@ protected:
 private:
 	
 	/// data type for a map of unique session identifiers to SessionData objects
-	typedef PION_HASH_MAP<pion::platform::Event::BlobType, PyObject*, HashPionIdBlob>	SessionMap;
+	typedef std::unordered_map<pion::platform::Event::BlobType, PyObject*, HashPionIdBlob>	SessionMap;
 
 
 	/// name of the start function in Python source code

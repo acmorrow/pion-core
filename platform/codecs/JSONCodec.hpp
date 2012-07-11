@@ -153,15 +153,14 @@ public:
 	typedef boost::shared_ptr<JSONField>	JSONFieldPtr;
 	
 	/// data type that maps field names to Terms
-	typedef PION_HASH_MAP<std::string,
-		JSONFieldPtr,
-		PION_HASH_STRING>					FieldMap;
+	typedef std::unordered_map<std::string,
+		JSONFieldPtr>					FieldMap;
 
 	/// an ordered list of the fields in the current configuration
 	typedef std::vector<JSONFieldPtr>		CurrentFormat;
 
 	/// representation of a JSON object corresponding to an Event
-	typedef PION_HASH_MULTIMAP<pion::platform::Vocabulary::TermRef, std::string>
+	typedef std::unordered_multimap<pion::platform::Vocabulary::TermRef, std::string>
 											JSONObject;
 
 	/// data type for a shared pointer to a JSONObject object

@@ -194,7 +194,7 @@ BOOST_AUTO_TEST_CASE(checkHashPionIdBlobValues) {
 }
 
 BOOST_AUTO_TEST_CASE(checkPionBlobHashMap) {
-	typedef PION_HASH_MAP<BlobType, int, PION_HASH(BlobType) >	PionBlobHashMap;
+	typedef std::unordered_map<BlobType, int>	PionBlobHashMap;
 	PionBlobHashMap blob_map;
 	BlobType b1(m_alloc, "hello");
 	BlobType b2(m_alloc, "there");
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(checkPionBlobHashMap) {
 }
 
 BOOST_AUTO_TEST_CASE(checkHashPionIdBlobHashMap) {
-	typedef PION_HASH_MAP<BlobType, int, HashPionIdBlob>	PionBlobHashMap;
+	typedef std::unordered_map<BlobType, int, HashPionIdBlob>	PionBlobHashMap;
 	PionBlobHashMap blob_map;
 	BlobType b1(m_alloc, "hello");
 	BlobType b2(m_alloc, "there");
