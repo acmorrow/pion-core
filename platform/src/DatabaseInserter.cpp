@@ -17,6 +17,7 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <chrono>
 #include <pion/platform/ConfigManager.hpp>
 #include <pion/platform/DatabaseInserter.hpp>
 #include <pion/platform/DatabaseManager.hpp>
@@ -57,7 +58,7 @@ void DatabaseInserter::setConfig(const Vocabulary& v, const xmlNodePtr config_pt
 	const bool was_running = m_is_running;
 	stop();
 
-	boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+	std::unique_lock<std::mutex> queue_lock(m_queue_mutex);
 
 	// parse RuleChain configuration
 	m_rules.setConfig(v, config_ptr);
@@ -175,7 +176,7 @@ void DatabaseInserter::setConfig(const Vocabulary& v, const xmlNodePtr config_pt
 
 void DatabaseInserter::updateVocabulary(const Vocabulary& v)
 {
-	boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+	std::lock_guard<std::mutex> queue_lock(m_queue_mutex);
 	if (m_database_ptr)
 		m_database_ptr->updateVocabulary(v);
 
@@ -198,7 +199,7 @@ void DatabaseInserter::updateDatabases(void)
 
 void DatabaseInserter::start(void)
 {
-	boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+	std::unique_lock<std::mutex> queue_lock(m_queue_mutex);
 	if (! m_is_running) {
 		m_is_running = true;
 
@@ -218,7 +219,7 @@ void DatabaseInserter::start(void)
 		// spawn a new thread that will be used to save events to the database
 		PION_LOG_DEBUG(m_logger, "Starting worker thread: " << m_database_id);
 		void(DatabaseInserter::* insertEvents)(void) = &DatabaseInserter::insertEvents;
-		m_thread.reset(new boost::thread(std::bind(insertEvents, this)));
+		m_thread.reset(new std::thread(std::bind(insertEvents, this)));
 
 		// wait for the worker thread to startup
 		m_swapped_queue.wait(queue_lock);
@@ -227,7 +228,7 @@ void DatabaseInserter::start(void)
 
 void DatabaseInserter::stop(void)
 {
-	boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+	std::unique_lock<std::mutex> queue_lock(m_queue_mutex);
 	if (m_is_running) {
 		// set flag to notify worker thread to shutdown
 		m_is_running = false;
@@ -240,7 +241,7 @@ void DatabaseInserter::stop(void)
 		m_table_size = m_database_ptr->getCache(Database::DB_FILE_SIZE);
 
 		// close the database connection (ensure that data is flushed)
-		boost::mutex::scoped_lock queue_lock_two(m_queue_mutex);
+		std::lock_guard<std::mutex> queue_lock_two(m_queue_mutex);
 		m_insert_query_ptr.reset();
 		m_begin_transaction_ptr.reset();
 		m_commit_transaction_ptr.reset();
@@ -256,13 +257,13 @@ void DatabaseInserter::stop(void)
 
 std::size_t DatabaseInserter::getEventsQueued(void) const
 {
-	boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+	std::lock_guard<std::mutex> queue_lock(m_queue_mutex);
 	return m_event_queue_ptr->size();
 }
 
 std::size_t DatabaseInserter::getKeyCacheSize(void) const
 {
-	boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+	std::lock_guard<std::mutex> queue_lock(m_queue_mutex);
 	return m_keys.size();
 }
 
@@ -275,7 +276,7 @@ void DatabaseInserter::insert(const EventPtr& e)
 	// check filter rules first
 	if ( m_rules(e) ) {
 
-		boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+		std::unique_lock<std::mutex> queue_lock(m_queue_mutex);
 
 		// make sure worker thread is running
 		if (! m_is_running)
@@ -487,7 +488,7 @@ void DatabaseInserter::insertEvents(void)
 		// notify all threads that we have started up
 		{
 			// lock first to ensure start() thread is waiting when signal is sent
-			boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+			std::lock_guard<std::mutex> queue_lock(m_queue_mutex);
 			m_swapped_queue.notify_all();
 		}
 
@@ -576,7 +577,7 @@ void DatabaseInserter::insertEvents(std::unique_ptr<EventQueue>& insert_queue_pt
 	if (m_max_age) {
 		boost::uint32_t size_before, size_after;
 		{
-			boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+			std::lock_guard<std::mutex> queue_lock(m_queue_mutex);
 			boost::uint32_t min_age = m_last_time - m_max_age;
 			size_before = m_keys.size();
 			KeyHash::iterator cur_it;
@@ -598,14 +599,13 @@ void DatabaseInserter::insertEvents(std::unique_ptr<EventQueue>& insert_queue_pt
 bool DatabaseInserter::checkEventQueue(std::unique_ptr<EventQueue>& insert_queue_ptr)
 {
 	// acquire ownership of queue
-	boost::mutex::scoped_lock queue_lock(m_queue_mutex);
+	std::unique_lock<std::mutex> queue_lock(m_queue_mutex);
 	
 	// skip waiting if the queue is already full (missed wakeup signal)
 	if (m_event_queue_ptr->size() < m_queue_max) {
 
 		// wait until the queue is full or the timeout expires
-		m_wakeup_worker.timed_wait(queue_lock,
-			boost::get_system_time() + boost::posix_time::time_duration(0, 0, m_queue_timeout, 0) );
+		m_wakeup_worker.wait_for(queue_lock, std::chrono::seconds(m_queue_timeout));
 	
 		// check for early & spurious wake-ups
 		if (m_event_queue_ptr->size() == 0)

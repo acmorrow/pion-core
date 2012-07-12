@@ -14,8 +14,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition.hpp>
+#include <mutex>
+#include <condition_variable>
 #include <boost/filesystem.hpp>
 #include <pion/PionPlugin.hpp>
 #include <pion/PionScheduler.hpp>
@@ -938,7 +938,7 @@ public:
 		TCPConnectionPtr& conn_ptr, const boost::system::error_code& ec)
 	{
 		checkResponse(*response_ptr);
-		boost::mutex::scoped_lock async_lock(m_mutex);
+		std::lock_guard<std::mutex> async_lock(m_mutex);
 		m_async_test_finished.notify_one();
 	}
 
@@ -946,10 +946,10 @@ public:
 	char				m_big_buf[BIG_BUF_SIZE];
 	
 	/// signaled after the async response check has finished
-	boost::condition	m_async_test_finished;
+	std::condition_variable	m_async_test_finished;
 
 	/// used to protect the asynchronous operations
-	boost::mutex		m_mutex;
+	std::mutex		m_mutex;
 };
 
 
@@ -996,7 +996,7 @@ BOOST_AUTO_TEST_CASE(checkSendContentWithoutLengthAndReceiveAsyncResponse) {
 	BOOST_REQUIRE(!error_code);
 	
 	// send an HTTP request
-	boost::mutex::scoped_lock async_lock(m_mutex);
+	std::unique_lock<std::mutex> async_lock(m_mutex);
 	HTTPRequestWriterPtr request_ptr(HTTPRequestWriter::create(tcp_conn,
 									 std::bind(&ContentResponseWithoutLengthTests_F::readAsyncResponse,
 												 this, tcp_conn)));

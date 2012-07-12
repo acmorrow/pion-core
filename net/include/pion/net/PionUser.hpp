@@ -15,7 +15,7 @@
 #include <memory>
 #include <string>
 #include <boost/noncopyable.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <boost/numeric/conversion/cast.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
@@ -161,7 +161,7 @@ public:
 
 	/// returns true if no users are defined
 	inline bool empty(void) const {
-		boost::mutex::scoped_lock lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		return m_users.empty();
 	}
 
@@ -176,7 +176,7 @@ public:
 	virtual bool addUser(const std::string &username,
 		const std::string &password)
 	{
-		boost::mutex::scoped_lock lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		UserMap::iterator i = m_users.find(username);
 		if (i!=m_users.end())
 			return false;
@@ -196,7 +196,7 @@ public:
 	virtual bool updateUser(const std::string &username,
 		const std::string &password)
 	{
-		boost::mutex::scoped_lock lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		UserMap::iterator i = m_users.find(username);
 		if (i==m_users.end())
 			return false;
@@ -216,7 +216,7 @@ public:
 	virtual bool addUserHash(const std::string &username,
 		const std::string &password_hash)
 	{
-		boost::mutex::scoped_lock lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		UserMap::iterator i = m_users.find(username);
 		if (i!=m_users.end())
 			return false;
@@ -237,7 +237,7 @@ public:
 	virtual bool updateUserHash(const std::string &username,
 		const std::string &password_hash)
 	{
-		boost::mutex::scoped_lock lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		UserMap::iterator i = m_users.find(username);
 		if (i==m_users.end())
 			return false;
@@ -252,7 +252,7 @@ public:
 	 * @return false if no user with such username
 	 */
 	virtual bool removeUser(const std::string &username) {
-		boost::mutex::scoped_lock lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		UserMap::iterator i = m_users.find(username);
 		if (i==m_users.end())
 			return false;
@@ -264,7 +264,7 @@ public:
 	 * Used to locate user object by username
 	 */
 	virtual PionUserPtr getUser(const std::string &username) {
-		boost::mutex::scoped_lock lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		UserMap::const_iterator i = m_users.find(username);
 		if (i==m_users.end())
 			return PionUserPtr();
@@ -276,7 +276,7 @@ public:
 	 * Used to locate user object by username and password
 	 */
 	virtual PionUserPtr getUser(const std::string& username, const std::string& password) {
-		boost::mutex::scoped_lock lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		UserMap::const_iterator i = m_users.find(username);
 		if (i==m_users.end() || !i->second->matchPassword(password))
 			return PionUserPtr();
@@ -292,7 +292,7 @@ protected:
 
 
 	/// mutex used to protect access to the user list
-	mutable boost::mutex		m_mutex;
+	mutable std::mutex		m_mutex;
 
 	/// user records container
 	UserMap						m_users;

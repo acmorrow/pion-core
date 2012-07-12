@@ -302,7 +302,7 @@ private:
 	static const std::string		OPEN_SESSIONS_ELEMENT_NAME;
 
 	/// mutex used to protect the initialization counter
-	static boost::mutex				m_init_mutex;
+	static std::mutex				m_init_mutex;
 	
 	/// total number of PythonReactor instances
 	static boost::uint32_t			m_init_num;
@@ -335,7 +335,7 @@ private:
 	pion::platform::VocabularyPtr	m_vocab_ptr;
 	
 	/// used to protect the SessionMap
-	mutable boost::mutex			m_sessions_mutex;
+	mutable std::mutex			m_sessions_mutex;
 
 	/// map of unique session identifiers to SessionData objects
 	SessionMap						m_sessions;

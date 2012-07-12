@@ -16,7 +16,7 @@
 #include <list>
 #include <boost/noncopyable.hpp>
 #include <boost/thread/once.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <boost/filesystem/path.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
@@ -253,13 +253,13 @@ private:
 		PluginMap					plugin_map;
 		
 		/// mutex to make class thread-safe
-		boost::mutex				plugin_mutex;
+		std::mutex				plugin_mutex;
 	};
 
 	
 	/// returns a singleton instance of PionPluginConfig
 	static inline PionPluginConfig& getPionPluginConfig(void) {
-		boost::call_once(PionPlugin::createPionPluginConfig, m_instance_flag);
+		std::call_once(m_instance_flag, PionPlugin::createPionPluginConfig);
 		return *m_config_ptr;
 	}
 	
@@ -326,7 +326,7 @@ private:
 	static const std::string			PION_CONFIG_EXTENSION;
 	
 	/// used to ensure thread safety of the PionPluginConfig singleton
-	static boost::once_flag				m_instance_flag;
+	static std::once_flag				m_instance_flag;
 
 	/// pointer to the PionPluginConfig singleton
 	static PionPluginConfig *			m_config_ptr;

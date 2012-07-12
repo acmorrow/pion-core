@@ -56,7 +56,7 @@ void XMLLogServiceAppender::append(const log4cplus::spi::InternalLoggingEvent& e
 		+ "</Timestamp><LoggerName>" + ConfigManager::xml_encode(event.getLoggerName())
 		+ "</LoggerName><Message>" + ConfigManager::xml_encode(event.getMessage().substr(0, m_truncate))
 		+ "</Message>";
-	boost::mutex::scoped_lock log_lock(m_log_mutex);
+	std::lock_guard<std::mutex> log_lock(m_log_mutex);
 	m_log_event_queue[key.str()] = val;						// Add the new entry, sort as appropriate
 	if (m_log_event_queue.size() > m_max_events)			// Queue size exceeded?
 		m_log_event_queue.erase(m_log_event_queue.begin());	// Whack the least important
@@ -67,7 +67,7 @@ void XMLLogServiceAppender::writeLogEvents(pion::net::HTTPResponseWriterPtr& wri
 	std::ostringstream xml;
 	xml << "<Events>";
 	{
-		boost::mutex::scoped_lock log_lock(m_log_mutex);	// Protect the iterator for insertion
+		std::lock_guard<std::mutex> log_lock(m_log_mutex);	// Protect the iterator for insertion
 		for (LOG_QUEUE::reverse_iterator ir = m_log_event_queue.rbegin(); ir != m_log_event_queue.rend(); ++ir)
 			xml << "<Event id=\"" << ir->first << "\">" << ir->second << "</Event>";
 	}

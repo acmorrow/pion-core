@@ -20,7 +20,7 @@ namespace net {		// begin namespace net (Pion Network Library)
 
 void HTTPAuth::addRestrict(const std::string& resource)
 {
-	boost::mutex::scoped_lock resource_lock(m_resource_mutex);
+	std::lock_guard<std::mutex> resource_lock(m_resource_mutex);
 	const std::string clean_resource(HTTPServer::stripTrailingSlash(resource));
 	m_restrict_list.insert(clean_resource);
 	PION_LOG_INFO(m_logger, "Set authentication restrictions for HTTP resource: " << clean_resource);
@@ -28,7 +28,7 @@ void HTTPAuth::addRestrict(const std::string& resource)
 
 void HTTPAuth::addPermit(const std::string& resource)
 {
-	boost::mutex::scoped_lock resource_lock(m_resource_mutex);
+	std::lock_guard<std::mutex> resource_lock(m_resource_mutex);
 	const std::string clean_resource(HTTPServer::stripTrailingSlash(resource));
 	m_white_list.insert(clean_resource);
 	PION_LOG_INFO(m_logger, "Set authentication permission for HTTP resource: " << clean_resource);
@@ -43,7 +43,7 @@ bool HTTPAuth::needAuthentication(const HTTPRequestPtr& http_request) const
 	// strip off trailing slash if the request has one
 	std::string resource(HTTPServer::stripTrailingSlash(http_request->getResource()));
 	
-	boost::mutex::scoped_lock resource_lock(m_resource_mutex);
+	std::lock_guard<std::mutex> resource_lock(m_resource_mutex);
 	
 	// just return false if restricted list is empty
 	if (m_restrict_list.empty())

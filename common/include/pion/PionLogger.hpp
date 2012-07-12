@@ -75,7 +75,7 @@
 	#include <log4cplus/loglevel.h>
 
 	#include <boost/circular_buffer.hpp>
-	#include <boost/thread/mutex.hpp>
+	#include <mutex>
 
 	#if defined _MSC_VER
 		#if defined _DEBUG
@@ -120,7 +120,7 @@
 			virtual void close() {}
 		protected:
 			virtual void append(const log4cplus::spi::InternalLoggingEvent& event) {
-				boost::mutex::scoped_lock log_lock(m_log_mutex);
+				std::lock_guard<std::mutex> log_lock(m_log_mutex);
 				m_log_events.push_back(*event.clone());
 			}
 
@@ -129,7 +129,7 @@
 			LogEventBuffer	m_log_events;
 
 			/// mutex to make class thread-safe
-			boost::mutex	m_log_mutex;
+			std::mutex	m_log_mutex;
 		};
 	}
 

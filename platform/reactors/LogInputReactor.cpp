@@ -139,7 +139,7 @@ void LogInputReactor::query(std::ostream& out, const QueryBranches& branches,
 	writeBeginReactorXML(out);
 	writeStatsOnlyXML(out);
 	
-	boost::mutex::scoped_lock logs_consumed_lock(m_logs_consumed_mutex);
+	std::unique_lock<std::mutex> logs_consumed_lock(m_logs_consumed_mutex);
 
 	out << '<' << CURRENT_LOG_ELEMENT_NAME << '>' << m_log_file
 	    << "</" << CURRENT_LOG_ELEMENT_NAME << '>' << std::endl;
@@ -158,9 +158,9 @@ void LogInputReactor::query(std::ostream& out, const QueryBranches& branches,
 
 void LogInputReactor::start(void)
 {
-	boost::mutex::scoped_lock worker_lock(m_worker_mutex);
+	std::lock_guard<std::mutex> worker_lock(m_worker_mutex);
 	if (! m_is_running) {
-		boost::mutex::scoped_lock logs_consumed_lock(m_logs_consumed_mutex);
+		std::lock_guard<std::mutex> logs_consumed_lock(m_logs_consumed_mutex);
 
 		// Process history cache (list of log files that have already been consumed) if present.
 		if (bfs::exists(m_history_cache_filename)) {
@@ -197,7 +197,7 @@ void LogInputReactor::start(void)
 	
 void LogInputReactor::stop(void)
 {
-	boost::mutex::scoped_lock worker_lock(m_worker_mutex);
+	std::unique_lock<std::mutex> worker_lock(m_worker_mutex);
 	if (m_is_running) {
 		// set flag to notify reader thread to shutdown
 		PION_LOG_DEBUG(m_logger, "Stopping worker thread: " << getId());
@@ -235,7 +235,7 @@ void LogInputReactor::stop(void)
 
 void LogInputReactor::scheduleLogFileCheck(boost::uint32_t seconds)
 {
-	boost::mutex::scoped_lock worker_lock(m_worker_mutex);
+	std::unique_lock<std::mutex> worker_lock(m_worker_mutex);
 	if (! m_is_running) {
 	    // stop() was called after last isRunning() check in checkForLogFiles()
 	    worker_lock.unlock();
@@ -267,7 +267,7 @@ void LogInputReactor::checkForLogFiles(void)
 		LogFileCollection current_logs;
 		getLogFilesInLogDirectory(current_logs);
 	
-		boost::mutex::scoped_lock logs_consumed_lock(m_logs_consumed_mutex);
+		std::lock_guard<std::mutex> logs_consumed_lock(m_logs_consumed_mutex);
 
 		// remove logs from the consumed collection that are no longer there
 		LogFileCollection::iterator temp_itr;
@@ -535,7 +535,7 @@ void LogInputReactor::recordLogFileAsDone() {
 
 	// Add the current log file to the list of consumed files and the history cache.
 	bfs::path log_file_path(m_log_file);
-	boost::mutex::scoped_lock logs_consumed_lock(m_logs_consumed_mutex);
+	std::lock_guard<std::mutex> logs_consumed_lock(m_logs_consumed_mutex);
 	m_log_file.clear();
 # if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
     m_logs_consumed.insert(log_file_path.filename().string());

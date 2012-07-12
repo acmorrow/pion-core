@@ -69,7 +69,7 @@ ReactionEngine::ReactionEngine(VocabularyManager& vocab_mgr,
 
 void ReactionEngine::openConfigFile(void)
 {
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::unique_lock<std::mutex> engine_lock(m_mutex);
 
 	// just return if it's already open
 	if (ConfigManager::configIsOpen())
@@ -135,7 +135,7 @@ void ReactionEngine::clearReactorStats(const std::string& reactor_id)
 
 void ReactionEngine::start(void)
 {
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	if (! m_is_running) {
 		PION_LOG_INFO(m_logger, "Starting the ReactionEngine");
 
@@ -148,7 +148,7 @@ void ReactionEngine::start(void)
 
 void ReactionEngine::stop(void)
 {
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	stopNoLock();
 }
 
@@ -286,7 +286,7 @@ std::string ReactionEngine::addReactor(const xmlNodePtr config_ptr)
 
 void ReactionEngine::removeReactor(const std::string& reactor_id)
 {
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::unique_lock<std::mutex> engine_lock(m_mutex);
 
 	Reactor *reactor_ptr = m_plugins.get(reactor_id);
 	if (reactor_ptr == NULL)
@@ -345,7 +345,7 @@ Reactor *ReactionEngine::addTempConnectionIn(const std::string& reactor_id,
 		throw ConfigNotOpenException(getConfigFile());
 	
 	// get a pointer to the Reactor to return to the caller
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	Reactor *reactor_ptr = m_plugins.get(reactor_id);
 	if (reactor_ptr == NULL)
 		throw ReactorNotFoundException(reactor_id);
@@ -370,7 +370,7 @@ void ReactionEngine::addTempConnectionOut(const std::string& reactor_id,
 		throw ConfigNotOpenException(getConfigFile());
 	
 	// connect the Reactor to the connection handler
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	Reactor *reactor_ptr = m_plugins.get(reactor_id);
 	if (reactor_ptr == NULL)
 		throw ReactorNotFoundException(reactor_id);
@@ -400,7 +400,7 @@ void ReactionEngine::removeTempConnection(const std::string& connection_id)
 	std::string connection_info;
 
 	// remove the connection from memory structures
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	for (TempConnectionList::iterator i = m_temp_connections.begin();
 		 i != m_temp_connections.end(); ++i)
 	{
@@ -492,7 +492,7 @@ std::string ReactionEngine::addReactorConnection(const std::string& from_id,
 	const std::string connection_id(ConfigManager::createUUID());
 	
 	// add the connection to memory structures
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	addConnectionNoLock(connection_id, from_id, to_id);
 	
 	// add the connection to the config file
@@ -562,7 +562,7 @@ void ReactionEngine::removeReactorConnection(const std::string& from_id,
 		throw ConfigNotOpenException(getConfigFile());
 
 	// remove the connection from memory structures
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	removeConnectionNoLock(from_id, to_id);
 	for (ReactorConnectionList::iterator i = m_reactor_connections.begin();
 		 i != m_reactor_connections.end(); ++i)
@@ -586,7 +586,7 @@ void ReactionEngine::removeReactorConnection(const std::string& connection_id)
 		throw ConfigNotOpenException(getConfigFile());
 	
 	// find the connection in our memory structures
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	ReactorConnectionList::iterator i = m_reactor_connections.begin();
 	while (i != m_reactor_connections.end()) {
 		if (i->m_connection_id == connection_id)
@@ -686,7 +686,7 @@ std::string ReactionEngine::addWorkspace(const char* content_buf, std::size_t co
 	// generate a unique identifier to represent the Workspace
 	const std::string workspace_id(ConfigManager::createUUID());
 
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 
 	// create a new node for the Workspace and add it to the XML config document
 	xmlNodePtr workspace_node = xmlNewNode(NULL, reinterpret_cast<const xmlChar*>(Reactor::WORKSPACE_ELEMENT_NAME.c_str()));
@@ -722,7 +722,7 @@ void ReactionEngine::removeReactorsFromWorkspace(const std::string& workspace_id
 	if (! hasWorkspace(workspace_id))
 		throw WorkspaceNotFoundException(workspace_id);
 
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::unique_lock<std::mutex> engine_lock(m_mutex);
 
 	// Make a list of IDs of all the Reactors in the Workspace.
 	std::vector<std::string> reactors_in_workspace;
@@ -756,7 +756,7 @@ void ReactionEngine::removeWorkspace(const std::string& workspace_id)
 		throw ConfigNotOpenException(getConfigFile());
 
 	// Find existing Workspace configuration.
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	xmlNodePtr workspace_node = findConfigNodeByAttr(Reactor::WORKSPACE_ELEMENT_NAME,
 													 ID_ATTRIBUTE_NAME,
 													 workspace_id,
@@ -797,7 +797,7 @@ void ReactionEngine::removeWorkspace(const std::string& workspace_id)
 void ReactionEngine::setWorkspaceConfig(const std::string& workspace_id, const char* content_buf, std::size_t content_length)
 {
 	// Find existing Workspace configuration.
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	xmlNodePtr workspace_node = findConfigNodeByAttr(Reactor::WORKSPACE_ELEMENT_NAME,
 													 ID_ATTRIBUTE_NAME,
 													 workspace_id,
@@ -888,7 +888,7 @@ void ReactionEngine::writeStatsXML(std::ostream& out, const std::string& only_id
 
 	const Reactor::QueryBranches branches;
 	const Reactor::QueryParams qp;
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 
 	if (only_id.empty()) {
 		// step through each reactor configured
@@ -941,7 +941,7 @@ void ReactionEngine::writeConnectionsXML(std::ostream& out,
 	ConfigManager::writeBeginPionConfigXML(out);
 	
 	bool found_one = false;
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 
 	// iterate through Reactor connections
 	for (ReactorConnectionList::const_iterator reactor_i = m_reactor_connections.begin();
@@ -1000,7 +1000,7 @@ bool ReactionEngine::writeWorkspaceXML(std::ostream& out,
 									   const std::string& workspace_id) const
 {
 	// find the Workspace element with the specified ID in the XML config document
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	xmlNodePtr workspace_node = findConfigNodeByAttr(Reactor::WORKSPACE_ELEMENT_NAME,
 													 ID_ATTRIBUTE_NAME,
 													 workspace_id,
@@ -1018,7 +1018,7 @@ bool ReactionEngine::writeWorkspaceXML(std::ostream& out,
 
 void ReactionEngine::writeWorkspacesXML(std::ostream& out) const
 {
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	ConfigManager::writeBeginPionConfigXML(out);
 
 	// step through Workspace configurations
@@ -1042,7 +1042,7 @@ bool ReactionEngine::hasWorkspace(const std::string& workspace_id) const
 
 bool ReactionEngine::writeWorkspaceLimitedConfigXML(std::ostream& out, const std::string& workspace_id) const {
 	// find the Workspace element with the specified ID in the XML config document
-	boost::mutex::scoped_lock engine_lock(m_mutex);
+	std::lock_guard<std::mutex> engine_lock(m_mutex);
 	xmlNodePtr workspace_node = findConfigNodeByAttr(Reactor::WORKSPACE_ELEMENT_NAME,
 													 ID_ATTRIBUTE_NAME,
 													 workspace_id,

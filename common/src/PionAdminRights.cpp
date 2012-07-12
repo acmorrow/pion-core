@@ -26,7 +26,7 @@ namespace pion {	// begin namespace pion
 // static members of PionAdminRights
 
 const boost::int16_t			PionAdminRights::ADMIN_USER_ID = 0;
-boost::mutex					PionAdminRights::m_mutex;
+std::mutex					PionAdminRights::m_mutex;
 
 
 // PionAdminRights member functions

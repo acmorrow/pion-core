@@ -40,7 +40,7 @@ CodecFactory::CodecFactory(const VocabularyManager& vocab_mgr)
 	
 CodecPtr CodecFactory::getCodec(const std::string& codec_id)
 {
-	boost::mutex::scoped_lock factory_lock(m_mutex);
+	std::lock_guard<std::mutex> factory_lock(m_mutex);
 	Codec *codec_ptr = m_plugins.get(codec_id);
 	// throw an exception if the codec was not found
 	if (codec_ptr == NULL)

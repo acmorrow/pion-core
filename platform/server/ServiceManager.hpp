@@ -22,7 +22,7 @@
 
 #include <list>
 #include <string>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/PionScheduler.hpp>
@@ -383,7 +383,7 @@ private:
 	WebServiceManager				m_web_services;
 
 	/// mutex to make class thread-safe
-	mutable boost::mutex			m_mutex;
+	mutable std::mutex			m_mutex;
 };
 
 

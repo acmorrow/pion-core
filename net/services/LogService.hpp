@@ -13,7 +13,7 @@
 #include <list>
 #include <memory>
 #include <string>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionLogger.hpp>
 #include <pion/net/WebService.hpp>
 #include <pion/net/HTTPResponseWriter.hpp>
@@ -73,7 +73,7 @@ private:
 	std::list<std::string>					m_log_events;
 
 	/// mutex to make class thread-safe
-	boost::mutex							m_log_mutex;
+	std::mutex							m_log_mutex;
 
 #if defined(PION_USE_LOG4CXX)
 	public:

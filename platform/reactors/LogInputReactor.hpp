@@ -25,7 +25,7 @@
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/regex.hpp>
-#include <boost/thread/condition.hpp>
+#include <condition_variable>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionLogger.hpp>
@@ -207,7 +207,7 @@ private:
 
 	/// sends notification that the worker thread has finished
 	inline void finishWorkerThread(void) {
-		boost::mutex::scoped_lock worker_lock(m_worker_mutex);
+		std::lock_guard<std::mutex> worker_lock(m_worker_mutex);
 		PION_LOG_DEBUG(m_logger, "Log reader thread has finished: " << getId());
 		m_worker_is_active = false;
 		m_worker_stopped.notify_all();
@@ -285,13 +285,13 @@ private:
 	std::map<std::string, boost::uint64_t>	m_num_events_read_previously;
 
 	/// protects the consumed logs collection
-	boost::mutex						m_logs_consumed_mutex;
+	std::mutex						m_logs_consumed_mutex;
 
 	/// used to coordinate startup/shutdown with the worker thread
-	boost::mutex						m_worker_mutex;
+	std::mutex						m_worker_mutex;
 
 	/// condition triggered after the worker thread has stopped running
-	boost::condition					m_worker_stopped;
+	std::condition_variable					m_worker_stopped;
 	
 	/// true while the worker thread is active
 	volatile bool						m_worker_is_active;

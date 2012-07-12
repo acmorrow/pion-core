@@ -13,7 +13,7 @@
 #include <pion/PionConfig.hpp>
 #include <pion/PionLogger.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 
 
 namespace pion {	// begin namespace pion
@@ -63,13 +63,13 @@ private:
 	static const boost::int16_t			ADMIN_USER_ID;
 
 	/// mutex used to prevent multiple threads from corrupting user id
-	static boost::mutex					m_mutex;
+	static std::mutex					m_mutex;
 
 	/// primary logging interface used by this class        
 	PionLogger							m_logger;
 
 	/// lock used to prevent multiple threads from corrupting user id
-	boost::unique_lock<boost::mutex>	m_lock;
+	std::unique_lock<std::mutex>	m_lock;
 
 	/// saved user identifier before upgrading to administrator
 	boost::int16_t						m_user_id;

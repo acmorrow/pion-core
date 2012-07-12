@@ -161,7 +161,7 @@ private:
 	std::ofstream						m_log_stream;
 
 	/// used to ensure only log writer at a time
-	boost::mutex						m_log_writer_mutex;
+	std::mutex						m_log_writer_mutex;
 };
 
 

@@ -19,7 +19,7 @@
 
 #include <sstream>
 #include <fstream>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <pion/PionConfig.hpp>

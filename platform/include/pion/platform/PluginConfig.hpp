@@ -23,7 +23,7 @@
 #include <functional>
 #include <libxml/tree.h>
 #include <boost/signal.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/PluginManager.hpp>
@@ -58,7 +58,7 @@ public:
 	
 	/// creates a new plug-in config file that includes the Pion "config" element
 	virtual void createConfigFile(void) {
-		boost::mutex::scoped_lock plugins_lock(m_mutex);
+		std::lock_guard<std::mutex> plugins_lock(m_mutex);
 		// just return if it's already open
 		if (ConfigManager::configIsOpen())
 			return;
@@ -70,7 +70,7 @@ public:
 	
 	/// opens an existing configuration file and loads the plug-ins it contains
 	virtual void openConfigFile(void) {
-		boost::mutex::scoped_lock plugins_lock(m_mutex);
+		std::lock_guard<std::mutex> plugins_lock(m_mutex);
 		// just return if it's already open
 		if (ConfigManager::configIsOpen())
 			return;
@@ -86,7 +86,7 @@ public:
 	 * @param out the ostream to write the configuration tree into
 	 */
 	virtual void writeConfigXML(std::ostream& out) const {
-		boost::mutex::scoped_lock plugins_lock(m_mutex);
+		std::lock_guard<std::mutex> plugins_lock(m_mutex);
 		ConfigManager::writeConfigXMLHeader(out);
 		ConfigManager::writeConfigXML(out, m_config_node_ptr, true);
 	}
@@ -128,7 +128,7 @@ public:
 	 */
 	template <typename PluginUpdateFunction>
 	inline boost::signals::connection registerForUpdates(PluginUpdateFunction f) const {
-		boost::mutex::scoped_lock signal_lock(m_signal_mutex);
+		std::lock_guard<std::mutex> signal_lock(m_signal_mutex);
 		return m_signal_plugins_updated.connect(f);
 	}
 
@@ -228,10 +228,10 @@ protected:
 	mutable boost::signal0<void>	m_signal_plugins_updated;
 
 	/// mutex used to protect the updated signal handler
-	mutable boost::mutex			m_signal_mutex;	
+	mutable std::mutex			m_signal_mutex;	
 
 	/// mutex to make class thread-safe
-	mutable boost::mutex			m_mutex;	
+	mutable std::mutex			m_mutex;	
 };
 
 	
@@ -242,7 +242,7 @@ inline bool PluginConfig<PluginType>::writeConfigXML(std::ostream& out,
 													 const std::string& plugin_id) const
 {
 	// find the plug-in element in the XML config document
-	boost::mutex::scoped_lock plugins_lock(m_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_mutex);
 	xmlNodePtr plugin_node = findConfigNodeByAttr(m_plugin_element,
 												  ID_ATTRIBUTE_NAME,
 												  plugin_id,
@@ -262,7 +262,7 @@ template <typename PluginType>
 inline xmlNodePtr PluginConfig<PluginType>::getPluginConfig(const std::string& plugin_id)
 {
 	// find the plug-in element in the XML config document
-	boost::mutex::scoped_lock plugins_lock(m_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_mutex);
 	xmlNodePtr plugin_node = findConfigNodeByAttr(m_plugin_element,
 												  ID_ATTRIBUTE_NAME,
 												  plugin_id,
@@ -285,7 +285,7 @@ inline void PluginConfig<PluginType>::setPluginConfig(const std::string& plugin_
 	VocabularyPtr vocab_ptr(m_vocab_mgr.getVocabulary());
 
 	// update it within memory and the configuration file
-	boost::mutex::scoped_lock plugins_lock(m_mutex);
+	std::unique_lock<std::mutex> plugins_lock(m_mutex);
 	m_plugins.run(plugin_id, std::bind(&PluginType::setConfig, std::placeholders::_1,
 										 std::cref(*vocab_ptr), config_ptr));
 	ConfigManager::setPluginConfig(m_plugin_element, plugin_id, config_ptr);
@@ -295,7 +295,7 @@ inline void PluginConfig<PluginType>::setPluginConfig(const std::string& plugin_
 
 	// send notifications
 	PION_LOG_DEBUG(m_logger, "Updated " << m_plugin_element << " configuration (" << plugin_id << ')');
-	boost::mutex::scoped_lock signal_lock(m_signal_mutex);
+	std::lock_guard<std::mutex> signal_lock(m_signal_mutex);
 	m_signal_plugins_updated();
 }
 
@@ -313,7 +313,7 @@ inline std::string PluginConfig<PluginType>::addPlugin(const xmlNodePtr config_p
 		throw EmptyPluginElementException(plugin_id);
 	
 	// create the new plug-in and add it to the config file
-	boost::mutex::scoped_lock plugins_lock(m_mutex);
+	std::unique_lock<std::mutex> plugins_lock(m_mutex);
 	addPluginNoLock(plugin_id, plugin_type, config_ptr);
 	addPluginConfig(m_plugin_element, plugin_id, plugin_type, config_ptr);
 	
@@ -322,7 +322,7 @@ inline std::string PluginConfig<PluginType>::addPlugin(const xmlNodePtr config_p
 
 	// send notifications
 	PION_LOG_DEBUG(m_logger, "Loaded " << m_plugin_element << " (" << plugin_type << "): " << plugin_id);
-	boost::mutex::scoped_lock signal_lock(m_signal_mutex);
+	std::unique_lock<std::mutex> signal_lock(m_signal_mutex);
 	m_signal_plugins_updated();
 	signal_lock.unlock();
 	
@@ -340,7 +340,7 @@ inline void PluginConfig<PluginType>::removePlugin(const std::string& plugin_id)
 	// first store a smart pointer to the shared library code
 	// this guarantees it will not be released until after the updated signal
 	// has been called, and all users of these types of plugins have released them
-	boost::mutex::scoped_lock plugins_lock(m_mutex);
+	std::unique_lock<std::mutex> plugins_lock(m_mutex);
 	PionPluginPtr<PluginType> plugin_lib_ptr(m_plugins.getLibPtr(plugin_id));
 
 	// remove it from memory and the configuration file
@@ -352,7 +352,7 @@ inline void PluginConfig<PluginType>::removePlugin(const std::string& plugin_id)
 
 	// send notifications
 	PION_LOG_DEBUG(m_logger, "Removed " << m_plugin_element << ": " << plugin_id);
-	boost::mutex::scoped_lock signal_lock(m_signal_mutex);
+	std::lock_guard<std::mutex> signal_lock(m_signal_mutex);
 	m_signal_plugins_updated();
 }
 

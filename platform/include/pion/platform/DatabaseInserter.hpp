@@ -23,8 +23,8 @@
 #include <memory>
 #include <vector>
 #include <ctime>
-#include <boost/thread/thread.hpp>
-#include <boost/thread/condition.hpp>
+#include <thread>
+#include <condition_variable>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/PionLogger.hpp>
@@ -402,16 +402,16 @@ private:
 	boost::uint32_t							m_recovery_interval;
 
 	/// used to protect the Event queue
-	mutable boost::mutex					m_queue_mutex;
+	mutable std::mutex					m_queue_mutex;
 
 	/// condition triggered to notify the worker thread to save events to the database
-	boost::condition						m_wakeup_worker;
+	std::condition_variable						m_wakeup_worker;
 
 	/// condition triggered to notify all threads that the the queue was swapped
-	boost::condition						m_swapped_queue;
+	std::condition_variable						m_swapped_queue;
 
 	/// thread used to store events to the database
-	std::unique_ptr<boost::thread>		m_thread;
+	std::unique_ptr<std::thread>		m_thread;
 
 	/// ignore insert errors?
 	bool									m_ignore_insert;

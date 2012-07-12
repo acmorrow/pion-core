@@ -20,13 +20,14 @@
 #ifndef __PION_REACTOR_HEADER__
 #define __PION_REACTOR_HEADER__
 
+#include <chrono>
 #include <functional>
 #include <iosfwd>
-#include <string>
 #include <list>
+#include <string>
+#include <thread>
 #include <libxml/tree.h>
 #include <boost/signal.hpp>
-#include <boost/thread.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/PionScheduler.hpp>
@@ -319,8 +320,7 @@ protected:
 				while (m_reactor_ref.m_config_change_pending) {
 					if (++sleep_times > 50)
 						throw ConfigLockException(m_reactor_ref.getId());
-					boost::thread::sleep(boost::get_system_time()
-						+ boost::posix_time::millisec(100));
+					std::this_thread::sleep_for(std::chrono::milliseconds(100));
 				}
 				++m_reactor_ref.m_config_num_readers;
 				if (m_reactor_ref.m_config_change_pending) {
@@ -353,8 +353,7 @@ protected:
 						m_reactor_ref.m_config_change_pending = false;
 						throw ConfigLockException(m_reactor_ref.getId());
 					}
-					boost::thread::sleep(boost::get_system_time()
-						+ boost::posix_time::millisec(100));
+					std::this_thread::sleep_for(std::chrono::milliseconds(100));
 				}
 			}
 		}

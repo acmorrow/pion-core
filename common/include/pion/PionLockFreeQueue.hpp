@@ -28,7 +28,7 @@
 #include <boost/lockfree/detail/branch_hints.hpp>
 #include <boost/detail/atomic_count.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <pion/PionConfig.hpp>
 
 // NOTE: the data structures contained in this file are based upon algorithms
@@ -325,7 +325,7 @@ protected:
 				// sleep while MaxSize is exceeded
 				boost::system_time wakeup_time = boost::get_system_time()
 					+ boost::posix_time::millisec(SleepMilliSec);
-				boost::thread::sleep(wakeup_time);
+				std::thread::sleep(wakeup_time);
 			}
 
 			// prepare what will become the new free_ptr index value

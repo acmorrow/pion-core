@@ -324,7 +324,7 @@ private:
 	static const std::string			ADMIN_PERMISSION_TYPE;
 
 	/// mutex to make class thread-safe
-	mutable boost::mutex				m_mutex;
+	mutable std::mutex				m_mutex;
 };
 
 /// data type for a UserManager pointer

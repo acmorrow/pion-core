@@ -13,8 +13,8 @@
 #include <string>
 #include <boost/noncopyable.hpp>
 #include <boost/thread/once.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition.hpp>
+#include <mutex>
+#include <condition_variable>
 #include <pion/PionConfig.hpp>
 
 
@@ -58,16 +58,16 @@ protected:
 		bool					shutdown_now;
 		
 		/// triggered when it is time to shutdown
-		boost::condition		shutdown_cond;
+		std::condition_variable		shutdown_cond;
 
 		/// used to protect the shutdown condition
-		boost::mutex			shutdown_mutex;
+		std::mutex			shutdown_mutex;
 	};
 
 	
 	/// returns a singleton instance of PionProcessConfig
 	static inline PionProcessConfig& getPionProcessConfig(void) {
-		boost::call_once(PionProcess::createPionProcessConfig, m_instance_flag);
+		std::call_once(m_instance_flag, PionProcess::createPionProcessConfig);
 		return *m_config_ptr;
 	}
 
@@ -79,7 +79,7 @@ private:
 
 	
 	/// used to ensure thread safety of the PionProcessConfig singleton
-	static boost::once_flag				m_instance_flag;
+	static std::once_flag				m_instance_flag;
 
 	/// pointer to the PionProcessConfig singleton
 	static PionProcessConfig *			m_config_ptr;

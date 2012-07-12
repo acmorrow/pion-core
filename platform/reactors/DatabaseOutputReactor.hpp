@@ -22,7 +22,7 @@
 
 #include <memory>
 #include <vector>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionLogger.hpp>
 #include <pion/platform/Event.hpp>
@@ -157,7 +157,7 @@ private:
 	boost::uint16_t							m_next_inserter;
 
 	/// used to protect the Database inserters vector
-	mutable boost::mutex					m_inserter_mutex;
+	mutable std::mutex					m_inserter_mutex;
 };
 
 

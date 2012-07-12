@@ -14,7 +14,7 @@
 #include <map>
 #include <string>
 #include <boost/cstdint.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/PionPlugin.hpp>
@@ -59,13 +59,13 @@ public:
 
 	/// clears all the plug-in objects being managed
 	inline void clear(void) {
-		boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+		std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 		m_plugin_map.clear();
 	}
 	
 	/// returns true if there are no plug-in objects being managed
 	inline bool empty(void) const { 
-		boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+		std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 		return m_plugin_map.empty();
 	}
 	
@@ -190,7 +190,7 @@ protected:
 	PluginMap						m_plugin_map;
 
 	/// mutex to make class thread-safe
-	mutable boost::mutex			m_plugin_mutex;
+	mutable std::mutex			m_plugin_mutex;
 };
 
 	
@@ -201,7 +201,7 @@ inline void PluginManager<PLUGIN_TYPE>::add(const std::string& plugin_id,
 											PLUGIN_TYPE *plugin_object_ptr)
 {
 	PionPluginPtr<PLUGIN_TYPE> plugin_ptr;
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	m_plugin_map.insert(std::make_pair(plugin_id,
 									   std::make_pair(plugin_object_ptr, plugin_ptr)));
 }
@@ -209,7 +209,7 @@ inline void PluginManager<PLUGIN_TYPE>::add(const std::string& plugin_id,
 template <typename PLUGIN_TYPE>
 inline void PluginManager<PLUGIN_TYPE>::remove(const std::string& plugin_id)
 {
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	typename pion::PluginManager<PLUGIN_TYPE>::PluginMap::iterator i = m_plugin_map.find(plugin_id);
 	if (i == m_plugin_map.end())
 		throw PluginNotFoundException(plugin_id);
@@ -225,7 +225,7 @@ template <typename PLUGIN_TYPE>
 inline void PluginManager<PLUGIN_TYPE>::replace(const std::string& plugin_id, PLUGIN_TYPE *plugin_ptr)
 {
 	PION_ASSERT(plugin_ptr);
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	typename pion::PluginManager<PLUGIN_TYPE>::PluginMap::iterator i = m_plugin_map.find(plugin_id);
 	if (i == m_plugin_map.end())
 		throw PluginNotFoundException(plugin_id);
@@ -240,7 +240,7 @@ inline void PluginManager<PLUGIN_TYPE>::replace(const std::string& plugin_id, PL
 template <typename PLUGIN_TYPE>
 inline PLUGIN_TYPE *PluginManager<PLUGIN_TYPE>::clone(const std::string& plugin_id)
 {
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	typename pion::PluginManager<PLUGIN_TYPE>::PluginMap::iterator i = m_plugin_map.find(plugin_id);
 	if (i == m_plugin_map.end())
 		throw PluginNotFoundException(plugin_id);
@@ -263,7 +263,7 @@ inline PLUGIN_TYPE *PluginManager<PLUGIN_TYPE>::load(const std::string& plugin_i
 	PLUGIN_TYPE *plugin_object_ptr(plugin_ptr.create());
 	
 	// add the new plug-in object to our map
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	m_plugin_map.insert(std::make_pair(plugin_id,
 									   std::make_pair(plugin_object_ptr, plugin_ptr)));
 
@@ -274,7 +274,7 @@ template <typename PLUGIN_TYPE>
 inline PLUGIN_TYPE *PluginManager<PLUGIN_TYPE>::get(const std::string& plugin_id)
 {
 	PLUGIN_TYPE *plugin_object_ptr = NULL;
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	typename pion::PluginManager<PLUGIN_TYPE>::PluginMap::iterator i = m_plugin_map.find(plugin_id);
 	if (i != m_plugin_map.end())
 		plugin_object_ptr = i->second.first;
@@ -285,7 +285,7 @@ template <typename PLUGIN_TYPE>
 inline const PLUGIN_TYPE *PluginManager<PLUGIN_TYPE>::get(const std::string& plugin_id) const
 {
 	const PLUGIN_TYPE *plugin_object_ptr = NULL;
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	typename pion::PluginManager<PLUGIN_TYPE>::PluginMap::const_iterator i = m_plugin_map.find(plugin_id);
 	if (i != m_plugin_map.end())
 		plugin_object_ptr = i->second.first;
@@ -296,7 +296,7 @@ template <typename PLUGIN_TYPE>
 inline PionPluginPtr<PLUGIN_TYPE> PluginManager<PLUGIN_TYPE>::getLibPtr(const std::string& plugin_id) const
 {
 	PionPluginPtr<PLUGIN_TYPE> plugin_ptr;
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	typename pion::PluginManager<PLUGIN_TYPE>::PluginMap::const_iterator i = m_plugin_map.find(plugin_id);
 	if (i != m_plugin_map.end())
 		plugin_ptr = i->second.second;
@@ -310,7 +310,7 @@ inline PLUGIN_TYPE *PluginManager<PLUGIN_TYPE>::find(const std::string& resource
 	PLUGIN_TYPE *plugin_object_ptr = NULL;
 	
 	// lock mutex for thread safety (this should probably use ref counters)
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	
 	// check if no plug-ins are being managed
 	if (m_plugin_map.empty()) return plugin_object_ptr;
@@ -348,7 +348,7 @@ inline PLUGIN_TYPE *PluginManager<PLUGIN_TYPE>::find(const std::string& resource
 template <typename PLUGIN_TYPE>
 inline void PluginManager<PLUGIN_TYPE>::run(PluginRunFunction run_func)
 {
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	for (typename pion::PluginManager<PLUGIN_TYPE>::PluginMap::iterator i = m_plugin_map.begin();
 		 i != m_plugin_map.end(); ++i)
 	{
@@ -371,7 +371,7 @@ template <typename PLUGIN_TYPE>
 inline boost::uint64_t PluginManager<PLUGIN_TYPE>::getStatistic(PluginStatFunction stat_func) const
 {
 	boost::uint64_t stat_value = 0;
-	boost::mutex::scoped_lock plugins_lock(m_plugin_mutex);
+	std::lock_guard<std::mutex> plugins_lock(m_plugin_mutex);
 	for (typename pion::PluginManager<PLUGIN_TYPE>::PluginMap::const_iterator i = m_plugin_map.begin();
 		 i != m_plugin_map.end(); ++i)
 	{

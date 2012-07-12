@@ -9,7 +9,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionPlugin.hpp>
 
@@ -32,7 +32,7 @@ const std::string			PionPlugin::PION_PLUGIN_DESTROY("pion_destroy_");
 	const std::string			PionPlugin::PION_PLUGIN_EXTENSION(".so");
 #endif
 const std::string			PionPlugin::PION_CONFIG_EXTENSION(".conf");
-boost::once_flag			PionPlugin::m_instance_flag = BOOST_ONCE_INIT;
+std::once_flag			PionPlugin::m_instance_flag;
 PionPlugin::PionPluginConfig	*PionPlugin::m_config_ptr = NULL;
 
 	
@@ -62,7 +62,7 @@ void PionPlugin::addPluginDirectory(const std::string& dir)
 	if (! boost::filesystem::exists(plugin_path) )
 		throw DirectoryNotFoundException(dir);
 	PionPluginConfig& cfg = getPionPluginConfig();
-	boost::mutex::scoped_lock plugin_lock(cfg.plugin_mutex);
+	std::lock_guard<std::mutex> plugin_lock(cfg.plugin_mutex);
 # if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
     cfg.plugin_dirs.push_back(plugin_path.string());
 #else
@@ -74,7 +74,7 @@ void PionPlugin::addPluginDirectory(const std::string& dir)
 void PionPlugin::resetPluginDirectories(void)
 {
 	PionPluginConfig& cfg = getPionPluginConfig();
-	boost::mutex::scoped_lock plugin_lock(cfg.plugin_mutex);
+	std::lock_guard<std::mutex> plugin_lock(cfg.plugin_mutex);
 	cfg.plugin_dirs.clear();
 }
 
@@ -83,7 +83,7 @@ void PionPlugin::open(const std::string& plugin_name)
 	// check first if name matches an existing plugin name
 	{
 		PionPluginConfig& cfg = getPionPluginConfig();
-		boost::mutex::scoped_lock plugin_lock(cfg.plugin_mutex);
+		std::lock_guard<std::mutex> plugin_lock(cfg.plugin_mutex);
 		PluginMap::iterator itr = cfg.plugin_map.find(plugin_name);
 		if (itr != cfg.plugin_map.end()) {
 			releaseData();	// make sure we're not already pointing to something
@@ -111,7 +111,7 @@ void PionPlugin::openFile(const std::string& plugin_file)
 	
 	// check to see if we already have a matching shared library
 	PionPluginConfig& cfg = getPionPluginConfig();
-	boost::mutex::scoped_lock plugin_lock(cfg.plugin_mutex);
+	std::lock_guard<std::mutex> plugin_lock(cfg.plugin_mutex);
 	PluginMap::iterator itr = cfg.plugin_map.find(plugin_data.m_plugin_name);
 	if (itr == cfg.plugin_map.end()) {
 		// no plug-ins found with the same name
@@ -136,7 +136,7 @@ void PionPlugin::releaseData(void)
 {
 	if (m_plugin_data != NULL) {
 		PionPluginConfig& cfg = getPionPluginConfig();
-		boost::mutex::scoped_lock plugin_lock(cfg.plugin_mutex);
+		std::lock_guard<std::mutex> plugin_lock(cfg.plugin_mutex);
 		// double-check after locking mutex
 		if (m_plugin_data != NULL && --m_plugin_data->m_references == 0) {
 			// no more references to the plug-in library
@@ -165,7 +165,7 @@ void PionPlugin::grabData(const PionPlugin& p)
 {
 	releaseData();	// make sure we're not already pointing to something
 	PionPluginConfig& cfg = getPionPluginConfig();
-	boost::mutex::scoped_lock plugin_lock(cfg.plugin_mutex);
+	std::lock_guard<std::mutex> plugin_lock(cfg.plugin_mutex);
 	m_plugin_data = const_cast<PionPluginData*>(p.m_plugin_data);
 	if (m_plugin_data != NULL) {
 		++ m_plugin_data->m_references;
@@ -181,7 +181,7 @@ bool PionPlugin::findFile(std::string& path_to_file, const std::string& name,
 
 	// nope, check search paths
 	PionPluginConfig& cfg = getPionPluginConfig();
-	boost::mutex::scoped_lock plugin_lock(cfg.plugin_mutex);
+	std::lock_guard<std::mutex> plugin_lock(cfg.plugin_mutex);
 	for (std::vector<std::string>::iterator i = cfg.plugin_dirs.begin();
 		 i != cfg.plugin_dirs.end(); ++i)
 	{
@@ -299,7 +299,7 @@ void PionPlugin::getAllPluginNames(std::vector<std::string>& plugin_names)
 	// Iterate through all the Plugin directories.
 	std::vector<std::string>::iterator it;
 	PionPluginConfig& cfg = getPionPluginConfig();
-	boost::mutex::scoped_lock plugin_lock(cfg.plugin_mutex);
+	std::lock_guard<std::mutex> plugin_lock(cfg.plugin_mutex);
 	for (it = cfg.plugin_dirs.begin(); it != cfg.plugin_dirs.end(); ++it) {
 		// Find all shared libraries in the directory and add them to the list of Plugin names.
 		boost::filesystem::directory_iterator end;
@@ -385,7 +385,7 @@ void PionPlugin::addStaticEntryPoint(const std::string& plugin_name,
 {
 	// check for duplicate
 	PionPluginConfig& cfg = getPionPluginConfig();
-	boost::mutex::scoped_lock plugin_lock(cfg.plugin_mutex);
+	std::lock_guard<std::mutex> plugin_lock(cfg.plugin_mutex);
 	PluginMap::iterator itr = cfg.plugin_map.find(plugin_name);
 	if (itr == cfg.plugin_map.end()) {
 		// no plug-ins found with the same name

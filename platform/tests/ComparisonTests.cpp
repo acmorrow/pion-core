@@ -19,7 +19,7 @@
 
 #include <memory>
 #include <vector>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <boost/detail/atomic_count.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/platform/Vocabulary.hpp>
@@ -1281,7 +1281,7 @@ public:
 	}
 	
 	void addValueToCheck(const std::string& str) {
-		ThreadPtr thread_ptr(new boost::thread(std::bind(
+		ThreadPtr thread_ptr(new std::thread(std::bind(
 			&ComparisonThreadSafetyTests_F::checkValue, this, str)));
 		m_threads.push_back(thread_ptr);
 	}
@@ -1292,7 +1292,7 @@ public:
 		}
 	}
 
-	typedef std::shared_ptr<boost::thread>	ThreadPtr;
+	typedef std::shared_ptr<std::thread>	ThreadPtr;
 	typedef std::vector<ThreadPtr>				ThreadPool;
 	
 	boost::detail::atomic_count		m_num_matches;

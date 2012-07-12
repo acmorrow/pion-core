@@ -1213,7 +1213,7 @@ const string			PythonReactor::PYTHON_SOURCE_ELEMENT_NAME = "PythonSource";
 const string			PythonReactor::OPEN_SESSIONS_ELEMENT_NAME = "OpenSessions";
 const string			PythonReactor::VOCAB_CLICKSTREAM_SESSION_EVENT="urn:vocab:clickstream#session-event";
 const string 			PythonReactor::VOCAB_CLICKSTREAM_SESSION_ID="urn:vocab:clickstream#session-id";
-boost::mutex			PythonReactor::m_init_mutex;
+std::mutex			PythonReactor::m_init_mutex;
 boost::uint32_t			PythonReactor::m_init_num = 0;
 PyInterpreterState *	PythonReactor::m_interp_ptr = NULL;
 boost::thread_specific_ptr<PyThreadState> *		PythonReactor::m_state_ptr = NULL;
@@ -1230,7 +1230,7 @@ PythonReactor::PythonReactor(void)
 	m_session_id_term_ref(Vocabulary::UNDEFINED_TERM_REF)
 {
 	setLogger(PION_GET_LOGGER("pion.PythonReactor"));
-	boost::mutex::scoped_lock init_lock(m_init_mutex);
+	std::lock_guard<std::mutex> init_lock(m_init_mutex);
 	if (++m_init_num == 1) {
 		PION_LOG_DEBUG(m_logger, "Initializing Python interpreter");
 		// initialize the thread specific state pointers
@@ -1287,7 +1287,7 @@ PythonReactor::~PythonReactor()
 		Py_XDECREF(m_reactor_ptr);
 		resetPythonSymbols();
 
-		boost::mutex::scoped_lock init_lock(m_init_mutex);
+		std::lock_guard<std::mutex> init_lock(m_init_mutex);
 		if (--m_init_num == 0) {
 			// there are no more PythonReactor instances left
 			PION_LOG_DEBUG(m_logger, "Releasing Python thread states");
@@ -1484,7 +1484,7 @@ void PythonReactor::process(const EventPtr& e)
 			if (param_ptr != NULL) {
 				const Event::BlobType session_id(boost::get<const Event::BlobType&>(*param_ptr));
 				if (! session_id.empty()) {
-					boost::mutex::scoped_lock sessions_lock(m_sessions_mutex);
+					std::lock_guard<std::mutex> sessions_lock(m_sessions_mutex);
 					SessionMap::iterator it = m_sessions.find(session_id);
 					if (it != m_sessions.end()) {
 						Py_XDECREF(it->second);
@@ -1582,7 +1582,7 @@ PyObject *PythonReactor::getSession(PyObject *event_ptr)
 
 	// check to see if the session already has an object assigned
 	PyObject *retval = NULL;
-	boost::mutex::scoped_lock sessions_lock(m_sessions_mutex);
+	std::lock_guard<std::mutex> sessions_lock(m_sessions_mutex);
 	SessionMap::iterator it = m_sessions.find(session_id);
 	if (it == m_sessions.end()) {
 		retval = (PyObject*) Session_create(session_id);
@@ -1599,13 +1599,13 @@ PyObject *PythonReactor::getSession(PyObject *event_ptr)
 
 std::size_t PythonReactor::getNumSessions(void) const
 {
-	boost::mutex::scoped_lock sessions_lock(m_sessions_mutex);
+	std::lock_guard<std::mutex> sessions_lock(m_sessions_mutex);
 	return m_sessions.size();
 }
 
 void PythonReactor::flushSessions(void)
 {
-	boost::mutex::scoped_lock sessions_lock(m_sessions_mutex);
+	std::lock_guard<std::mutex> sessions_lock(m_sessions_mutex);
 	size_t num_sessions = m_sessions.size();
 
 	if (num_sessions > 0) {

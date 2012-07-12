@@ -22,7 +22,7 @@
 
 #include <string>
 #include <vector>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/platform/Codec.hpp>
@@ -170,7 +170,7 @@ private:
 	std::string							m_codec_id;
 
 	/// used to protect access to the codec pointer
-	boost::mutex						m_codec_mutex;
+	std::mutex						m_codec_mutex;
 };
 
 

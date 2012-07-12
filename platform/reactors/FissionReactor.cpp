@@ -102,7 +102,7 @@ void FissionReactor::setConfig(const Vocabulary& v, const xmlNodePtr config_ptr)
 	}
 
 	// get the codec to use
-	boost::mutex::scoped_lock codec_lock(m_codec_mutex);
+	std::unique_lock<std::mutex> codec_lock(m_codec_mutex);
 	if (! ConfigManager::getConfigOption(CODEC_ELEMENT_NAME, m_codec_id, config_ptr))
 		throw EmptyCodecException(getId());
 	getCodecPlugin(m_codec_ptr, m_codec_id);
@@ -152,7 +152,7 @@ void FissionReactor::updateVocabulary(const Vocabulary& v)
 	v.refreshTerm(m_input_event_type);
 	v.refreshTerm(m_input_event_term);
 
-	boost::mutex::scoped_lock codec_lock(m_codec_mutex);
+	std::lock_guard<std::mutex> codec_lock(m_codec_mutex);
 	if (m_codec_ptr)
 		m_codec_ptr->updateVocabulary(v);
 }
@@ -162,11 +162,11 @@ void FissionReactor::updateCodecs(void)
 	// check if the codec was deleted (if so, stop now!)
 	if (! hasCodecPlugin(m_codec_id)) {
 		stop();
-		boost::mutex::scoped_lock codec_lock(m_codec_mutex);
+		std::lock_guard<std::mutex> codec_lock(m_codec_mutex);
 		m_codec_ptr.reset();
 	} else {
 		// update the codec pointer
-		boost::mutex::scoped_lock codec_lock(m_codec_mutex);
+		std::lock_guard<std::mutex> codec_lock(m_codec_mutex);
 		getCodecPlugin(m_codec_ptr, m_codec_id);
 		PION_ASSERT(m_codec_ptr);
 	}
@@ -192,7 +192,7 @@ void FissionReactor::process(const EventPtr& e)
 			while ( isRunning() && !input_stream.eof() ) {
 
 				// only allow one thread to use the codec at a time
-				boost::mutex::scoped_lock codec_lock(m_codec_mutex);
+				std::unique_lock<std::mutex> codec_lock(m_codec_mutex);
 				event_factory.create(new_ptr, m_codec_ptr->getEventType());
 				read_result = m_codec_ptr->read(input_stream, *new_ptr);
 				codec_lock.unlock();

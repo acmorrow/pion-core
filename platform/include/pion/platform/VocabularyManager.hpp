@@ -24,7 +24,7 @@
 #include <memory>
 #include <string>
 #include <boost/signal.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/PionHashMap.hpp>
@@ -112,7 +112,7 @@ public:
 	 * @param out the ostream to write the configuration tree into
 	 */
 	virtual void writeConfigXML(std::ostream& out) const {
-		boost::mutex::scoped_lock manager_lock(m_mutex);
+		std::lock_guard<std::mutex> manager_lock(m_mutex);
 		ConfigManager::writeConfigXMLHeader(out);
 		ConfigManager::writeConfigXML(out, m_config_node_ptr, true);
 	}
@@ -315,7 +315,7 @@ public:
 	 */
 	template <typename VocabularyUpdateFunction>
 	inline boost::signals::connection registerForUpdates(VocabularyUpdateFunction f) const {
-		boost::mutex::scoped_lock signal_lock(m_signal_mutex);
+		std::lock_guard<std::mutex> signal_lock(m_signal_mutex);
 		return m_signal_vocabulary_updated.connect(f);
 	}
 	
@@ -326,7 +326,7 @@ public:
 	 * @return const std::string& the descriptive name assigned to the Vocabulary
 	 */
 	inline const std::string& getName(const std::string& vocab_id) const {
-		boost::mutex::scoped_lock manager_lock(m_mutex);
+		std::lock_guard<std::mutex> manager_lock(m_mutex);
 		VocabularyMap::const_iterator i = m_vocab_map.find(vocab_id);
 		if (i == m_vocab_map.end())
 			throw VocabularyNotFoundException(vocab_id);
@@ -340,7 +340,7 @@ public:
 	 * @return const std::string& the comment assigned to the Vocabulary
 	 */
 	inline const std::string& getComment(const std::string& vocab_id) const {
-		boost::mutex::scoped_lock manager_lock(m_mutex);
+		std::lock_guard<std::mutex> manager_lock(m_mutex);
 		VocabularyMap::const_iterator i = m_vocab_map.find(vocab_id);
 		if (i == m_vocab_map.end())
 			throw VocabularyNotFoundException(vocab_id);
@@ -349,19 +349,19 @@ public:
 
 	/// returns true if a particular Vocabulary is defined
 	inline bool hasVocabulary(const std::string& vocab_id) const {
-		boost::mutex::scoped_lock manager_lock(m_mutex);
+		std::lock_guard<std::mutex> manager_lock(m_mutex);
 		return (m_vocab_map.find(vocab_id) != m_vocab_map.end());
 	}
 	
 	/// returns true if a particular Vocabulary Term is defined
 	inline bool hasTerm(const std::string& term_id) const {
-		boost::mutex::scoped_lock manager_lock(m_mutex);
+		std::lock_guard<std::mutex> manager_lock(m_mutex);
 		return (m_vocabulary.findTerm(term_id) != Vocabulary::UNDEFINED_TERM_REF);
 	}
 	
 	/// returns a copy of the universal Vocabulary
 	inline VocabularyPtr getVocabulary(void) const {
-		boost::mutex::scoped_lock manager_lock(m_mutex);
+		std::lock_guard<std::mutex> manager_lock(m_mutex);
 		return VocabularyPtr(new Vocabulary(m_vocabulary));
 	}
 
@@ -383,13 +383,13 @@ private:
 	 */
 	template <typename Function>
 	inline void updateVocabulary(const std::string& vocab_id, Function f) {
-		boost::mutex::scoped_lock manager_lock(m_mutex);
+		std::unique_lock<std::mutex> manager_lock(m_mutex);
 		VocabularyMap::iterator i = m_vocab_map.find(vocab_id);
 		if (i == m_vocab_map.end())
 			throw VocabularyNotFoundException(vocab_id);
 		f(i->second);
 		manager_lock.unlock();
-		boost::mutex::scoped_lock signal_lock(m_signal_mutex);
+		std::lock_guard<std::mutex> signal_lock(m_signal_mutex);
 		m_signal_vocabulary_updated();
 	}
 	
@@ -429,10 +429,10 @@ private:
 	mutable boost::signal0<void>		m_signal_vocabulary_updated;
 
 	/// mutex used to protect the updated signal handler
-	mutable boost::mutex				m_signal_mutex;	
+	mutable std::mutex				m_signal_mutex;	
 	
 	/// mutex to make class thread-safe
-	mutable boost::mutex				m_mutex;	
+	mutable std::mutex				m_mutex;	
 };
 
 

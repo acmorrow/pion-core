@@ -23,7 +23,7 @@
 #include <vector>
 #include <boost/asio.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <boost/pool/pool.hpp>
 #include <boost/pool/pool_alloc.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
@@ -80,7 +80,7 @@ public:
 	enum { NUM_SAMPLES = 10 };
 
 	/// data type for a pointer to a thread
-	typedef std::shared_ptr<boost::thread>	ThreadPtr;
+	typedef std::shared_ptr<std::thread>	ThreadPtr;
 	
 	/// data type for a container of counters
 	typedef std::vector<boost::uint64_t>		CounterContainer;
@@ -234,7 +234,7 @@ public:
 
 	/// starts the performance test
 	virtual void start(void) {
-		m_consumer_ptr.reset(new boost::thread(std::bind(&HashValueTest::produce, this)));
+		m_consumer_ptr.reset(new std::thread(std::bind(&HashValueTest::produce, this)));
 	}
 
 protected:
@@ -328,11 +328,11 @@ public:
 	/// starts the performance test
 	virtual void start(void) {
 		for (unsigned int n = 0; n < ConsumerThreads; ++n) {
-			m_consumer_threads.push_back(ThreadPtr(new boost::thread(std::bind(&AllocTest::consume,
+			m_consumer_threads.push_back(ThreadPtr(new std::thread(std::bind(&AllocTest::consume,
 				this, std::ref(m_consumer_counters[n])))));
 		}
 		for (unsigned int n = 0; n < ProducerThreads; ++n) {
-			m_producer_threads.push_back(ThreadPtr(new boost::thread(std::bind(&AllocTest::produce,
+			m_producer_threads.push_back(ThreadPtr(new std::thread(std::bind(&AllocTest::produce,
 				this, std::ref(m_producer_counters[n])))));
 		}
 	}
@@ -746,7 +746,7 @@ protected:
 	inline Event *allocateEvent(void) {
 		void *mem_ptr(NULL);
 		if (m_lock_pool_access) {
-			boost::mutex::scoped_lock pool_malloc_lock(m_pool_mutex);
+			std::lock_guard<std::mutex> pool_malloc_lock(m_pool_mutex);
 			mem_ptr = m_pool_alloc.malloc();
 		} else {
 			mem_ptr = m_pool_alloc.malloc();
@@ -758,7 +758,7 @@ protected:
 	inline void deallocateEvent(Event *event_ptr) {
 		event_ptr->~Event();
 		if (m_lock_pool_access) {
-			boost::mutex::scoped_lock pool_free_lock(m_pool_mutex);
+			std::lock_guard<std::mutex> pool_free_lock(m_pool_mutex);
 			m_pool_alloc.free(event_ptr);
 		} else {
 			m_pool_alloc.free(event_ptr);
@@ -810,7 +810,7 @@ private:
 	boost::pool<>				m_pool_alloc;
 
 	/// mutex used to protect the memory pool
-	boost::mutex				m_pool_mutex;
+	std::mutex				m_pool_mutex;
 };
 
 
@@ -945,7 +945,7 @@ protected:
 
 	/// adds an allocator pointer for later release
 	void addAllocator(PerformanceTest::EventAllocatorPtr& ptr) {
-		boost::mutex::scoped_lock alloc_lock(m_alloc_mutex);
+		std::lock_guard<std::mutex> alloc_lock(m_alloc_mutex);
 		m_allocs.push_back(ptr);
 	}
 
@@ -954,7 +954,7 @@ protected:
 	std::vector<PerformanceTest::EventAllocatorPtr>		m_allocs;
 
 	/// mutex used to protect the event allocator pointers
-	boost::mutex				m_alloc_mutex;
+	std::mutex				m_alloc_mutex;
 
 	/// a shared queue of Event pointers
 	QueueType<EventPtr>			m_queue;

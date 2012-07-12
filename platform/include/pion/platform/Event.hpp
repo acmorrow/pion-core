@@ -32,7 +32,7 @@
 	#pragma warning(pop)
 #endif
 #include <boost/thread/once.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <boost/utility/enable_if.hpp>
 #include <boost/detail/atomic_count.hpp>
 #include <boost/iterator/iterator_facade.hpp>
@@ -1635,7 +1635,7 @@ private:
 		~EventAllocatorFactory() {
 #ifdef PION_EVENT_USE_POOL_ALLOCATORS
 			// lock access to the Event allocators
-			boost::unique_lock<boost::mutex> alloc_lock(m_alloc_mutex);
+			std::unique_lock<std::mutex> alloc_lock(m_alloc_mutex);
 			// destruct all the EventAllocators that have been generated
 			for (std::list<EventAllocator*>::iterator i = m_active_allocs.begin();
 				 i != m_active_allocs.end(); ++i)
@@ -1660,13 +1660,13 @@ private:
 		 * @return EventAllocator& reference to the thread's EventAllocator
 		 */
 		inline static EventAllocator& getAllocator(void) {
-			boost::call_once(EventAllocatorFactory::createInstance, m_instance_flag);
+			std::call_once(m_instance_flag, EventAllocatorFactory::createInstance);
 			EventAllocator *alloc_ptr;
 #ifdef PION_EVENT_USE_POOL_ALLOCATORS
 			alloc_ptr = m_instance_ptr->m_thread_alloc.get();
 			if (alloc_ptr == NULL) {
 				// no allocator found for this thread
-				boost::unique_lock<boost::mutex> alloc_lock(m_instance_ptr->m_alloc_mutex);
+				std::unique_lock<std::mutex> alloc_lock(m_instance_ptr->m_alloc_mutex);
 				if (m_instance_ptr->m_inactive_allocs.empty()) {
 					// no inactive allocators we can reuse -> create a new one
 					alloc_ptr = new EventAllocator();
@@ -1698,14 +1698,14 @@ private:
 #endif
 		{}
 		
-		/// creates the singleton instance, protected by boost::call_once
+		/// creates the singleton instance, protected by std::call_once
 		static void createInstance(void);
 		
 		/// used by thread_specific_ptr to release allocators when threads exit
 		static void releaseAllocator(EventAllocator *ptr) {
 #ifdef PION_EVENT_USE_POOL_ALLOCATORS
 			// do not free the EventAllocator since other threads may still need to dealloate Events!
-			boost::unique_lock<boost::mutex> alloc_lock(m_instance_ptr->m_alloc_mutex);
+			std::unique_lock<std::mutex> alloc_lock(m_instance_ptr->m_alloc_mutex);
 			// remove allocator from active list
 			for (std::list<EventAllocator*>::iterator i = m_instance_ptr->m_active_allocs.begin();
 				 i != m_instance_ptr->m_active_allocs.end(); ++i)
@@ -1734,7 +1734,7 @@ private:
 		std::list<EventAllocator*>						m_inactive_allocs;
 		
 		/// used to protect access to the EventAllocator containers
-		boost::mutex									m_alloc_mutex;
+		std::mutex									m_alloc_mutex;
 #else
 		/// use a single EventAllocator instance if not using memory pools
 		EventAllocator									m_single_alloc;
@@ -1744,7 +1744,7 @@ private:
 		static EventAllocatorFactory *					m_instance_ptr;
 		
 		/// used for thread-safe singleton pattern
-		static boost::once_flag							m_instance_flag;
+		static std::once_flag							m_instance_flag;
 	};
 	
 	

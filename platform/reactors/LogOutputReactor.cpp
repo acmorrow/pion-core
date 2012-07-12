@@ -108,7 +108,7 @@ void LogOutputReactor::process(const EventPtr& e)
 		return;
 
 	// lock mutex to ensure that only one Event may be written at a time
-	boost::mutex::scoped_lock log_writer_lock(m_log_writer_mutex);
+	std::unique_lock<std::mutex> log_writer_lock(m_log_writer_mutex);
 	
 	// write the Event to the log file
 	m_codec_ptr->write(m_log_stream, *e);

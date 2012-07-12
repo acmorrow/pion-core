@@ -71,7 +71,7 @@ ServiceManager::ServiceManager(const VocabularyManager& vocab_mgr, PlatformConfi
 
 void ServiceManager::shutdown(void)
 {
-	boost::mutex::scoped_lock services_lock(m_mutex);
+	std::lock_guard<std::mutex> services_lock(m_mutex);
 
 	// stop servers first otherwise you might have lingering threads
 	// that cause seg faults during shutdown
@@ -100,7 +100,7 @@ void ServiceManager::shutdown(void)
 
 void ServiceManager::openConfigFile(void)
 {
-	boost::mutex::scoped_lock services_lock(m_mutex);
+	std::lock_guard<std::mutex> services_lock(m_mutex);
 
 	// just return if it's already open
 	if (configIsOpen())
@@ -413,7 +413,7 @@ bool ServiceManager::writeServerXML(std::ostream& out,
 									const std::string& server_id) const
 {
 	// find the Server element with the specified ID in the XML config document
-	boost::mutex::scoped_lock services_lock(m_mutex);
+	std::lock_guard<std::mutex> services_lock(m_mutex);
 	xmlNodePtr server_node = findConfigNodeByAttr(SERVER_ELEMENT_NAME,
 												  ID_ATTRIBUTE_NAME,
 												  server_id,
@@ -478,7 +478,7 @@ void ServiceManager::handleServerError(HTTPRequestPtr& http_request,
 unsigned int ServiceManager::getPort(void) const
 {
 	unsigned int port_num = 0;
-	boost::mutex::scoped_lock services_lock(m_mutex);
+	std::lock_guard<std::mutex> services_lock(m_mutex);
 	ServerMap::const_iterator it = m_servers.begin();
 	if (it != m_servers.end())
 		port_num = it->second->getPort();

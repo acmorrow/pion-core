@@ -15,7 +15,7 @@
 #include <memory>
 #include <queue>
 #include <string>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <boost/tuple/tuple.hpp>
 #include <pion/PionLogger.hpp>
 #include <pion/net/WebService.hpp>
@@ -81,7 +81,7 @@ private:
 	LOG_QUEUE								m_log_event_queue;
 
 	/// mutex to make class thread-safe
-	boost::mutex							m_log_mutex;
+	std::mutex							m_log_mutex;
 
 public:
 	// member functions inherited from the Appender interface class

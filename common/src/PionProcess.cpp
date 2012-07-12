@@ -24,7 +24,7 @@ namespace pion {	// begin namespace pion
 	
 // static members of PionProcess
 	
-boost::once_flag				PionProcess::m_instance_flag = BOOST_ONCE_INIT;
+std::once_flag				PionProcess::m_instance_flag;
 PionProcess::PionProcessConfig *PionProcess::m_config_ptr = NULL;
 
 	
@@ -33,7 +33,7 @@ PionProcess::PionProcessConfig *PionProcess::m_config_ptr = NULL;
 void PionProcess::shutdown(void)
 {
 	PionProcessConfig& cfg = getPionProcessConfig();
-	boost::mutex::scoped_lock shutdown_lock(cfg.shutdown_mutex);
+	std::lock_guard<std::mutex> shutdown_lock(cfg.shutdown_mutex);
 	if (! cfg.shutdown_now) {
 		cfg.shutdown_now = true;
 		cfg.shutdown_cond.notify_all();
@@ -43,7 +43,7 @@ void PionProcess::shutdown(void)
 void PionProcess::wait_for_shutdown(void)
 {
 	PionProcessConfig& cfg = getPionProcessConfig();
-	boost::mutex::scoped_lock shutdown_lock(cfg.shutdown_mutex);
+	std::unique_lock<std::mutex> shutdown_lock(cfg.shutdown_mutex);
 	while (! cfg.shutdown_now)
 		cfg.shutdown_cond.wait(shutdown_lock);
 }

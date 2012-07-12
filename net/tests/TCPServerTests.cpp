@@ -12,7 +12,7 @@
 #include <pion/PionScheduler.hpp>
 #include <pion/net/TCPServer.hpp>
 #include <boost/asio.hpp>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <boost/test/unit_test.hpp>
 #include <pion/net/HTTPRequest.hpp>
 #include <pion/net/HTTPResponse.hpp>

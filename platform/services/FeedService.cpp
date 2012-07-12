@@ -102,7 +102,7 @@ void FeedWriter::writeEvent(EventPtr e)
 	PION_LOG_DEBUG(m_logger, "Sending event to " << getConnectionInfo()
 				   << " (" << getConnectionId() << ')');
 	// lock the mutex to ensure that only one Event is sent at a time
-	boost::mutex::scoped_lock send_lock(m_mutex);
+	std::lock_guard<std::mutex> send_lock(m_mutex);
 	if (e.get() == NULL) {
 		// Reactor is being removed -> close the connection
 		m_tcp_stream.close();
@@ -130,7 +130,7 @@ void FeedWriter::writeEvent(EventPtr e)
 void FeedWriter::start(void)
 {
 	// lock the mutex to ensure that the HTTP response is sent first
-	boost::mutex::scoped_lock send_lock(m_mutex);
+	std::lock_guard<std::mutex> send_lock(m_mutex);
 
 	// tell the ReactionEngine to start sending us Events
 	Reactor::EventHandler event_handler(std::bind(&FeedWriter::writeEvent,
@@ -166,7 +166,7 @@ FeedReader::~FeedReader()
 void FeedReader::reactorWasRemoved(void)
 {
 	// set the Reactor pointer to null so that we know to stop sending Events
-	boost::mutex::scoped_lock pointer_lock(m_mutex);
+	std::lock_guard<std::mutex> pointer_lock(m_mutex);
 	m_reactor_ptr = NULL;
 	// close the TCP stream to force it to stop blocking for input
 	m_tcp_stream.close();
@@ -198,7 +198,7 @@ void FeedReader::start(void)
 		while (m_tcp_stream.is_open() && m_codec_ptr->read(m_tcp_stream, *event_ptr)) {
 			PION_LOG_DEBUG(m_logger, "Read new event from " << getConnectionInfo()
 						   << " (" << getConnectionId() << ')');
-			boost::mutex::scoped_lock pointer_lock(m_mutex);
+			std::unique_lock<std::mutex> pointer_lock(m_mutex);
 			// stop reading Events if the Reactor was removed
 			if (m_reactor_ptr == NULL)
 				return;
@@ -212,7 +212,7 @@ void FeedReader::start(void)
 
 	// un-register the connection before exiting
 	// only if the Reactor pointer is not NULL (to prevent deadlock)
-	boost::mutex::scoped_lock pointer_lock(m_mutex);
+	std::lock_guard<std::mutex> pointer_lock(m_mutex);
 	if (m_reactor_ptr != NULL)
 		m_reaction_engine.removeTempConnection(getConnectionId());
 }

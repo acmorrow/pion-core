@@ -12,7 +12,7 @@
 
 #include <memory>
 #include <boost/asio.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/net/TCPConnection.hpp>
 
@@ -64,7 +64,7 @@ private:
 	boost::asio::deadline_timer				m_timer;
 	
 	/// mutex used to synchronize the TCP connection timer
-	boost::mutex							m_mutex;
+	std::mutex							m_mutex;
 
 	/// true if the deadline timer is active
 	bool									m_timer_active;	

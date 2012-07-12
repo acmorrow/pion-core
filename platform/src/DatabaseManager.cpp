@@ -41,7 +41,7 @@ DatabaseManager::DatabaseManager(const VocabularyManager& vocab_mgr)
 	
 DatabasePtr DatabaseManager::getDatabase(const std::string& database_id)
 {
-	boost::mutex::scoped_lock manager_lock(m_mutex);
+	std::lock_guard<std::mutex> manager_lock(m_mutex);
 	Database *database_ptr = m_plugins.get(database_id);
 	// throw an exception if the Database was not found
 	if (database_ptr == NULL)

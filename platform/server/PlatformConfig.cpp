@@ -68,7 +68,7 @@ PlatformConfig::PlatformConfig(void)
 
 void PlatformConfig::openConfigFile(void)
 {
-	boost::mutex::scoped_lock platform_lock(m_mutex);
+	std::lock_guard<std::mutex> platform_lock(m_mutex);
 
 	// just return if it's already open
 	if (configIsOpen())
@@ -321,7 +321,7 @@ void PlatformConfig::writeConfigXML(std::ostream& out) const
 		<< "\t<" << DATA_DIRECTORY_ELEMENT_NAME << '>' << m_data_directory
 		<< "</" << DATA_DIRECTORY_ELEMENT_NAME << '>' << std::endl;
 	
-	boost::mutex::scoped_lock platform_lock(m_mutex);
+	std::unique_lock<std::mutex> platform_lock(m_mutex);
 	for (std::vector<std::string>::const_iterator path_it = m_plugin_paths.begin();
 		 path_it != m_plugin_paths.end(); ++path_it)
 	{

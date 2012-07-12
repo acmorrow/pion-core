@@ -120,7 +120,7 @@ bool HTTPServer::findRequestHandler(const std::string& resource,
 									RequestHandler& request_handler) const
 {
 	// first make sure that HTTP resources are registered
-	boost::mutex::scoped_lock resource_lock(m_resource_mutex);
+	std::lock_guard<std::mutex> resource_lock(m_resource_mutex);
 	if (m_resources.empty())
 		return false;
 	
@@ -145,7 +145,7 @@ bool HTTPServer::findRequestHandler(const std::string& resource,
 void HTTPServer::addResource(const std::string& resource,
 							 RequestHandler request_handler)
 {
-	boost::mutex::scoped_lock resource_lock(m_resource_mutex);
+	std::lock_guard<std::mutex> resource_lock(m_resource_mutex);
 	const std::string clean_resource(stripTrailingSlash(resource));
 	m_resources.insert(std::make_pair(clean_resource, request_handler));
 	PION_LOG_INFO(m_logger, "Added request handler for HTTP resource: " << clean_resource);
@@ -153,7 +153,7 @@ void HTTPServer::addResource(const std::string& resource,
 
 void HTTPServer::removeResource(const std::string& resource)
 {
-	boost::mutex::scoped_lock resource_lock(m_resource_mutex);
+	std::lock_guard<std::mutex> resource_lock(m_resource_mutex);
 	const std::string clean_resource(stripTrailingSlash(resource));
 	m_resources.erase(clean_resource);
 	PION_LOG_INFO(m_logger, "Removed request handler for HTTP resource: " << clean_resource);
@@ -162,7 +162,7 @@ void HTTPServer::removeResource(const std::string& resource)
 void HTTPServer::addRedirect(const std::string& requested_resource,
 							 const std::string& new_resource)
 {
-	boost::mutex::scoped_lock resource_lock(m_resource_mutex);
+	std::lock_guard<std::mutex> resource_lock(m_resource_mutex);
 	const std::string clean_requested_resource(stripTrailingSlash(requested_resource));
 	const std::string clean_new_resource(stripTrailingSlash(new_resource));
 	m_redirects.insert(std::make_pair(clean_requested_resource, clean_new_resource));

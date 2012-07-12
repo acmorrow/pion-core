@@ -14,7 +14,7 @@
 #include <memory>
 #include <boost/static_assert.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <boost/pool/pool.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
@@ -92,7 +92,7 @@ public:
 		}
 #endif
 
-		boost::unique_lock<boost::mutex> pool_lock(pool_ptr->m_mutex);
+		std::unique_lock<std::mutex> pool_lock(pool_ptr->m_mutex);
 		return pool_ptr->m_pool.malloc();
 	}
 
@@ -125,7 +125,7 @@ public:
 				break;
 		}
 #else
-		boost::unique_lock<boost::mutex> pool_lock(pool_ptr->m_mutex);
+		std::unique_lock<std::mutex> pool_lock(pool_ptr->m_mutex);
 		return pool_ptr->m_pool.free(ptr);
 #endif
 	}
@@ -145,7 +145,7 @@ public:
 			FixedSizeAlloc *pool_ptr = m_pools[n].get();
 			// need to lock before releasing free list because of calls
 			// to pool::free()
-			boost::unique_lock<boost::mutex> pool_lock(pool_ptr->m_mutex);
+			std::unique_lock<std::mutex> pool_lock(pool_ptr->m_mutex);
 #if defined(PION_HAVE_LOCKFREE)
 			while (true) {
 				// get copy of free list pointer
@@ -212,7 +212,7 @@ protected:
 		{}
 		
 		/// used to protect access to the memory pool
-		boost::mutex		m_mutex;
+		std::mutex		m_mutex;
 
 		/// size of memory blocks managed by this allocator, in bytes
 		std::size_t			m_size;

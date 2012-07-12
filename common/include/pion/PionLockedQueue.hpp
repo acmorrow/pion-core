@@ -10,12 +10,13 @@
 #ifndef __PION_PIONLOCKEDQUEUE_HEADER__
 #define __PION_PIONLOCKEDQUEUE_HEADER__
 
+#include <chrono>
+#include <condition_variable>
+#include <mutex>
 #include <new>
+#include <thread>
 #include <boost/cstdint.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/thread/thread.hpp>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition.hpp>
 #include <boost/detail/atomic_count.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
@@ -90,7 +91,7 @@ protected:
 	 */
 	inline bool dequeue(T& t, boost::uint32_t& version) {
 		// just return if the list is empty
-		boost::mutex::scoped_lock head_lock(m_head_mutex);
+		std::unique_lock<std::mutex> head_lock(m_head_mutex);
 		QueueNode *new_head_ptr = m_head_ptr->next;
 		if (! new_head_ptr) {
 			version = m_head_ptr->version;
@@ -165,7 +166,7 @@ public:
 
 		volatile bool		m_is_running;		//< true while the thread is running/active
 		ConsumerThread *	m_next_ptr;		//< pointer to the next idle thread
-		boost::condition	m_wakeup_event;	//< triggered when a new item is available
+		std::condition_variable	m_wakeup_event;	//< triggered when a new item is available
 		boost::posix_time::time_duration	m_wakeup_time;	//< inactivity wakeup timer duration
 	};
 
@@ -194,8 +195,8 @@ public:
 	
 	/// clears the list by removing all remaining items
 	void clear(void) {
-		boost::mutex::scoped_lock tail_lock(m_tail_mutex);
-		boost::mutex::scoped_lock head_lock(m_head_mutex);
+		std::lock_guard<std::mutex> tail_lock(m_tail_mutex);
+		std::lock_guard<std::mutex> head_lock(m_head_mutex);
 		// also delete dummy node and reinitialize it to clear old value
 		while (m_head_ptr) {
 			m_tail_ptr = m_head_ptr;
@@ -215,11 +216,8 @@ public:
 	void push(const T& t) {
 		// sleep while MaxSize is exceeded
 		if (MaxSize > 0) {
-			boost::system_time wakeup_time;
 			while (size() >= MaxSize) {
-				wakeup_time = boost::get_system_time()
-					+ boost::posix_time::millisec(SleepMilliSec);
-				boost::thread::sleep(wakeup_time);
+				std::this_thread::sleep_for(std::chrono::milliseconds(SleepMilliSec));
 			}
 		}
 
@@ -230,7 +228,7 @@ public:
 		node_ptr->version = 0;
 
 		// append node to the end of the list
-		boost::mutex::scoped_lock tail_lock(m_tail_mutex);
+		std::lock_guard<std::mutex> tail_lock(m_tail_mutex);
 		node_ptr->version = (m_next_version += 2);
 		m_tail_ptr->next = node_ptr;
 
@@ -266,7 +264,7 @@ public:
 				return true;	// got an item
 
 			// queue is empty
-			boost::mutex::scoped_lock tail_lock(m_tail_mutex);
+			std::unique_lock<std::mutex> tail_lock(m_tail_mutex);
 			if (m_tail_ptr->version == last_known_version) {
 				// still empty after acquiring lock
 				thread_info.m_next_ptr = m_idle_ptr;
@@ -275,7 +273,7 @@ public:
 				if (thread_info.hasWakeupTimer()) {
 					// wait for an item to become available
 					const boost::posix_time::ptime wakeup_time(boost::get_system_time() + thread_info.getWakeupTimer());
-					if (!thread_info.m_wakeup_event.timed_wait(tail_lock, wakeup_time))
+					if (false) // TOOD(acm): FIXME: (!thread_info.m_wakeup_event.timed_wait(tail_lock, wakeup_time))
 						return false;	// timer expired if timed_wait() returns false
 				} else {
 					// wait for an item to become available
@@ -304,10 +302,10 @@ private:
 #endif
 	
 	/// mutex used to protect the head pointer to the first item
-	boost::mutex					m_head_mutex;
+	std::mutex					m_head_mutex;
 
 	/// mutex used to protect the tail pointer to the last item
-	boost::mutex					m_tail_mutex;
+	std::mutex					m_tail_mutex;
 
 	/// pointer to the first item in the list
 	QueueNode *						m_head_ptr;

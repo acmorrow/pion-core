@@ -59,7 +59,7 @@ void ScriptReactor::start(void)
 
 		// spawn a new thread that will be used to read events from the script
 		PION_LOG_DEBUG(m_logger, "Starting reader thread: " << getId());
-		m_thread_ptr.reset(new boost::thread(std::bind(&ScriptReactor::readEvents, this)));
+		m_thread_ptr.reset(new std::thread(std::bind(&ScriptReactor::readEvents, this)));
 	}
 }
 
@@ -195,7 +195,7 @@ void ScriptReactor::process(const EventPtr& e)
 	PION_ASSERT(m_input_codec_ptr);
 
 	// lock mutex to ensure that only one Event may be written at a time
-	boost::mutex::scoped_lock write_lock(m_write_mutex);
+	std::unique_lock<std::mutex> write_lock(m_write_mutex);
 
 	// write the Event to the pipe
 	m_input_codec_ptr->write(*m_input_stream_ptr, *e);

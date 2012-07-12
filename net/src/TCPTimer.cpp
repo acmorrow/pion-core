@@ -25,7 +25,7 @@ TCPTimer::TCPTimer(TCPConnectionPtr& conn_ptr)
 
 void TCPTimer::start(const boost::uint32_t seconds)
 {
-	boost::mutex::scoped_lock timer_lock(m_mutex);
+	std::lock_guard<std::mutex> timer_lock(m_mutex);
 	m_timer_active = true;
 	m_timer.expires_from_now(boost::posix_time::seconds(seconds));
 	m_timer.async_wait(std::bind(&TCPTimer::timerCallback,
@@ -34,7 +34,7 @@ void TCPTimer::start(const boost::uint32_t seconds)
 
 void TCPTimer::cancel(void)
 {
-	boost::mutex::scoped_lock timer_lock(m_mutex);
+	std::lock_guard<std::mutex> timer_lock(m_mutex);
 	m_was_cancelled = true;
 	if (m_timer_active)
 		m_timer.cancel();
@@ -42,7 +42,7 @@ void TCPTimer::cancel(void)
 
 void TCPTimer::timerCallback(const boost::system::error_code& ec)
 {
-	boost::mutex::scoped_lock timer_lock(m_mutex);
+	std::lock_guard<std::mutex> timer_lock(m_mutex);
 	m_timer_active = false;
 	if (! m_was_cancelled)
 		m_conn_ptr->close();

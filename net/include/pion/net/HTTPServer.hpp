@@ -15,7 +15,7 @@
 #include <memory>
 #include <string>
 #include <boost/asio.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/net/TCPServer.hpp>
 #include <pion/net/TCPConnection.hpp>
@@ -144,7 +144,7 @@ public:
 	/// clears the collection of resources recognized by the HTTP server
 	virtual void clear(void) {
 		if (isListening()) stop();
-		boost::mutex::scoped_lock resource_lock(m_resource_mutex);
+		std::lock_guard<std::mutex> resource_lock(m_resource_mutex);
 		m_resources.clear();
 	}
 
@@ -277,7 +277,7 @@ private:
 	ServerErrorHandler			m_server_error_handler;
 
 	/// mutex used to protect access to the resources
-	mutable boost::mutex		m_resource_mutex;
+	mutable std::mutex		m_resource_mutex;
 
 	/// pointer to authentication handler object
 	HTTPAuthPtr					m_auth;

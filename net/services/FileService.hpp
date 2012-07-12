@@ -16,7 +16,7 @@
 #include <boost/functional/hash.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/thread/once.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <boost/shared_array.hpp>
 #include <pion/PionLogger.hpp>
 #include <pion/PionException.hpp>
@@ -400,7 +400,7 @@ private:
 	static const unsigned long	DEFAULT_MAX_CHUNK_SIZE;
 
 	/// flag used to make sure that createMIMETypes() is called only once
-	static boost::once_flag		m_mime_types_init_flag;
+	static std::once_flag		m_mime_types_init_flag;
 
 	/// map of file extensions to MIME types
 	static MIMETypeMap *		m_mime_types_ptr;
@@ -416,7 +416,7 @@ private:
 	CacheMap					m_cache_map;
 
 	/// mutex used to make the file cache thread-safe
-	boost::mutex				m_cache_mutex;
+	std::mutex				m_cache_mutex;
 
 	/**
 	 * cache configuration setting:

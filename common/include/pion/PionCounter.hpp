@@ -12,7 +12,7 @@
 
 #include <pion/PionConfig.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 
 
 namespace pion {	// begin namespace pion
@@ -26,34 +26,34 @@ protected:
 	
 	/// increments the value of the counter
 	inline void increment(void) {
-		boost::mutex::scoped_lock counter_lock(m_mutex);
+		std::lock_guard<std::mutex> counter_lock(m_mutex);
 		++m_value;
 	}
 	
 	/// decrement the value of the counter
 	inline void decrement(void) {
-		boost::mutex::scoped_lock counter_lock(m_mutex);
+		std::lock_guard<std::mutex> counter_lock(m_mutex);
 		--m_value;
 	}
 	
 	/// adds a value to the counter
 	template <typename IntegerType>
 	inline void add(const IntegerType& n) {
-		boost::mutex::scoped_lock counter_lock(m_mutex);
+		std::lock_guard<std::mutex> counter_lock(m_mutex);
 		m_value += n;
 	}
 	
 	/// subtracts a value from the counter
 	template <typename IntegerType>
 	inline void subtract(const IntegerType& n) {
-		boost::mutex::scoped_lock counter_lock(m_mutex);
+		std::lock_guard<std::mutex> counter_lock(m_mutex);
 		m_value -= n;
 	}
 
 	/// assigns a new value to the counter
 	template <typename IntegerType>
 	inline void assign(const IntegerType& n) {
-		boost::mutex::scoped_lock counter_lock(m_mutex);
+		std::lock_guard<std::mutex> counter_lock(m_mutex);
 		m_value = n;
 	}
 	
@@ -124,7 +124,7 @@ public:
 private:
 
 	/// mutex used to protect the counter's value
-	boost::mutex				m_mutex;
+	std::mutex				m_mutex;
 	
 	/// used to keep track of the counter's value
 	boost::uint64_t				m_value;

@@ -44,7 +44,7 @@ VocabularyManager::VocabularyManager(void)
 
 void VocabularyManager::createConfigFile(void)
 {
-	boost::mutex::scoped_lock manager_lock(m_mutex);
+	std::lock_guard<std::mutex> manager_lock(m_mutex);
 	
 	// just return if it's already open
 	if (configIsOpen())
@@ -70,7 +70,7 @@ void VocabularyManager::createConfigFile(void)
 	
 void VocabularyManager::openConfigFile(void)
 {
-	boost::mutex::scoped_lock manager_lock(m_mutex);
+	std::unique_lock<std::mutex> manager_lock(m_mutex);
 	
 	// just return if it's already open
 	if (configIsOpen())
@@ -128,14 +128,14 @@ void VocabularyManager::openConfigFile(void)
 
 	// notify everyone that the vocabulary was updated
 	PION_LOG_INFO(m_logger, "Loaded global Vocabulary configuration file: " << m_config_file);
-	boost::mutex::scoped_lock signal_lock(m_signal_mutex);
+	std::lock_guard<std::mutex> signal_lock(m_signal_mutex);
 	m_signal_vocabulary_updated();
 }
 	
 bool VocabularyManager::writeConfigXML(std::ostream& out,
 									   const std::string& vocab_id) const
 {
-	boost::mutex::scoped_lock manager_lock(m_mutex);
+	std::lock_guard<std::mutex> manager_lock(m_mutex);
 	
 	// find the VocabularyConfig object
 	VocabularyMap::const_iterator vocab_iterator = m_vocab_map.find(vocab_id);
@@ -151,7 +151,7 @@ bool VocabularyManager::writeConfigXML(std::ostream& out,
 bool VocabularyManager::writeTermConfigXML(std::ostream& out,
 										   const std::string& term_id) const
 {
-	boost::mutex::scoped_lock manager_lock(m_mutex);
+	std::lock_guard<std::mutex> manager_lock(m_mutex);
 
 	Vocabulary::TermRef term_ref = m_vocabulary.findTerm(term_id);
 	if (term_ref == Vocabulary::UNDEFINED_TERM_REF)
@@ -167,7 +167,7 @@ bool VocabularyManager::writeTermConfigXML(std::ostream& out,
 void VocabularyManager::writeTermConfigXML(std::ostream& out) const
 {
 	ConfigManager::writeBeginPionConfigXML(out);
-	boost::mutex::scoped_lock manager_lock(m_mutex);
+	std::lock_guard<std::mutex> manager_lock(m_mutex);
 	for (Vocabulary::TermRef ref = 1; ref <= m_vocabulary.size(); ++ref) {
 		if (m_vocabulary[ref].term_ref != Vocabulary::UNDEFINED_TERM_REF) {
 			VocabularyConfig::writeTermConfigXML(out, m_vocabulary[ref]);
@@ -180,7 +180,7 @@ void VocabularyManager::addVocabulary(const std::string& vocab_id,
 									  const std::string& vocab_name,
 									  const std::string& vocab_comment)
 {
-	boost::mutex::scoped_lock manager_lock(m_mutex);
+	std::unique_lock<std::mutex> manager_lock(m_mutex);
 
 	// make sure that the Vocabulary configuration file is open
 	if (! configIsOpen())
@@ -223,7 +223,7 @@ void VocabularyManager::addVocabulary(const std::string& vocab_id,
 	
 	// notify everyone that the vocabulary was updated
 	PION_LOG_DEBUG(m_logger, "Added new Vocabulary: " << vocab_id);
-	boost::mutex::scoped_lock signal_lock(m_signal_mutex);
+	std::lock_guard<std::mutex> signal_lock(m_signal_mutex);
 	m_signal_vocabulary_updated();
 }
 
@@ -251,7 +251,7 @@ void VocabularyManager::addVocabulary(const std::string& vocab_id,
 
 void VocabularyManager::removeVocabulary(const std::string& vocab_id)
 {
-	boost::mutex::scoped_lock manager_lock(m_mutex);
+	std::unique_lock<std::mutex> manager_lock(m_mutex);
 	
 	// make sure that the Vocabulary configuration file is open
 	if (! configIsOpen())
@@ -282,13 +282,13 @@ void VocabularyManager::removeVocabulary(const std::string& vocab_id)
 	
 	// notify everyone that the vocabulary was updated
 	PION_LOG_DEBUG(m_logger, "Removed Vocabulary: " << vocab_id);
-	boost::mutex::scoped_lock signal_lock(m_signal_mutex);
+	std::lock_guard<std::mutex> signal_lock(m_signal_mutex);
 	m_signal_vocabulary_updated();
 }
 	
 void VocabularyManager::setVocabularyPath(const std::string& vocab_path)
 {
-	boost::mutex::scoped_lock manager_lock(m_mutex);
+	std::lock_guard<std::mutex> manager_lock(m_mutex);
 
 	// resolve relative vocabulary paths
 	m_vocab_path = ConfigManager::resolveRelativePath(vocab_path);

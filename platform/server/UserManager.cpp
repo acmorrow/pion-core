@@ -131,7 +131,7 @@ bool UserManager::setUserConfig(xmlNodePtr user_node_ptr, xmlNodePtr config_ptr)
 
 void UserManager::openConfigFile(void)
 {
-	boost::mutex::scoped_lock users_lock(m_mutex);
+	std::lock_guard<std::mutex> users_lock(m_mutex);
 
 	// just return if it's already open
 	if (configIsOpen())
@@ -175,7 +175,7 @@ void UserManager::openConfigFile(void)
 
 void UserManager::writeConfigXML(std::ostream& out) const 
 {
-	boost::mutex::scoped_lock users_lock(m_mutex);
+	std::lock_guard<std::mutex> users_lock(m_mutex);
 	ConfigManager::writeConfigXML(out, m_config_node_ptr, true);
 }
 
@@ -183,7 +183,7 @@ bool UserManager::writeConfigXML(std::ostream& out,
 									const std::string& user_id) const
 {
 	// find the plug-in element in the XML config document
-	boost::mutex::scoped_lock users_lock(m_mutex);
+	std::lock_guard<std::mutex> users_lock(m_mutex);
 	xmlNodePtr user_node = findConfigNodeByAttr(USER_ELEMENT_NAME,
 		ID_ATTRIBUTE_NAME,
 		user_id,
@@ -204,7 +204,7 @@ std::string UserManager::addUser(const std::string& user_id, xmlNodePtr config_p
 {
 #ifdef PION_HAVE_SSL
 
-	boost::mutex::scoped_lock users_lock(m_mutex);
+	std::lock_guard<std::mutex> users_lock(m_mutex);
 
 	// Sanity check
 	if (user_id.empty())
@@ -249,7 +249,7 @@ std::string UserManager::addUser(const std::string& user_id, xmlNodePtr config_p
 bool UserManager::writePermissionsXML(std::ostream& out, const std::string& user_id) const
 {
 	// find the User node in users.xml
-	boost::mutex::scoped_lock users_lock(m_mutex);
+	std::lock_guard<std::mutex> users_lock(m_mutex);
 	xmlNodePtr user_node = findConfigNodeByAttr(USER_ELEMENT_NAME,
 		ID_ATTRIBUTE_NAME,
 		user_id,
@@ -285,7 +285,7 @@ void UserManager::setUserConfig(const std::string& user_id, xmlNodePtr config_pt
 
 #ifdef PION_HAVE_SSL
 	// Find existing user configuration
-	boost::mutex::scoped_lock users_lock(m_mutex);
+	std::lock_guard<std::mutex> users_lock(m_mutex);
 	xmlNodePtr user_node = findConfigNodeByAttr(USER_ELEMENT_NAME,
 		ID_ATTRIBUTE_NAME,
 		user_id,
@@ -313,7 +313,7 @@ bool UserManager::removeUser(const std::string& user_id)
 	bool ret = false;
 
 #ifdef PION_HAVE_SSL
-	boost::mutex::scoped_lock users_lock(m_mutex);
+	std::lock_guard<std::mutex> users_lock(m_mutex);
 	ret = PionUserManager::removeUser(user_id);
 	if (ret) {
 		removePluginConfig(USER_ELEMENT_NAME, user_id);
@@ -334,7 +334,7 @@ bool UserManager::isAdmin(const pion::net::PionUserPtr user_ptr) const
 		throw ConfigNotOpenException(getConfigFile());
 
 	// Find the configuration node for the User. 
-	boost::mutex::scoped_lock users_lock(m_mutex);
+	std::lock_guard<std::mutex> users_lock(m_mutex);
 	xmlNodePtr user_node = findConfigNodeByAttr(USER_ELEMENT_NAME, ID_ATTRIBUTE_NAME, user_ptr->getUsername(), m_config_node_ptr->children);
 
 	if (user_node == NULL)
@@ -354,7 +354,7 @@ xmlNodePtr UserManager::getPermissionNode(pion::net::PionUserPtr user_ptr, const
 		throw ConfigNotOpenException(getConfigFile());
 
 	// Find the configuration node for the User. 
-	boost::mutex::scoped_lock users_lock(m_mutex);
+	std::lock_guard<std::mutex> users_lock(m_mutex);
 	xmlNodePtr user_node = findConfigNodeByAttr(USER_ELEMENT_NAME, ID_ATTRIBUTE_NAME, user_ptr->getUsername(), m_config_node_ptr->children);
 
 	if (user_node == NULL)

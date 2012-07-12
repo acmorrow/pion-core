@@ -34,7 +34,7 @@ const boost::uint32_t	HTTPParser::COOKIE_NAME_MAX = 1024;	// 1 KB
 const boost::uint32_t	HTTPParser::COOKIE_VALUE_MAX = 1024 * 1024;	// 1 MB
 const std::size_t		HTTPParser::DEFAULT_CONTENT_MAX = 1024 * 1024;	// 1 MB
 HTTPParser::ErrorCategory *	HTTPParser::m_error_category_ptr = NULL;
-boost::once_flag			HTTPParser::m_instance_flag = BOOST_ONCE_INIT;
+std::once_flag			HTTPParser::m_instance_flag;
 
 
 // HTTPParser member functions

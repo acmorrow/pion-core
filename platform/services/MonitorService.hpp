@@ -25,7 +25,7 @@
 #include <iosfwd>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/circular_buffer.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <boost/unordered_map.hpp>
 #include <pion/net/HTTPTypes.hpp>
 #include <pion/PionConfig.hpp>
@@ -65,7 +65,7 @@ private:
 	const std::string					m_reactor_id;
 
 	/// mutex used to protect the MonitorHandler's data
-	mutable boost::mutex				m_mutex;
+	mutable std::mutex				m_mutex;
 
 	/// Circular buffer to capture scrolling window of events
 	EventBuffer							m_event_buffer;
@@ -158,7 +158,7 @@ public:
 	 * @param Flush (default false) -- flush events; if aged out
 	 */
 	void stop(bool Stop = true, bool Flush = false) {
-		boost::mutex::scoped_lock writer_lock(m_mutex);
+		std::lock_guard<std::mutex> writer_lock(m_mutex);
 		if (!m_stopped) {
 			PION_LOG_INFO(m_logger, "Stopping output feed to " << getConnectionId());
 			if (Stop) {
@@ -218,7 +218,7 @@ class MonitorService
 	std::vector<MonitorWriterPtr>		m_writers;
 
 	/// mutex used to protect the MonitorService's data
-	mutable boost::mutex				m_mutex;
+	mutable std::mutex				m_mutex;
 
 public:
 	
@@ -233,7 +233,7 @@ public:
 	virtual ~MonitorService()
 	{
 		PION_LOG_INFO(m_logger, "shutdown - clearing all writers");
-		boost::mutex::scoped_lock service_lock(m_mutex);
+		std::lock_guard<std::mutex> service_lock(m_mutex);
 		m_writers.clear();
 	}
 	

@@ -23,7 +23,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionScheduler.hpp>
 #include <pion/PionException.hpp>
@@ -59,7 +59,7 @@ public:
 	/// Starts the thread scheduler (this is called automatically when necessary)
 	virtual void startup(void) {
 		// lock mutex for thread safety
-		boost::mutex::scoped_lock scheduler_lock(m_mutex);
+		std::lock_guard<std::mutex> scheduler_lock(m_mutex);
 		
 		if (! m_is_running) {
 			PION_LOG_INFO(m_logger, "Starting thread scheduler");
@@ -70,12 +70,12 @@ public:
 			keepRunning(m_service, m_timer);
 
 			// start a thread that will be used to handle io_service requests
-			m_service_thread.reset(new boost::thread( std::bind(&PionScheduler::processServiceWork,
+			m_service_thread.reset(new std::thread( std::bind(&PionScheduler::processServiceWork,
 																  this, std::ref(m_service)) ));
 			
 			// start multiple threads to handle async tasks
 			for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
-				std::shared_ptr<boost::thread> new_thread(new boost::thread(
+				std::shared_ptr<std::thread> new_thread(new std::thread(
 					std::bind(&ReactionScheduler::processReactionQueue, this) ));
 				m_thread_pool.push_back(new_thread);
 			}
@@ -88,7 +88,7 @@ public:
 		PionSingleServiceScheduler::stopThreads();
 		if (m_service_thread)
 			m_service_thread->join();
-		boost::mutex::scoped_lock thread_info_lock(m_thread_info_mutex);
+		std::lock_guard<std::mutex> thread_info_lock(m_thread_info_mutex);
 		m_thread_info.clear();
 	}
 
@@ -134,14 +134,14 @@ protected:
 	ThreadInfoPtr getThreadInfo(void) {
 		// configure consumer thread to wakeup every second
 		ThreadInfoPtr info_ptr(new ReactionQueue::ConsumerThread(boost::posix_time::seconds(1)));
-		boost::mutex::scoped_lock thread_info_lock(m_thread_info_mutex);
+		std::lock_guard<std::mutex> thread_info_lock(m_thread_info_mutex);
 		m_thread_info.push_back(info_ptr);
 		return info_ptr;
 	}
 
 	/// sets all thread info objects to stop (forces return for pop())
 	void stopThreadInfo(void) {
-		boost::mutex::scoped_lock thread_info_lock(m_thread_info_mutex);
+		std::lock_guard<std::mutex> thread_info_lock(m_thread_info_mutex);
 		for (ThreadInfoVector::iterator i = m_thread_info.begin();
 			i != m_thread_info.end(); ++i)
 		{
@@ -199,13 +199,13 @@ protected:
 	ReactionQueue						m_reaction_queue;
 
 	/// thread that is used to handle io_service requests
-	std::shared_ptr<boost::thread>	m_service_thread;
+	std::shared_ptr<std::thread>	m_service_thread;
 
 	/// info objects for consumer threads used to manage signaling
 	ThreadInfoVector					m_thread_info;
 
 	/// used to provide thread safety for the thread info vector
-	boost::mutex						m_thread_info_mutex;
+	std::mutex						m_thread_info_mutex;
 };
 	
 	

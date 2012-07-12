@@ -22,7 +22,7 @@
 
 #include <memory>
 #include <string>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionLogger.hpp>
 #include <pion/net/TCPStream.hpp>
@@ -116,7 +116,7 @@ protected:
 	pion::net::TCPStream				m_tcp_stream;
 	
 	/// mutex used to protect the FeedHandler's data
-	mutable boost::mutex				m_mutex;	
+	mutable std::mutex				m_mutex;	
 };			
 
 	

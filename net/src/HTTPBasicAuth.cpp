@@ -41,7 +41,7 @@ bool HTTPBasicAuth::handleRequest(HTTPRequestPtr& request, TCPConnectionPtr& tcp
 	PionDateTime time_now(boost::posix_time::second_clock::universal_time());
 	if (time_now > m_cache_cleanup_time + boost::posix_time::seconds(CACHE_EXPIRATION)) {
 		// expire cache
-		boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+		std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 		PionUserCache::iterator i;
 		PionUserCache::iterator next=m_user_cache.begin();
 		while (next!=m_user_cache.end()) {
@@ -61,7 +61,7 @@ bool HTTPBasicAuth::handleRequest(HTTPRequestPtr& request, TCPConnectionPtr& tcp
 		std::string credentials;
 		if (parseAuthorization(authorization, credentials)) {
 			// to do - use fast cache to match with active credentials
-			boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+			std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 			PionUserCache::iterator user_cache_ptr=m_user_cache.find(credentials);
 			if (user_cache_ptr!=m_user_cache.end()) {
 				// we found the credentials in our cache...

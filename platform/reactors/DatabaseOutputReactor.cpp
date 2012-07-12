@@ -193,7 +193,7 @@ void DatabaseOutputReactor::process(const EventPtr& e)
 
 boost::uint16_t DatabaseOutputReactor::nextInserter(void)
 {
-	boost::mutex::scoped_lock queue_lock(m_inserter_mutex);
+	std::lock_guard<std::mutex> queue_lock(m_inserter_mutex);
 	const boost::uint16_t result = m_next_inserter;
 	if (++m_next_inserter >= m_num_inserters)
 		m_next_inserter = 0;

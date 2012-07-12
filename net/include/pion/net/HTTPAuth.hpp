@@ -163,7 +163,7 @@ protected:
 	AuthResourceSet				m_white_list;
 
 	/// mutex used to protect access to the resources
-	mutable boost::mutex		m_resource_mutex;
+	mutable std::mutex		m_resource_mutex;
 };
 
 /// data type for a HTTPAuth pointer

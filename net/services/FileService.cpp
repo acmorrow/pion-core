@@ -32,7 +32,7 @@ const unsigned int			FileService::DEFAULT_CACHE_SETTING = 1;
 const unsigned int			FileService::DEFAULT_SCAN_SETTING = 0;
 const unsigned long			FileService::DEFAULT_MAX_CACHE_SIZE = 0;	/* 0=disabled */
 const unsigned long			FileService::DEFAULT_MAX_CHUNK_SIZE = 0;	/* 0=disabled */
-boost::once_flag			FileService::m_mime_types_init_flag = BOOST_ONCE_INIT;
+std::once_flag			FileService::m_mime_types_init_flag;
 FileService::MIMETypeMap	*FileService::m_mime_types_ptr = NULL;
 
 
@@ -217,7 +217,7 @@ void FileService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 		if (m_cache_setting > 0 || m_scan_setting > 0) {
 
 			// search for a matching cache entry
-			boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+			std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 			CacheMap::iterator cache_itr = m_cache_map.find(relative_path);
 
 			if (cache_itr == m_cache_map.end()) {
@@ -349,7 +349,7 @@ void FileService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_conn
 					// add new entry to the cache
 					PION_LOG_DEBUG(m_logger, "Adding cache entry for request ("
 								   << getResource() << "): " << relative_path);
-					boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+					std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 					m_cache_map.insert( std::make_pair(relative_path, response_file) );
 				}
 			}
@@ -580,7 +580,7 @@ void FileService::start(void)
 		if (m_cache_setting == 0 && m_scan_setting > 1)
 			m_cache_setting = 1;
 
-		boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+		std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 
 		// add entry for file if one is defined
 		if (! m_file.empty()) {
@@ -599,7 +599,7 @@ void FileService::stop(void)
 {
 	PION_LOG_DEBUG(m_logger, "Shutting down resource (" << getResource() << ')');
 	// clear cached files (if started again, it will re-scan)
-	boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+	std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 	m_cache_map.clear();
 }
 
@@ -692,7 +692,7 @@ FileService::addCacheEntry(const std::string& relative_path,
 
 std::string FileService::findMIMEType(const std::string& file_name) {
 	// initialize m_mime_types if it hasn't been done already
-	boost::call_once(FileService::createMIMETypes, m_mime_types_init_flag);
+	std::call_once(m_mime_types_init_flag, FileService::createMIMETypes);
 
 	// determine the file's extension
 	std::string extension(file_name.substr(file_name.find_last_of('.') + 1));

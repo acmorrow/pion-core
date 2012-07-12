@@ -59,7 +59,7 @@ void MonitorWriter::writeEvent(EventPtr e)
 	} else {
 		try {
 			// lock the mutex to ensure that only one Event is sent at a time
-			boost::mutex::scoped_lock writer_lock(m_mutex);
+			std::unique_lock<std::mutex> writer_lock(m_mutex);
 			const Vocabulary::TermRef tref = e->getType();
 			m_events_seen.insert(tref);
 			// if this event type is NOT found in filtered_events, then add it to the stream
@@ -88,7 +88,7 @@ void MonitorWriter::start(const HTTPTypes::QueryParams& qp)
 	setQP(qp);	// Configure settings based on query parameters
 
 	// lock the mutex to ensure that the HTTP response is sent first
-	boost::mutex::scoped_lock writer_lock(m_mutex);
+	std::lock_guard<std::mutex> writer_lock(m_mutex);
 
 	// tell the ReactionEngine to start sending us Events
 	Reactor::EventHandler event_handler(std::bind(&MonitorWriter::writeEvent,
@@ -158,7 +158,7 @@ std::string MonitorWriter::getStatus(const HTTPTypes::QueryParams& qp)
 	std::ostringstream xml;
 	unsigned size;
 	{
-		boost::mutex::scoped_lock writer_lock(m_mutex);
+		std::lock_guard<std::mutex> writer_lock(m_mutex);
 		size = m_event_buffer.size();
 		for (boost::circular_buffer<pion::platform::EventPtr>::const_iterator i = m_event_buffer.begin(); i != m_event_buffer.end(); i++) {
 			// traverse through all terms in event
@@ -216,7 +216,7 @@ std::string MonitorWriter::getStatus(const HTTPTypes::QueryParams& qp)
 
 void MonitorWriter::setQP(const HTTPTypes::QueryParams& qp)
 {
-	boost::mutex::scoped_lock writer_lock(m_mutex);
+	std::lock_guard<std::mutex> writer_lock(m_mutex);
 
 	setAge();
 
@@ -336,7 +336,7 @@ void MonitorService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_c
 	const std::string verb(branches[0]);
 
 	// only allow one thread to make changes at a time
-	boost::mutex::scoped_lock service_lock(m_mutex);
+	std::lock_guard<std::mutex> service_lock(m_mutex);
 
 	// check the request method to determine if we should read or write Events
 	if (request->getMethod() == HTTPTypes::REQUEST_METHOD_GET) {

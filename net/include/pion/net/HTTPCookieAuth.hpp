@@ -167,7 +167,7 @@ private:
 	PionUserCache				m_user_cache;
 	
 	/// mutex used to protect access to the user cache
-	mutable boost::mutex		m_cache_mutex;
+	mutable std::mutex		m_cache_mutex;
 };
 
 	

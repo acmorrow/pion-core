@@ -39,7 +39,7 @@ ProtocolFactory::ProtocolFactory(const VocabularyManager& vocab_mgr)
 	
 ProtocolPtr ProtocolFactory::getProtocol(const std::string& protocol_id)
 {
-	boost::mutex::scoped_lock factory_lock(m_mutex);
+	std::lock_guard<std::mutex> factory_lock(m_mutex);
 	Protocol *protocol_ptr = m_plugins.get(protocol_id);
 	// throw an exception if the protocol was not found
 	if (protocol_ptr == NULL)

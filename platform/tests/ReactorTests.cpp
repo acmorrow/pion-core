@@ -29,7 +29,7 @@
 #include <pion/platform/DatabaseManager.hpp>
 #include <boost/regex.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/mpl/list.hpp>

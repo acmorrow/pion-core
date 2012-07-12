@@ -73,7 +73,7 @@ bool HTTPCookieAuth::handleRequest(HTTPRequestPtr& request, TCPConnectionPtr& tc
 	const std::string auth_cookie(request->getCookie(AUTH_COOKIE_NAME));
 	if (! auth_cookie.empty()) {
 		// check if this cookie is in user cache
-		boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+		std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 		PionUserCache::iterator user_cache_itr=m_user_cache.find(auth_cookie);
 		if (user_cache_itr != m_user_cache.end()) {
 			// we find those credential in our cache...
@@ -139,14 +139,14 @@ bool HTTPCookieAuth::processLogin(HTTPRequestPtr& http_request, TCPConnectionPtr
 
 		// add new session to cache
 		PionDateTime time_now(boost::posix_time::second_clock::universal_time());
-		boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+		std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 		m_user_cache.insert(std::make_pair(new_cookie,std::make_pair(time_now,user)));
 	} else {
 		// process logout sequence
 		// if auth cookie presented - clean cache out
 		const std::string auth_cookie(http_request->getCookie(AUTH_COOKIE_NAME));
 		if (! auth_cookie.empty()) {
-			boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+			std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 			PionUserCache::iterator user_cache_itr=m_user_cache.find(auth_cookie);
 			if (user_cache_itr!=m_user_cache.end()) {
 				m_user_cache.erase(user_cache_itr);
@@ -262,7 +262,7 @@ void HTTPCookieAuth::expireCache(const PionDateTime &time_now)
 {
 	if (time_now > m_cache_cleanup_time + boost::posix_time::seconds(CACHE_EXPIRATION)) {
 		// expire cache
-		boost::mutex::scoped_lock cache_lock(m_cache_mutex);
+		std::lock_guard<std::mutex> cache_lock(m_cache_mutex);
 		PionUserCache::iterator i;
 		PionUserCache::iterator next=m_user_cache.begin();
 		while (next!=m_user_cache.end()) {

@@ -354,7 +354,7 @@ public:
 	
 	/// returns an instance of HTTPParser::ErrorCategory
 	static inline ErrorCategory& getErrorCategory(void) {
-		boost::call_once(HTTPParser::createErrorCategory, m_instance_flag);
+		std::call_once(m_instance_flag, HTTPParser::createErrorCategory);
 		return *m_error_category_ptr;
 	}
 
@@ -610,7 +610,7 @@ private:
 	static ErrorCategory *				m_error_category_ptr;
 		
 	/// used to ensure thread safety of the HTTPParser ErrorCategory
-	static boost::once_flag				m_instance_flag;
+	static std::once_flag				m_instance_flag;
 };
 
 

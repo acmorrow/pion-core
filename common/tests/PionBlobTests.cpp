@@ -15,7 +15,7 @@
 #include <pion/PionId.hpp>
 #include <pion/PionHashMap.hpp>
 #include <boost/variant.hpp>
-#include <boost/thread/thread.hpp>
+#include <thread>
 #include <boost/test/unit_test.hpp>
 
 using namespace pion;
@@ -249,7 +249,7 @@ BOOST_AUTO_TEST_CASE(checkCreateLotsOfCopiesInMultipleThreads) {
 	static const std::size_t NUM_THREADS = 10;
 	static const std::size_t BLOB_COPIES = 10000;
 	
-	typedef std::unique_ptr<boost::thread>	ThreadPtr;
+	typedef std::unique_ptr<std::thread>	ThreadPtr;
 	std::unique_ptr<ThreadPtr[]>	threads(new ThreadPtr[NUM_THREADS]);
 
 	BlobType b;
@@ -257,7 +257,7 @@ BOOST_AUTO_TEST_CASE(checkCreateLotsOfCopiesInMultipleThreads) {
 	BOOST_CHECK(b.unique());
 
 	for (std::size_t n = 0; n < NUM_THREADS; ++n) {
-		threads[n].reset(new boost::thread(std::bind(&PionBlobTests_F::createCopies, b, BLOB_COPIES)));
+		threads[n].reset(new std::thread(std::bind(&PionBlobTests_F::createCopies, b, BLOB_COPIES)));
 	}
 
 	BOOST_CHECK(! b.unique());

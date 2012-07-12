@@ -24,7 +24,7 @@
 #include <vector>
 #include <libxml/tree.h>
 #include <boost/cstdint.hpp>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/platform/ConfigManager.hpp>
@@ -280,7 +280,7 @@ private:
 	bool									m_debug_mode;
 	
 	/// mutex to make class thread-safe
-	mutable boost::mutex					m_mutex;	
+	mutable std::mutex					m_mutex;	
 };
 
 
