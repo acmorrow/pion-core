@@ -17,8 +17,8 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <memory>
 #include <vector>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/detail/atomic_count.hpp>
 #include <pion/PionConfig.hpp>
@@ -1292,7 +1292,7 @@ public:
 		}
 	}
 
-	typedef boost::shared_ptr<boost::thread>	ThreadPtr;
+	typedef std::shared_ptr<boost::thread>	ThreadPtr;
 	typedef std::vector<ThreadPtr>				ThreadPool;
 	
 	boost::detail::atomic_count		m_num_matches;

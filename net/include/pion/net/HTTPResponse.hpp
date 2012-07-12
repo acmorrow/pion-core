@@ -10,7 +10,7 @@
 #ifndef __PION_HTTPRESPONSE_HEADER__
 #define __PION_HTTPRESPONSE_HEADER__
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/lexical_cast.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/net/HTTPMessage.hpp>
@@ -220,7 +220,7 @@ private:
 
 
 /// data type for a HTTP response pointer
-typedef boost::shared_ptr<HTTPResponse>		HTTPResponsePtr;
+typedef std::shared_ptr<HTTPResponse>		HTTPResponsePtr;
 
 
 }	// end namespace net

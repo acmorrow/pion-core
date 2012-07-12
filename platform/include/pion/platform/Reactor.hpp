@@ -301,7 +301,7 @@ protected:
 	typedef boost::signal3<void, const std::string&, const std::string&, void*> SignalType;
 
 	/// pointer to a named signal object - signature is (reactor_id, signal_name, void *)
-	typedef boost::shared_ptr<SignalType> SignalPtr;
+	typedef std::shared_ptr<SignalType> SignalPtr;
 	
 	/// data type for a map of signal names to signal object pointers
 	typedef std::unordered_map<std::string, SignalPtr> SignalMap;

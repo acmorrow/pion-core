@@ -225,7 +225,7 @@ void LogInputReactor::stop(void)
 
 		// Close all the open streams.
 		for (StreamMap::iterator it = m_open_streams.begin(); it != m_open_streams.end(); ++it) {
-			boost::shared_ptr<boost::iostreams::filtering_istream> log_stream = it->second.first;
+			std::shared_ptr<boost::iostreams::filtering_istream> log_stream = it->second.first;
 			// Remove and close all Filters and Devices.
 			while (! log_stream->empty()) log_stream->pop();
 		}
@@ -350,8 +350,8 @@ void LogInputReactor::checkForLogFiles(void)
 #endif 
 			PION_LOG_DEBUG(m_logger, "Found a new log file to consume: " << m_log_file);
 			m_current_stream_data = StreamData(
-				boost::shared_ptr<boost::iostreams::filtering_istream>(new boost::iostreams::filtering_istream), 
-				boost::shared_ptr<boost::uint64_t>(new boost::uint64_t(0)));
+				std::shared_ptr<boost::iostreams::filtering_istream>(new boost::iostreams::filtering_istream), 
+				std::shared_ptr<boost::uint64_t>(new boost::uint64_t(0)));
 			m_open_streams[m_log_file] = m_current_stream_data;
 			scheduleReadFromLog();
 		}
@@ -370,7 +370,7 @@ void LogInputReactor::readFromLog(void)
 		return;
 	}
 
-	boost::shared_ptr<boost::iostreams::filtering_istream> log_stream = m_current_stream_data.first;
+	std::shared_ptr<boost::iostreams::filtering_istream> log_stream = m_current_stream_data.first;
 	try {
 		// open up the log file for reading (if not open already)
 		boost::uint64_t num_events_to_skip = 0;

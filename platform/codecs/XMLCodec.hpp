@@ -148,7 +148,7 @@ public:
 	};
 
 	/// data type for a shared pointer to a XMLField object
-	typedef boost::shared_ptr<XMLField>		XMLFieldPtr;
+	typedef std::shared_ptr<XMLField>		XMLFieldPtr;
 
 	/// data type that maps field names to Terms
 	typedef std::unordered_map<std::string,

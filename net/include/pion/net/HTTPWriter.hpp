@@ -11,9 +11,9 @@
 #define __PION_HTTPWRITER_HEADER__
 
 #include <functional>
+#include <memory>
 #include <vector>
 #include <string>
-#include <boost/shared_ptr.hpp>
 #include <boost/asio.hpp>
 #include <boost/noncopyable.hpp>
 #include <pion/PionConfig.hpp>
@@ -353,7 +353,7 @@ private:
 
 
 /// data type for a HTTPWriter pointer
-typedef boost::shared_ptr<HTTPWriter>	HTTPWriterPtr;
+typedef std::shared_ptr<HTTPWriter>	HTTPWriterPtr;
 
 
 /// override operator<< for convenience

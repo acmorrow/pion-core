@@ -10,10 +10,10 @@
 #ifndef __PION_PIONUSER_HEADER__
 #define __PION_PIONUSER_HEADER__
 
-#include <map>
-#include <string>
 #include <cstring>
-#include <boost/shared_ptr.hpp>
+#include <map>
+#include <memory>
+#include <string>
 #include <boost/noncopyable.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/numeric/conversion/cast.hpp>
@@ -142,7 +142,7 @@ protected:
 };
 
 /// data type for a PionUser  pointer
-typedef boost::shared_ptr<PionUser>	PionUserPtr;
+typedef std::shared_ptr<PionUser>	PionUserPtr;
 
 
 ///
@@ -299,7 +299,7 @@ protected:
 };
 
 /// data type for a PionUserManager pointer
-typedef boost::shared_ptr<PionUserManager>	PionUserManagerPtr;
+typedef std::shared_ptr<PionUserManager>	PionUserManagerPtr;
 
 
 }	// end namespace net

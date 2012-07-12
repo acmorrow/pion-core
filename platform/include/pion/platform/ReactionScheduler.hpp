@@ -21,8 +21,8 @@
 #define __PION_REACTIONSCHEDULER_HEADER__
 
 #include <functional>
+#include <memory>
 #include <vector>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionScheduler.hpp>
@@ -75,7 +75,7 @@ public:
 			
 			// start multiple threads to handle async tasks
 			for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
-				boost::shared_ptr<boost::thread> new_thread(new boost::thread(
+				std::shared_ptr<boost::thread> new_thread(new boost::thread(
 					std::bind(&ReactionScheduler::processReactionQueue, this) ));
 				m_thread_pool.push_back(new_thread);
 			}
@@ -124,7 +124,7 @@ protected:
 	typedef PionLockedQueue<Reaction>	ReactionQueue;
 
 	/// typedef for a collection of consumer thread info objects
-	typedef boost::shared_ptr<ReactionQueue::ConsumerThread>	ThreadInfoPtr;
+	typedef std::shared_ptr<ReactionQueue::ConsumerThread>	ThreadInfoPtr;
 
 	/// typedef for a collection of consumer thread info objects
 	typedef std::vector<ThreadInfoPtr>	ThreadInfoVector;
@@ -199,7 +199,7 @@ protected:
 	ReactionQueue						m_reaction_queue;
 
 	/// thread that is used to handle io_service requests
-	boost::shared_ptr<boost::thread>	m_service_thread;
+	std::shared_ptr<boost::thread>	m_service_thread;
 
 	/// info objects for consumer threads used to manage signaling
 	ThreadInfoVector					m_thread_info;

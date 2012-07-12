@@ -20,9 +20,9 @@
 #ifndef __PION_VOCABULARY_HEADER__
 #define __PION_VOCABULARY_HEADER__
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/PionHashMap.hpp>
@@ -114,7 +114,7 @@ public:
 	};
 	
 	/// data type for a pointer to a Term object
-	typedef boost::shared_ptr<Term>		TermPtr;
+	typedef std::shared_ptr<Term>		TermPtr;
 	
 	/// exception thrown if you try to add a term with an empty identifier
 	class EmptyTermIdException : public std::exception {
@@ -280,7 +280,7 @@ private:
 
 
 /// data type for a pointer to a Vocabulary object
-typedef boost::shared_ptr<Vocabulary>	VocabularyPtr;
+typedef std::shared_ptr<Vocabulary>	VocabularyPtr;
 
 
 }	// end namespace platform

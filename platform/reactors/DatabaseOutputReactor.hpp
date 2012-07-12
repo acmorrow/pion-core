@@ -20,8 +20,8 @@
 #ifndef __PION_DATABASEOUTPUTREACTOR_HEADER__
 #define __PION_DATABASEOUTPUTREACTOR_HEADER__
 
+#include <memory>
 #include <vector>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionLogger.hpp>
@@ -144,7 +144,7 @@ private:
 
 
 	/// data type for a database inserter smart pointer
-	typedef boost::shared_ptr<pion::platform::DatabaseInserter>		DatabaseInserterPtr;
+	typedef std::shared_ptr<pion::platform::DatabaseInserter>		DatabaseInserterPtr;
 
 
 	/// collections of inserters, which manage insertion of events into the database

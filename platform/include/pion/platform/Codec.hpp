@@ -21,9 +21,9 @@
 #define __PION_CODEC_HEADER__
 
 #include <istream>
+#include <memory>
 #include <ostream>
 #include <libxml/tree.h>
-#include <boost/shared_ptr.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/platform/Event.hpp>
@@ -85,7 +85,7 @@ public:
 	 *
 	 * @return CodecPtr pointer to the cloned copy of the codec
 	 */
-	virtual boost::shared_ptr<Codec> clone(void) const = 0;
+	virtual std::shared_ptr<Codec> clone(void) const = 0;
 
 	/**
 	 * writes an Event to an output stream
@@ -169,7 +169,7 @@ private:
 
 
 /// data type used for Codec smart pointers
-typedef boost::shared_ptr<Codec>	CodecPtr;
+typedef std::shared_ptr<Codec>	CodecPtr;
 	
 	
 //

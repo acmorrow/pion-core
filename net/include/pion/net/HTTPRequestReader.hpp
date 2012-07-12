@@ -11,9 +11,8 @@
 #define __PION_HTTPREQUESTREADER_HEADER__
 
 #include <functional>
+#include <memory>
 #include <boost/asio.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/net/HTTPRequest.hpp>
 #include <pion/net/HTTPReader.hpp>
@@ -28,7 +27,7 @@ namespace net {		// begin namespace net (Pion Network Library)
 ///
 class HTTPRequestReader :
 	public HTTPReader,
-	public boost::enable_shared_from_this<HTTPRequestReader>
+	public std::enable_shared_from_this<HTTPRequestReader>
 {
 
 public:
@@ -47,10 +46,10 @@ public:
 	 * @param tcp_conn TCP connection containing a new message to parse
 	 * @param handler function called after the message has been parsed
 	 */
-	static inline boost::shared_ptr<HTTPRequestReader>
+	static inline std::shared_ptr<HTTPRequestReader>
 		create(TCPConnectionPtr& tcp_conn, FinishedHandler handler)
 	{
-		return boost::shared_ptr<HTTPRequestReader>
+		return std::shared_ptr<HTTPRequestReader>
 			(new HTTPRequestReader(tcp_conn, handler));
 	}
 
@@ -98,7 +97,7 @@ protected:
 
 
 /// data type for a HTTPRequestReader pointer
-typedef boost::shared_ptr<HTTPRequestReader>	HTTPRequestReaderPtr;
+typedef std::shared_ptr<HTTPRequestReader>	HTTPRequestReaderPtr;
 
 
 }	// end namespace net

@@ -39,9 +39,9 @@ class ProtocolFactory;
 class Codec;
 class Database;
 class Protocol;
-typedef boost::shared_ptr<Codec> CodecPtr;
-typedef boost::shared_ptr<Database> DatabasePtr;
-typedef boost::shared_ptr<Protocol> ProtocolPtr;
+typedef std::shared_ptr<Codec> CodecPtr;
+typedef std::shared_ptr<Database> DatabasePtr;
+typedef std::shared_ptr<Protocol> ProtocolPtr;
 
 
 ///

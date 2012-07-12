@@ -19,10 +19,10 @@
 
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <boost/asio.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/pool/pool.hpp>
 #include <boost/pool/pool_alloc.hpp>
@@ -80,7 +80,7 @@ public:
 	enum { NUM_SAMPLES = 10 };
 
 	/// data type for a pointer to a thread
-	typedef boost::shared_ptr<boost::thread>	ThreadPtr;
+	typedef std::shared_ptr<boost::thread>	ThreadPtr;
 	
 	/// data type for a container of counters
 	typedef std::vector<boost::uint64_t>		CounterContainer;
@@ -89,7 +89,7 @@ public:
 	typedef std::vector<ThreadPtr>			ThreadContainer;
 	
 	/// data type for a pointer to an EventAllocator
-	typedef boost::shared_ptr<EventAllocator>	EventAllocatorPtr;
+	typedef std::shared_ptr<EventAllocator>	EventAllocatorPtr;
 	
 	
 	/**
@@ -1036,7 +1036,7 @@ protected:
 ///
 int main(void) {
 
-	boost::scoped_ptr<PerformanceTest> test_ptr;
+	std::unique_ptr<PerformanceTest> test_ptr;
 /*
 	// run the EventAllocTest with one thread
 	test_ptr.reset(new EventAllocTest<1>());

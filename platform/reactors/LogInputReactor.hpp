@@ -20,11 +20,11 @@
 #ifndef __PION_LOGINPUTREACTOR_HEADER__
 #define __PION_LOGINPUTREACTOR_HEADER__
 
+#include <memory>
 #include <set>
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/regex.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <pion/PionConfig.hpp>
@@ -159,8 +159,8 @@ private:
 	typedef std::set<std::string>		LogFileCollection;
 
 	/// holds an open input stream and the number of Events read for a log file
-	typedef std::pair<boost::shared_ptr<boost::iostreams::filtering_istream>, 
-					  boost::shared_ptr<boost::uint64_t> >			StreamData;
+	typedef std::pair<std::shared_ptr<boost::iostreams::filtering_istream>, 
+					  std::shared_ptr<boost::uint64_t> >			StreamData;
 
 	/// maps the names of open log files to information about the corresponding streams
 	typedef std::map<std::string, StreamData>						StreamMap;
@@ -273,7 +273,7 @@ private:
 	StreamMap							m_open_streams;
 
 	/// pointer to a timer used to schedule the check for new log files
-	boost::scoped_ptr<boost::asio::deadline_timer>	m_timer_ptr;
+	std::unique_ptr<boost::asio::deadline_timer>	m_timer_ptr;
 
 	/// name of the history cache, used for keeping track of which log files have been consumed
 	std::string							m_history_cache_filename;

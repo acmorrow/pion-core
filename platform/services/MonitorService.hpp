@@ -20,11 +20,10 @@
 #ifndef __PION_MONITORSERVICE_HEADER__
 #define __PION_MONITORSERVICE_HEADER__
 
+#include <memory>
 #include <string>
 #include <iosfwd>
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/circular_buffer.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/unordered_map.hpp>
@@ -46,7 +45,7 @@ namespace plugins {		// begin namespace plugins
 /// MonitorWriter: helper class, capturing packets, storing them into an array, streaming into XML
 ///
 class MonitorWriter
-	: public boost::enable_shared_from_this<MonitorWriter>
+	: public std::enable_shared_from_this<MonitorWriter>
 {
 	typedef std::set<pion::platform::Vocabulary::TermRef>	TermRefSet;
 
@@ -202,7 +201,7 @@ public:
 };
 
 /// data type used for MonitorWriter smart pointers
-typedef boost::shared_ptr<MonitorWriter>	MonitorWriterPtr;
+typedef std::shared_ptr<MonitorWriter>	MonitorWriterPtr;
 
 
 

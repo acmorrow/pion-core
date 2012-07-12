@@ -11,9 +11,9 @@
 #define __PION_WEBSERVER_HEADER__
 
 #include <functional>
+#include <memory>
 #include <string>
 #include <boost/asio.hpp>
-#include <boost/shared_ptr.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/PionPlugin.hpp>
@@ -207,7 +207,7 @@ private:
 
 
 /// data type for a web server pointer
-typedef boost::shared_ptr<WebServer>		WebServerPtr;
+typedef std::shared_ptr<WebServer>		WebServerPtr;
 
 
 }	// end namespace net

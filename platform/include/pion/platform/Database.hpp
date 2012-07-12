@@ -153,7 +153,7 @@ public:
 	 *
 	 * @return DatabasePtr pointer to the cloned copy of the Database
 	 */
-	virtual boost::shared_ptr<Database> clone(void) const = 0;
+	virtual std::shared_ptr<Database> clone(void) const = 0;
 
 	/**
 	 * opens the database connection
@@ -494,7 +494,7 @@ protected:
 
 
 /// data type used for Database smart pointers
-typedef boost::shared_ptr<Database>			DatabasePtr;
+typedef std::shared_ptr<Database>			DatabasePtr;
 
 
 //

@@ -20,9 +20,8 @@
 #ifndef __PION_FEEDSERVICE_HEADER__
 #define __PION_FEEDSERVICE_HEADER__
 
+#include <memory>
 #include <string>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionLogger.hpp>
@@ -126,7 +125,7 @@ protected:
 ///
 class FeedWriter
 	: public FeedHandler,
-	public boost::enable_shared_from_this<FeedWriter>
+	public std::enable_shared_from_this<FeedWriter>
 {
 public:
 	
@@ -157,7 +156,7 @@ public:
 };
 
 /// data type used for FeedWriter smart pointers
-typedef boost::shared_ptr<FeedWriter>	FeedWriterPtr;
+typedef std::shared_ptr<FeedWriter>	FeedWriterPtr;
 
 	
 ///
@@ -165,7 +164,7 @@ typedef boost::shared_ptr<FeedWriter>	FeedWriterPtr;
 ///
 class FeedReader
 	: public FeedHandler,
-	public boost::enable_shared_from_this<FeedReader>
+	public std::enable_shared_from_this<FeedReader>
 {
 public:
 	
@@ -198,7 +197,7 @@ private:
 };
 
 /// data type used for FeedReader smart pointers
-typedef boost::shared_ptr<FeedReader>	FeedReaderPtr;
+typedef std::shared_ptr<FeedReader>	FeedReaderPtr;
 
 	
 ///

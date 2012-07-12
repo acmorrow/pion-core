@@ -185,51 +185,51 @@ void Comparison::configure(const ComparisonType type,
 		switch (type) {
 			case TYPE_EXACT_MATCH:
 			case TYPE_NOT_EXACT_MATCH:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringExactMatch(m_logger, m_str_value));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringExactMatch(m_logger, m_str_value));
 				break;
 			case TYPE_EXACT_MATCH_PRIMARY:
 			case TYPE_NOT_EXACT_MATCH_PRIMARY:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringExactMatch(m_logger, m_str_value, UCOL_PRIMARY));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringExactMatch(m_logger, m_str_value, UCOL_PRIMARY));
 				break;
 			case TYPE_CONTAINS:
 			case TYPE_NOT_CONTAINS:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringContains(m_logger, m_str_value));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringContains(m_logger, m_str_value));
 				break;
 			case TYPE_CONTAINS_PRIMARY:
 			case TYPE_NOT_CONTAINS_PRIMARY:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringContains(m_logger, m_str_value, UCOL_PRIMARY));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringContains(m_logger, m_str_value, UCOL_PRIMARY));
 				break;
 			case TYPE_STARTS_WITH:
 			case TYPE_NOT_STARTS_WITH:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringStartsWith(m_logger, m_str_value));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringStartsWith(m_logger, m_str_value));
 				break;
 			case TYPE_STARTS_WITH_PRIMARY:
 			case TYPE_NOT_STARTS_WITH_PRIMARY:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringStartsWith(m_logger, m_str_value, UCOL_PRIMARY));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringStartsWith(m_logger, m_str_value, UCOL_PRIMARY));
 				break;
 			case TYPE_ENDS_WITH:
 			case TYPE_NOT_ENDS_WITH:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringEndsWith(m_logger, m_str_value));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringEndsWith(m_logger, m_str_value));
 				break;
 			case TYPE_ENDS_WITH_PRIMARY:
 			case TYPE_NOT_ENDS_WITH_PRIMARY:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringEndsWith(m_logger, m_str_value, UCOL_PRIMARY));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringEndsWith(m_logger, m_str_value, UCOL_PRIMARY));
 				break;
 			case TYPE_ORDERED_BEFORE:
 			case TYPE_NOT_ORDERED_BEFORE:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringOrderedBefore(m_logger, m_str_value));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringOrderedBefore(m_logger, m_str_value));
 				break;
 			case TYPE_ORDERED_BEFORE_PRIMARY:
 			case TYPE_NOT_ORDERED_BEFORE_PRIMARY:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringOrderedBefore(m_logger, m_str_value, UCOL_PRIMARY));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringOrderedBefore(m_logger, m_str_value, UCOL_PRIMARY));
 				break;
 			case TYPE_ORDERED_AFTER:
 			case TYPE_NOT_ORDERED_AFTER:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringOrderedAfter(m_logger, m_str_value));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringOrderedAfter(m_logger, m_str_value));
 				break;
 			case TYPE_ORDERED_AFTER_PRIMARY:
 			case TYPE_NOT_ORDERED_AFTER_PRIMARY:
-				m_comparison_func = boost::shared_ptr<ComparisonFunctor>(new CompareStringOrderedAfter(m_logger, m_str_value, UCOL_PRIMARY));
+				m_comparison_func = std::shared_ptr<ComparisonFunctor>(new CompareStringOrderedAfter(m_logger, m_str_value, UCOL_PRIMARY));
 				break;
 			case TYPE_FALSE:
 			case TYPE_TRUE:

@@ -10,10 +10,10 @@
 #ifndef __PION_TCPSERVER_HEADER__
 #define __PION_TCPSERVER_HEADER__
 
+#include <memory>
 #include <set>
 #include <boost/asio.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
 #include <pion/PionConfig.hpp>
@@ -229,7 +229,7 @@ private:
 
 
 /// data type for a TCPServer pointer
-typedef boost::shared_ptr<TCPServer>	TCPServerPtr;
+typedef std::shared_ptr<TCPServer>	TCPServerPtr;
 
 
 }	// end namespace net

@@ -21,9 +21,9 @@
 #define __PION_PROTOCOL_HEADER__
 
 #include <istream>
+#include <memory>
 #include <ostream>
 #include <libxml/tree.h>
-#include <boost/shared_ptr.hpp>
 #include <boost/logic/tribool.hpp>
 #include <boost/system/error_code.hpp>
 #include <pion/PionConfig.hpp>
@@ -80,7 +80,7 @@ public:
 	 *
 	 * @return ProtocolPtr pointer to the cloned copy of the codec
 	 */
-	virtual boost::shared_ptr<Protocol> clone(void) const = 0;
+	virtual std::shared_ptr<Protocol> clone(void) const = 0;
 
 	/**
 	 * called to close the protocol parsing.  An event may be returned
@@ -170,7 +170,7 @@ private:
 
 
 /// data type used for Protocol smart pointers
-typedef boost::shared_ptr<Protocol>	ProtocolPtr;
+typedef std::shared_ptr<Protocol>	ProtocolPtr;
 
 	
 }	// end namespace platform

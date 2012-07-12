@@ -134,7 +134,7 @@ void PionSingleServiceScheduler::startup(void)
 		
 		// start multiple threads to handle async tasks
 		for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
-			boost::shared_ptr<boost::thread> new_thread(new boost::thread( std::bind(&PionScheduler::processServiceWork,
+			std::shared_ptr<boost::thread> new_thread(new boost::thread( std::bind(&PionScheduler::processServiceWork,
 																					   this, std::ref(m_service)) ));
 			m_thread_pool.push_back(new_thread);
 		}
@@ -155,7 +155,7 @@ void PionOneToOneScheduler::startup(void)
 		
 		// make sure there are enough services initialized
 		while (m_service_pool.size() < m_num_threads) {
-			boost::shared_ptr<ServicePair>	service_ptr(new ServicePair());
+			std::shared_ptr<ServicePair>	service_ptr(new ServicePair());
 			m_service_pool.push_back(service_ptr);
 		}
 
@@ -166,7 +166,7 @@ void PionOneToOneScheduler::startup(void)
 		
 		// start multiple threads to handle async tasks
 		for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
-			boost::shared_ptr<boost::thread> new_thread(new boost::thread( std::bind(&PionScheduler::processServiceWork,
+			std::shared_ptr<boost::thread> new_thread(new boost::thread( std::bind(&PionScheduler::processServiceWork,
 																					   this, std::ref(m_service_pool[n]->first)) ));
 			m_thread_pool.push_back(new_thread);
 		}

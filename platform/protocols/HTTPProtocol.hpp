@@ -20,9 +20,9 @@
 #ifndef __HTTP_PROTOCOL_HEADER__
 #define __HTTP_PROTOCOL_HEADER__
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
 #include <boost/shared_array.hpp>
 #include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/filtering_streambuf.hpp>
@@ -201,7 +201,7 @@ public:
 	 *
 	 * @return ProtocolPtr pointer to the cloned copy of the codec
 	 */
-	virtual boost::shared_ptr<Protocol> clone(void) const;
+	virtual std::shared_ptr<Protocol> clone(void) const;
 
 	/**
 	 * sets configuration parameters for this Protocol
@@ -438,7 +438,7 @@ private:
 	};
 
 	/// data type for a smart pointer to an extraction rule
-	typedef boost::shared_ptr<ExtractionRule>	ExtractionRulePtr;
+	typedef std::shared_ptr<ExtractionRule>	ExtractionRulePtr;
 
 	/// data type for a collection of extraction rules
 	typedef std::vector<ExtractionRulePtr>		ExtractionRuleVector;

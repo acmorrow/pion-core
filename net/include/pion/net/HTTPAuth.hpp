@@ -11,8 +11,8 @@
 #define __PION_HTTPAUTH_HEADER__
 
 #include <set>
+#include <memory>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionLogger.hpp>
 #include <pion/PionException.hpp>
@@ -167,7 +167,7 @@ protected:
 };
 
 /// data type for a HTTPAuth pointer
-typedef boost::shared_ptr<HTTPAuth>	HTTPAuthPtr;
+typedef std::shared_ptr<HTTPAuth>	HTTPAuthPtr;
 
 
 }	// end namespace net

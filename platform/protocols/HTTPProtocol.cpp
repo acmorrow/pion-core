@@ -281,7 +281,7 @@ bool HTTPProtocol::checkRecoveryPacket(bool request, const char* ptr, size_t len
 	return false;
 }
 
-boost::shared_ptr<Protocol> HTTPProtocol::clone(void) const
+std::shared_ptr<Protocol> HTTPProtocol::clone(void) const
 {
 	HTTPProtocol* retval = new HTTPProtocol;
 	retval->copyProtocol(*this);

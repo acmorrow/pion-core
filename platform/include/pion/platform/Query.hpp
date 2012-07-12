@@ -562,7 +562,7 @@ typedef std::string						QueryID;
 
 
 /// data type used for Query smart pointers
-typedef boost::shared_ptr<Query>		QueryPtr;
+typedef std::shared_ptr<Query>		QueryPtr;
 
 
 }	// end namespace platform

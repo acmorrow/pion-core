@@ -11,6 +11,7 @@
 #define __PION_TCPCONNECTION_HEADER__
 
 #include <functional>
+#include <memory>
 #include <string>
 
 #ifdef PION_HAVE_SSL
@@ -22,9 +23,7 @@
 #endif
 
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <pion/PionConfig.hpp>
@@ -37,7 +36,7 @@ namespace net {		// begin namespace net (Pion Network Library)
 /// TCPConnection: represents a single tcp connection
 /// 
 class TCPConnection :
-	public boost::enable_shared_from_this<TCPConnection>,
+	public std::enable_shared_from_this<TCPConnection>,
 	private boost::noncopyable
 {
 public:
@@ -52,9 +51,10 @@ public:
 	
 	/// data type for a function that handles TCP connection objects
         /// NOTE(acm): Changed this to const& arg. Is that safe?
-	typedef std::function<void(boost::shared_ptr<TCPConnection>&)>	ConnectionHandler;
+	typedef std::function<void(std::shared_ptr<TCPConnection>&)>	ConnectionHandler;
 	
 	/// data type for an I/O read buffer
+	/// NOTE(acm): We use boost array here because ASIO seems to need it. Otherwise std::array would be better.
 	typedef boost::array<char, READ_BUFFER_SIZE>	ReadBuffer;
 	
 	/// data type for a socket connection
@@ -90,12 +90,12 @@ public:
 	 * @param finished_handler function called when a server has finished
 	 *                         handling	the connection
 	 */
-	static inline boost::shared_ptr<TCPConnection> create(boost::asio::io_service& io_service,
+	static inline std::shared_ptr<TCPConnection> create(boost::asio::io_service& io_service,
 														  SSLContext& ssl_context,
 														  const bool ssl_flag,
 														  ConnectionHandler finished_handler)
 	{
-		return boost::shared_ptr<TCPConnection>(new TCPConnection(io_service, ssl_context,
+		return std::shared_ptr<TCPConnection>(new TCPConnection(io_service, ssl_context,
 																  ssl_flag, finished_handler));
 	}
 	
@@ -721,7 +721,7 @@ private:
 
 
 /// data type for a TCPConnection pointer
-typedef boost::shared_ptr<TCPConnection>	TCPConnectionPtr;
+typedef std::shared_ptr<TCPConnection>	TCPConnectionPtr;
 
 
 }	// end namespace net

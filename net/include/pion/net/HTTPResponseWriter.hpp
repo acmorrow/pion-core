@@ -11,10 +11,9 @@
 #define __PION_HTTPRESPONSEWRITER_HEADER__
 
 #include <functional>
+#include <memory>
 #include <boost/asio.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/net/HTTPWriter.hpp>
 #include <pion/net/HTTPRequest.hpp>
@@ -29,7 +28,7 @@ namespace net {		// begin namespace net (Pion Network Library)
 /// 
 class PION_NET_API HTTPResponseWriter :
 	public HTTPWriter,
-	public boost::enable_shared_from_this<HTTPResponseWriter>
+	public std::enable_shared_from_this<HTTPResponseWriter>
 {
 public:
 	
@@ -43,14 +42,14 @@ public:
 	 * @param http_response pointer to the response that will be sent
 	 * @param handler function called after the response has been sent
 	 * 
-	 * @return boost::shared_ptr<HTTPResponseWriter> shared pointer to
+	 * @return std::shared_ptr<HTTPResponseWriter> shared pointer to
 	 *         the new writer object that was created
 	 */
-	static inline boost::shared_ptr<HTTPResponseWriter> create(TCPConnectionPtr& tcp_conn,
+	static inline std::shared_ptr<HTTPResponseWriter> create(TCPConnectionPtr& tcp_conn,
 															   HTTPResponsePtr& http_response,
 															   FinishedHandler handler = FinishedHandler())
 	{
-		return boost::shared_ptr<HTTPResponseWriter>(new HTTPResponseWriter(tcp_conn, http_response, handler));
+		return std::shared_ptr<HTTPResponseWriter>(new HTTPResponseWriter(tcp_conn, http_response, handler));
 	}
 
 	/**
@@ -60,14 +59,14 @@ public:
 	 * @param http_request the request we are responding to
 	 * @param handler function called after the request has been sent
 	 * 
-	 * @return boost::shared_ptr<HTTPResponseWriter> shared pointer to
+	 * @return std::shared_ptr<HTTPResponseWriter> shared pointer to
 	 *         the new writer object that was created
 	 */
-	static inline boost::shared_ptr<HTTPResponseWriter> create(TCPConnectionPtr& tcp_conn,
+	static inline std::shared_ptr<HTTPResponseWriter> create(TCPConnectionPtr& tcp_conn,
 															   const HTTPRequest& http_request,
 															   FinishedHandler handler = FinishedHandler())
 	{
-		return boost::shared_ptr<HTTPResponseWriter>(new HTTPResponseWriter(tcp_conn, http_request, handler));
+		return std::shared_ptr<HTTPResponseWriter>(new HTTPResponseWriter(tcp_conn, http_request, handler));
 	}
 	
 	/// returns a non-const reference to the response that will be sent
@@ -171,7 +170,7 @@ private:
 
 
 /// data type for a HTTPResponseWriter pointer
-typedef boost::shared_ptr<HTTPResponseWriter>	HTTPResponseWriterPtr;
+typedef std::shared_ptr<HTTPResponseWriter>	HTTPResponseWriterPtr;
 
 
 /// override operator<< for convenience

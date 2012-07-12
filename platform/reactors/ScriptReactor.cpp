@@ -18,8 +18,8 @@
 //
 
 #include <iostream>
+#include <memory>
 #include <boost/version.hpp>
-#include <boost/scoped_array.hpp>
 #include <pion/platform/CodecFactory.hpp>
 #include "ScriptReactor.hpp"
 
@@ -371,7 +371,7 @@ void ScriptReactor::openPipe(void)
 			::close(fd);
 
 		// convert argument string vector into an array of char pointers
-		boost::scoped_array<char*> arg_ptr(new char*[m_args.size() + 1]);
+		std::unique_ptr<char*[]> arg_ptr(new char*[m_args.size() + 1]);
 		for (std::size_t n = 0; n < m_args.size(); ++n) {
 			arg_ptr[n] = const_cast<char*>(m_args[n].c_str());
 		}

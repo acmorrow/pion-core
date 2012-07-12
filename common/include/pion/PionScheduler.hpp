@@ -11,10 +11,10 @@
 #define __PION_PIONSCHEDULER_HEADER__
 
 #include <functional>
+#include <memory>
 #include <vector>
 #include <boost/asio.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
@@ -231,7 +231,7 @@ protected:
 
 	
 	/// typedef for a pool of worker threads
-	typedef std::vector<boost::shared_ptr<boost::thread> >	ThreadPool;
+	typedef std::vector<std::shared_ptr<boost::thread> >	ThreadPool;
 	
 	
 	/// pool of threads used to perform work
@@ -299,7 +299,7 @@ public:
 	virtual boost::asio::io_service& getIOService(void) {
 		boost::mutex::scoped_lock scheduler_lock(m_mutex);
 		while (m_service_pool.size() < m_num_threads) {
-			boost::shared_ptr<ServicePair>	service_ptr(new ServicePair());
+			std::shared_ptr<ServicePair>	service_ptr(new ServicePair());
 			m_service_pool.push_back(service_ptr);
 		}
 		if (++m_next_service >= m_num_threads)
@@ -345,7 +345,7 @@ protected:
 	};
 	
 	/// typedef for a pool of IO services
-	typedef std::vector<boost::shared_ptr<ServicePair> >		ServicePool;
+	typedef std::vector<std::shared_ptr<ServicePair> >		ServicePool;
 
 	
 	/// pool of IO services used to schedule work

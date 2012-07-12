@@ -481,7 +481,7 @@ void DatabaseInserter::insertEvents(void)
 		PION_ASSERT(m_commit_transaction_ptr);
 
 		// queue of events pending insertion into the database
-		boost::scoped_ptr<EventQueue>	insert_queue_ptr(new EventQueue);
+		std::unique_ptr<EventQueue>	insert_queue_ptr(new EventQueue);
 		insert_queue_ptr->reserve(m_queue_max);
 
 		// notify all threads that we have started up
@@ -549,7 +549,7 @@ void DatabaseInserter::insertEvents(void)
 	PION_LOG_DEBUG(m_logger, "Worker thread is exiting: " << m_database_id);
 }
 
-void DatabaseInserter::insertEvents(boost::scoped_ptr<EventQueue>& insert_queue_ptr)
+void DatabaseInserter::insertEvents(std::unique_ptr<EventQueue>& insert_queue_ptr)
 {
 	// begin a new transaction
 	m_begin_transaction_ptr->run();
@@ -595,7 +595,7 @@ void DatabaseInserter::insertEvents(boost::scoped_ptr<EventQueue>& insert_queue_
 	m_table_size = m_database_ptr->getCache(Database::DB_FILE_SIZE);	
 }
 
-bool DatabaseInserter::checkEventQueue(boost::scoped_ptr<EventQueue>& insert_queue_ptr)
+bool DatabaseInserter::checkEventQueue(std::unique_ptr<EventQueue>& insert_queue_ptr)
 {
 	// acquire ownership of queue
 	boost::mutex::scoped_lock queue_lock(m_queue_mutex);

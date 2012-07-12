@@ -11,8 +11,7 @@
 #define __PION_PIONPOOLALLOCATOR_HEADER__
 
 #include <cstdlib>
-#include <boost/array.hpp>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 #include <boost/static_assert.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/thread/mutex.hpp>
@@ -244,7 +243,7 @@ protected:
 private:
 
 	/// a collection of fixed-size pool allocators
-	boost::array<boost::scoped_ptr<FixedSizeAlloc>, NumberOfAllocs>	m_pools;
+	std::array<std::unique_ptr<FixedSizeAlloc>, NumberOfAllocs>	m_pools;
 };
 
 	

@@ -10,7 +10,7 @@
 #ifndef __PION_HTTPREQUEST_HEADER__
 #define __PION_HTTPREQUEST_HEADER__
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <pion/PionConfig.hpp>
 #include <pion/net/HTTPMessage.hpp>
 #include <pion/net/PionUser.hpp>
@@ -192,7 +192,7 @@ private:
 
 
 /// data type for a HTTP request pointer
-typedef boost::shared_ptr<HTTPRequest>		HTTPRequestPtr;
+typedef std::shared_ptr<HTTPRequest>		HTTPRequestPtr;
 
 
 }	// end namespace net

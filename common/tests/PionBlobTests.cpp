@@ -8,14 +8,13 @@
 //
 
 #include <functional>
+#include <memory>
 #include <pion/PionConfig.hpp>
 #include <pion/PionPoolAllocator.hpp>
 #include <pion/PionBlob.hpp>
 #include <pion/PionId.hpp>
 #include <pion/PionHashMap.hpp>
 #include <boost/variant.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/test/unit_test.hpp>
 
@@ -35,7 +34,7 @@ public:
 	}
 	
 	static void createCopies(BlobType b, std::size_t num_copies) {
-		boost::scoped_array<BlobType> blobs (new BlobType[num_copies]);
+		std::unique_ptr<BlobType[]> blobs (new BlobType[num_copies]);
 		for (std::size_t n = 0; n < num_copies; ++n) {
 			blobs[n] = b;
 		}
@@ -250,8 +249,8 @@ BOOST_AUTO_TEST_CASE(checkCreateLotsOfCopiesInMultipleThreads) {
 	static const std::size_t NUM_THREADS = 10;
 	static const std::size_t BLOB_COPIES = 10000;
 	
-	typedef boost::scoped_ptr<boost::thread>	ThreadPtr;
-	boost::scoped_array<ThreadPtr>	threads(new ThreadPtr[NUM_THREADS]);
+	typedef std::unique_ptr<boost::thread>	ThreadPtr;
+	std::unique_ptr<ThreadPtr[]>	threads(new ThreadPtr[NUM_THREADS]);
 
 	BlobType b;
 	b.set(m_alloc, "hello");

@@ -12,9 +12,9 @@
 
 #include <functional>
 #include <map>
+#include <memory>
 #include <string>
 #include <boost/asio.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/net/TCPServer.hpp>
@@ -288,7 +288,7 @@ private:
 
 
 /// data type for a HTTP protocol handler pointer
-typedef boost::shared_ptr<HTTPServer>		HTTPServerPtr;
+typedef std::shared_ptr<HTTPServer>		HTTPServerPtr;
 
 
 }	// end namespace net

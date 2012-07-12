@@ -20,9 +20,9 @@
 #ifndef __PION_DATABASINSERTER_HEADER__
 #define __PION_DATABASINSERTER_HEADER__
 
+#include <memory>
 #include <vector>
 #include <ctime>
-#include <boost/scoped_ptr.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition.hpp>
 #include <pion/PionConfig.hpp>
@@ -293,7 +293,7 @@ private:
 	 *
 	 * @param insert_queue_ptr event queue ptr that will be swapped with available event queue
 	 */
-	void insertEvents(boost::scoped_ptr<EventQueue>& insert_queue_ptr);
+	void insertEvents(std::unique_ptr<EventQueue>& insert_queue_ptr);
 
 	/**
 	 * checks for new events queued for database storage
@@ -302,7 +302,7 @@ private:
 	 *
 	 * @return bool true if there are new events available
 	 */
-	bool checkEventQueue(boost::scoped_ptr<EventQueue>& insert_queue_ptr);
+	bool checkEventQueue(std::unique_ptr<EventQueue>& insert_queue_ptr);
 
 
 	/// default maximum number of events that may be queued for insertion
@@ -390,7 +390,7 @@ private:
 	QueryPtr								m_commit_transaction_ptr;
 
 	/// collection of events queued for storage to the database
-	boost::scoped_ptr<EventQueue>			m_event_queue_ptr;
+	std::unique_ptr<EventQueue>			m_event_queue_ptr;
 
 	/// maximum number of events that may be queued for insertion
 	boost::uint32_t							m_queue_max;
@@ -411,7 +411,7 @@ private:
 	boost::condition						m_swapped_queue;
 
 	/// thread used to store events to the database
-	boost::scoped_ptr<boost::thread>		m_thread;
+	std::unique_ptr<boost::thread>		m_thread;
 
 	/// ignore insert errors?
 	bool									m_ignore_insert;

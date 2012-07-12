@@ -150,7 +150,7 @@ public:
 	};
 
 	/// data type for a shared pointer to a JSONField object
-	typedef boost::shared_ptr<JSONField>	JSONFieldPtr;
+	typedef std::shared_ptr<JSONField>	JSONFieldPtr;
 	
 	/// data type that maps field names to Terms
 	typedef std::unordered_map<std::string,
@@ -164,7 +164,7 @@ public:
 											JSONObject;
 
 	/// data type for a shared pointer to a JSONObject object
-	typedef boost::shared_ptr<JSONObject>	JSONObjectPtr;
+	typedef std::shared_ptr<JSONObject>	JSONObjectPtr;
 
 	/// queue of parsed JSONObjects 
 	typedef std::queue<JSONObjectPtr>		JSONObjectQueue;
@@ -231,7 +231,7 @@ private:
 	JSONObjectQueue					m_json_object_queue;
 
 	/// context passed to the YAJL parser
-	boost::shared_ptr<Context>		m_context;
+	std::shared_ptr<Context>		m_context;
 
 	/// keeps track of whether a first Event has been written yet
 	bool							m_no_events_written;

@@ -23,8 +23,6 @@
 #include <boost/type_traits/is_pod.hpp>
 
 #include <memory>               /* std::auto_ptr */
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
 
 namespace boost
@@ -260,13 +258,13 @@ public:
         return dequeue_smart_ptr(ret);
     }
 
-    bool dequeue (boost::scoped_ptr<T> & ret)
+    bool dequeue (std::unique_ptr<T> & ret)
     {
-        BOOST_STATIC_ASSERT(sizeof(boost::scoped_ptr<T>) == sizeof(T*));
+        BOOST_STATIC_ASSERT(sizeof(std::unique_ptr<T>) == sizeof(T*));
         return dequeue(reinterpret_cast<T**>(&ret));
     }
 
-    bool dequeue (boost::shared_ptr<T> & ret)
+    bool dequeue (std::shared_ptr<T> & ret)
     {
         return dequeue_smart_ptr(ret);
     }

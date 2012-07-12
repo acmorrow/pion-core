@@ -308,12 +308,12 @@ public:
 	~MockSyncServerTests_F() {
 		m_sync_server_ptr->stop();
 	}
-	inline boost::shared_ptr<MockSyncServer>& getServerPtr(void) { return m_sync_server_ptr; }
+	inline std::shared_ptr<MockSyncServer>& getServerPtr(void) { return m_sync_server_ptr; }
 	inline boost::asio::io_service& getIOService(void) { return m_scheduler.getIOService(); }
 
 private:
 	PionSingleServiceScheduler			m_scheduler;
-	boost::shared_ptr<MockSyncServer>	m_sync_server_ptr;
+	std::shared_ptr<MockSyncServer>	m_sync_server_ptr;
 };
 
 

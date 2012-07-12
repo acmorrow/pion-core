@@ -21,9 +21,9 @@
 #define __PION_VOCABULARYMANAGER_HEADER__
 
 #include <functional>
+#include <memory>
 #include <string>
 #include <boost/signal.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
@@ -395,7 +395,7 @@ private:
 	
 	
 	/// data type for a pointer to a VocabularyConfig object
-	typedef boost::shared_ptr<VocabularyConfig>		VocabularyConfigPtr;
+	typedef std::shared_ptr<VocabularyConfig>		VocabularyConfigPtr;
 	
 	/// data type that maps Vocabulary identifiers to configuration pointers
 	typedef std::unordered_map<std::string, VocabularyConfigPtr>	VocabularyMap;

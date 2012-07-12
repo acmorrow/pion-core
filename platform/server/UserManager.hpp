@@ -328,7 +328,7 @@ private:
 };
 
 /// data type for a UserManager pointer
-typedef boost::shared_ptr<UserManager>	UserManagerPtr;
+typedef std::shared_ptr<UserManager>	UserManagerPtr;
 
 
 }	// end namespace server

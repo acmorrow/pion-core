@@ -253,7 +253,7 @@ bool JSONCodec::read(std::istream& in, Event& e)
 
 	if (m_first_read_attempt) {
 		yajl_parser_config cfg = { 1, 1 };
-		m_context = boost::shared_ptr<Context>(new Context(m_field_map, m_json_object_queue));
+		m_context = std::shared_ptr<Context>(new Context(m_field_map, m_json_object_queue));
 		m_yajl_handle = yajl_alloc(&callbacks, &cfg, NULL, (void*)m_context.get());
 		m_first_read_attempt = false;
 	}

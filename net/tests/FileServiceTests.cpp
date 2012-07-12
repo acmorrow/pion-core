@@ -8,8 +8,8 @@
 //
 
 #include <functional>
+#include <memory>
 #include <boost/asio.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 #include <boost/test/unit_test.hpp>
@@ -269,7 +269,7 @@ public:
 		BOOST_CHECK(m_content_length > 0);
 
 		// read in the response content
-		boost::scoped_array<char> content_buf(new char[m_content_length + 1]);
+		std::unique_ptr<char[]> content_buf(new char[m_content_length + 1]);
 		BOOST_CHECK(m_http_stream.read(content_buf.get(), m_content_length));
 		content_buf[m_content_length] = '\0';
 		

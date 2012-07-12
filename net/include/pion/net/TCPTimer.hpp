@@ -10,9 +10,8 @@
 #ifndef __PION_TCPTIMER_HEADER__
 #define __PION_TCPTIMER_HEADER__
 
+#include <memory>
 #include <boost/asio.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/thread/mutex.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/net/TCPConnection.hpp>
@@ -26,7 +25,7 @@ namespace net {		// begin namespace net (Pion Network Library)
 /// TCPTimer: helper class used to time-out TCP connections
 ///
 class TCPTimer
-	: public boost::enable_shared_from_this<TCPTimer>
+	: public std::enable_shared_from_this<TCPTimer>
 {
 public:
 
@@ -76,7 +75,7 @@ private:
 
 
 /// shared pointer to a TCPTimer object
-typedef boost::shared_ptr<TCPTimer>		TCPTimerPtr;
+typedef std::shared_ptr<TCPTimer>		TCPTimerPtr;
 
 
 }	// end namespace net

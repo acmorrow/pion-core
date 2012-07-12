@@ -10,19 +10,18 @@
 #ifndef __PION_XMLLOGSERVICE_HEADER__
 #define __PION_XMLLOGSERVICE_HEADER__
 
+#include <deque>
+#include <list>
+#include <memory>
+#include <queue>
+#include <string>
 #include <boost/thread/mutex.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <pion/PionLogger.hpp>
 #include <pion/net/WebService.hpp>
 #include <pion/net/HTTPResponseWriter.hpp>
 #include "PlatformConfig.hpp"
 #include "PlatformService.hpp"
-#include <string>
-#include <list>
-#include <deque>
-#include <queue>
-
 
 namespace pion {		// begin namespace pion
 namespace plugins {		// begin namespace plugins

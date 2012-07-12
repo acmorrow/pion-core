@@ -20,7 +20,7 @@
 #ifndef __PION_COMPARISON_HEADER__
 #define __PION_COMPARISON_HEADER__
 
-#include <boost/scoped_array.hpp>
+#include <memory>
 #include <boost/regex.hpp>
 #include <boost/regex/icu.hpp>
 #include <boost/logic/tribool.hpp>
@@ -435,7 +435,7 @@ private:
 				return false;
 			}
 
-			boost::scoped_array<UChar> text_buf;
+			std::unique_ptr<UChar[]> text_buf;
 			try {
 				text_buf.reset(new UChar[text_buf_len]);
 			} catch (std::bad_alloc& e) {
@@ -489,7 +489,7 @@ private:
 			uiter_setUTF8(&text_iter, blob.get(), blob.size());
 
 			// Populate a buffer by parsing UTF-8 bytes from the blob into code units, until the number of code units is the same as in the pattern.
-			boost::scoped_array<UChar> text_prefix_buf;
+			std::unique_ptr<UChar[]> text_prefix_buf;
 			try {
 				text_prefix_buf.reset(new UChar[m_pattern_buf_len]);
 			} catch (std::bad_alloc& e) {
@@ -823,7 +823,7 @@ private:
 	/// the string that the Vocabulary Term is compared to (if string comparison type)
 	std::string					m_str_value;
 
-	boost::shared_ptr<ComparisonFunctor>
+	std::shared_ptr<ComparisonFunctor>
 								m_comparison_func;
 
 	/// the regex that the Vocabulary Term is compared to (if regex comparison type)

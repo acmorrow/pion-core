@@ -21,9 +21,8 @@
 #define __PION_LOGCODEC_HEADER__
 
 #include <functional>
+#include <memory>
 #include <vector>
-#include <boost/shared_ptr.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/lexical_cast.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
@@ -238,7 +237,7 @@ private:
 	};
 
 	/// data type for a pointer to a LogField object
-	typedef boost::shared_ptr<LogField>		LogFieldPtr;
+	typedef std::shared_ptr<LogField>		LogFieldPtr;
 
 	/// data type that maps field names to LogFields
 	typedef std::unordered_map<std::string,
@@ -382,7 +381,7 @@ private:
 
 
 	/// memory buffer used to read events
-	boost::scoped_array<char>		m_read_buf;
+	std::unique_ptr<char[]>		m_read_buf;
 
 	/// pointer to the end of the read buffer
 	const char * const				m_read_end;

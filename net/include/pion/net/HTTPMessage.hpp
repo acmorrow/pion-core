@@ -10,12 +10,12 @@
 #ifndef __PION_HTTPMESSAGE_HEADER__
 #define __PION_HTTPMESSAGE_HEADER__
 
-#include <iosfwd>
-#include <vector>
 #include <cstring>
+#include <iosfwd>
+#include <memory>
+#include <vector>
 #include <boost/cstdint.hpp>
 #include <boost/asio.hpp>
-#include <boost/scoped_array.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/regex.hpp>
@@ -589,7 +589,7 @@ private:
 	std::size_t						m_content_length;
 
 	/// the payload content, if any was sent with the message
-	boost::scoped_array<char>		m_content_buf;
+	std::unique_ptr<char[]>		m_content_buf;
 
 	/// buffers for holding chunked data
 	ChunkCache						m_chunk_cache;

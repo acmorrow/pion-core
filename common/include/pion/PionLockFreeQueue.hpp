@@ -22,6 +22,7 @@
 #ifdef _MSC_VER
 	#pragma warning(pop)
 #endif
+#include <memory>
 #include <boost/lockfree/detail/cas.hpp>
 #include <boost/lockfree/detail/freelist.hpp>
 #include <boost/lockfree/detail/branch_hints.hpp>
@@ -29,10 +30,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/thread/thread.hpp>
 #include <pion/PionConfig.hpp>
-//#include <boost/array.hpp>
-//#include <boost/cstdint.hpp>
-//#include <boost/static_assert.hpp>
-
 
 // NOTE: the data structures contained in this file are based upon algorithms
 // published in the paper "Simple, Fast, and Practical Non-Blocking and Blocking
@@ -490,10 +487,10 @@ public:
 private:
 	
 	/// lookup table that maps uint16 index numbers to QueueNode pointers
-	boost::array<QueueNode, MaxSize+2>		m_nodes;
+	std::array<QueueNode, MaxSize+2>		m_nodes;
 	
 	/// keeps track of all the QueueNode objects that are available for use
-	boost::array<volatile boost::uint16_t, MaxSize>	m_free_nodes;
+	std::array<volatile boost::uint16_t, MaxSize>	m_free_nodes;
 	
 	/// pointer to the first item in the list
 	volatile QueueNodePtr					m_head_ptr;
