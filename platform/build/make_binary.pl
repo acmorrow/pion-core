@@ -6,7 +6,6 @@
 use File::Spec;
 use File::Path;
 use File::Copy;
-use File::Glob ':glob';
 
 # include perl source with common subroutines
 require File::Spec->catfile( ("common", "build"), "common.pl");
@@ -71,21 +70,21 @@ if ($PLATFORM =~ /^win/i) {
 	}
 	$SERVER_EXE = File::Spec->catfile( (($BIN_DIR), $DLL_FULL_DIR), "pion.exe");
 	$PIONDB_EXE = File::Spec->catfile( (($BIN_DIR), $DLL_FULL_DIR), "piondb.exe");
-	@BOOST_LIBS = bsd_glob($BOOST_DIR . "/boost_" . $BOOST_LIB_GLOB . "-vc90-mt-1_42." . $SHARED_LIB_SUFFIX);
-	@PDB_FILES = bsd_glob("{bin,net/services,platform/codecs,platform/databases,platform/protocols,platform/codecs,platform/reactors,platform/services}/" . $DLL_FULL_DIR . "/*.pdb");
+	@BOOST_LIBS = glob($BOOST_DIR . "/boost_" . $BOOST_LIB_GLOB . "-vc90-mt-1_42." . $SHARED_LIB_SUFFIX);
+	@PDB_FILES = glob("{bin,net/services,platform/codecs,platform/databases,platform/protocols,platform/codecs,platform/reactors,platform/services}/" . $DLL_FULL_DIR . "/*.pdb");
 	$PDB_DIR = File::Spec->catdir( ($BIN_DIR, $PACKAGE_NAME . "-debug"), );
 } elsif ($PLATFORM eq "osx") {
 	$SHARED_LIB_SUFFIX = "dylib";
 	$PLUGIN_LIB_SUFFIX = "so";
 	$SYSTEM_LIB_DIR = File::Spec->catdir( (File::Spec->rootdir(), "usr", "local", "lib") );
-	$LOGGING_LIB = bsd_glob($SYSTEM_LIB_DIR . "/liblog4cplus-1.0.{3,4}." . $SHARED_LIB_SUFFIX);
+	$LOGGING_LIB = File::Spec->catfile( ($SYSTEM_LIB_DIR), "liblog4cplus-1.0.4." . $SHARED_LIB_SUFFIX);
 	$YAJL_LIB = File::Spec->catfile( ($SYSTEM_LIB_DIR), "libyajl.1." . $SHARED_LIB_SUFFIX);
 	$SERVER_EXE = File::Spec->catfile( ("platform", "server", ".libs"), "pion");
 	$PIONDB_EXE = File::Spec->catfile( ("sqlite", ".libs"), "piondb");
-	@BOOST_LIBS = bsd_glob($SYSTEM_LIB_DIR . "/libboost_" . $BOOST_LIB_GLOB . "." . $SHARED_LIB_SUFFIX);
-	@ICU_LIBS = bsd_glob($SYSTEM_LIB_DIR . "/libicu" . $ICU_LIB_GLOB . ".42." . $SHARED_LIB_SUFFIX);
+	@BOOST_LIBS = glob($SYSTEM_LIB_DIR . "/libboost_" . $BOOST_LIB_GLOB . "." . $SHARED_LIB_SUFFIX);
+	@ICU_LIBS = glob($SYSTEM_LIB_DIR . "/libicu" . $ICU_LIB_GLOB . ".46." . $SHARED_LIB_SUFFIX);
 	# hack for OSX because it links with two copies of the same file
-	push @ICU_LIBS, $SYSTEM_LIB_DIR . "/libicudata.42.1." . $SHARED_LIB_SUFFIX;
+	push @ICU_LIBS, $SYSTEM_LIB_DIR . "/libicudata.46.1." . $SHARED_LIB_SUFFIX;
 } else {
 	$SHARED_LIB_SUFFIX = "so";
 	$PLUGIN_LIB_SUFFIX = "so";
@@ -94,7 +93,7 @@ if ($PLATFORM =~ /^win/i) {
 	$YAJL_LIB = File::Spec->catfile( ($SYSTEM_LIB_DIR), "libyajl." . $SHARED_LIB_SUFFIX . ".1");
 	$SERVER_EXE = File::Spec->catfile( ("platform", "server", ".libs"), "pion");
 	$PIONDB_EXE = File::Spec->catfile( ("sqlite", ".libs"), "piondb");
-	@BOOST_LIBS = bsd_glob($SYSTEM_LIB_DIR . "/libboost_" . $BOOST_LIB_GLOB . "." . $SHARED_LIB_SUFFIX . ".1.*");
+	@BOOST_LIBS = glob($SYSTEM_LIB_DIR . "/libboost_" . $BOOST_LIB_GLOB . "." . $SHARED_LIB_SUFFIX . ".1.*");
 }
 if ($PLATFORM =~ /^win/i) {
 	$PION_COMMON_GLOB = File::Spec->catfile( (($BIN_DIR), $DLL_FULL_DIR), "pion-common." . $SHARED_LIB_SUFFIX);
@@ -103,7 +102,7 @@ if ($PLATFORM =~ /^win/i) {
 	$PION_SERVER_GLOB = File::Spec->catfile( (($BIN_DIR), $DLL_FULL_DIR), "pion-server." . $SHARED_LIB_SUFFIX);
 	$PION_SQLITE_GLOB = File::Spec->catfile( (($BIN_DIR), $DLL_FULL_DIR), "pion-sqlite." . $SHARED_LIB_SUFFIX);
 	$NET_PLUGINS_GLOB = File::Spec->catfile( ("net", "services", ".libs"), "*." . $PLUGIN_LIB_SUFFIX);
-	@PLATFORM_PLUGINS = bsd_glob("platform/" . "{codecs,protocols,databases,reactors,services}" . "/.libs/*." . $PLUGIN_LIB_SUFFIX);
+	@PLATFORM_PLUGINS = glob("platform/" . "{codecs,protocols,databases,reactors,services}" . "/.libs/*." . $PLUGIN_LIB_SUFFIX);
 } else {
 	$PION_COMMON_GLOB = File::Spec->catfile( ("common", "src", ".libs"), "libpion-common-*." . $SHARED_LIB_SUFFIX);
 	$PION_NET_GLOB = File::Spec->catfile( ("net", "src", ".libs"), "libpion-net-*." . $SHARED_LIB_SUFFIX);
@@ -122,7 +121,7 @@ if ($PLATFORM =~ /^win/i) {
 print "* Building binary packages for " . $TARBALL_NAME . "\n";
 
 # clear out old files and directories (with same version)
-@oldfiles = bsd_glob($PACKAGE_DIR . "*");
+@oldfiles = glob($PACKAGE_DIR . "*");
 foreach (@oldfiles) {
 	rmtree($_);
 }
@@ -159,25 +158,25 @@ foreach (@ICU_LIBS) {
 # copy the Pion shared library files into "libs"
 # note: we assume that each of the file globs = a single file
 print "Copying Pion library files..\n";
-foreach (bsd_glob($PION_COMMON_GLOB)) {
+foreach (glob($PION_COMMON_GLOB)) {
 	copy($_, $LIBS_DIR);
 }
-foreach (bsd_glob($PION_NET_GLOB)) {
+foreach (glob($PION_NET_GLOB)) {
 	copy($_, $LIBS_DIR);
 }
-foreach (bsd_glob($PION_PLATFORM_GLOB)) {
+foreach (glob($PION_PLATFORM_GLOB)) {
 	copy($_, $LIBS_DIR);
 }
-foreach (bsd_glob($PION_SERVER_GLOB)) {
+foreach (glob($PION_SERVER_GLOB)) {
 	copy($_, $LIBS_DIR);
 }
-foreach (bsd_glob($PION_SQLITE_GLOB)) {
+foreach (glob($PION_SQLITE_GLOB)) {
 	copy($_, $LIBS_DIR);
 }
 
 # copy the Pion plugin files into "plugins"
 print "Copying Pion plugin files..\n";
-foreach (bsd_glob($NET_PLUGINS_GLOB)) {
+foreach (glob($NET_PLUGINS_GLOB)) {
 	copy($_, $PLUGINS_DIR);
 }
 
@@ -186,7 +185,7 @@ if ($PLATFORM =~ /^win/i) {
 		copy($_, $PLUGINS_DIR);
 	}
 } else {
-	foreach (bsd_glob($PLATFORM_PLUGINS_GLOB)) {
+	foreach (glob($PLATFORM_PLUGINS_GLOB)) {
 		copy($_, $PLUGINS_DIR);
 	}
 }
