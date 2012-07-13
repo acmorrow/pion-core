@@ -507,13 +507,17 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 						// Skip directories starting with a '.'.
 # if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
                         if (it->path().filename().string().substr(0, 1) == ".") continue;
+                        ss << "<Database>"
+                        << "<Plugin>" << it->path().filename().string() << "</Plugin>"
+                        << "</Database>";
 #else
                         if (it->path().leaf().substr(0, 1) == ".") continue;
+                        ss << "<Database>"
+                        << "<Plugin>" << it->path().leaf() << "</Plugin>"
+                        << "</Database>";
 #endif 
 
-						ss << "<Database>"
-						   << "<Plugin>" << it->path().leaf() << "</Plugin>"
-						   << "</Database>";
+						
 					}
 				}
 
@@ -657,13 +661,16 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 						// Skip directories starting with a '.'.
 # if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
                         if (it->path().filename().string().substr(0, 1) == ".") continue;
+                        ss << "<Protocol>"
+                        << "<Plugin>" << it->path().filename().string() << "</Plugin>"
+                        << "</Protocol>";
 #else
                         if (it->path().leaf().substr(0, 1) == ".") continue;
+                        ss << "<Protocol>"
+                        << "<Plugin>" << it->path().leaf() << "</Plugin>"
+                        << "</Protocol>";
 #endif 
 
-						ss << "<Protocol>"
-						   << "<Plugin>" << it->path().leaf() << "</Plugin>"
-						   << "</Protocol>";
 					}
 				}
 
@@ -742,6 +749,14 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 			//
 			// BEGIN REACTORS CONFIG
 			//
+
+			// do not allow multiple UI threads to update reactor config at the same time
+			// this protection is assumed by the current implementation of Reactor::ConfigWriteLock
+			// because it allows "write locks" to be obtained multiple times by the same thread.
+			// Since it doesn't ensure that the thread is the same, we need to try to ensure it here
+			// by preventing multiple threads from modifying reactor configuration at the same time
+			boost::mutex::scoped_lock queue_lock(m_reactors_mutex);
+			
 			if (branches.size() == 1) {
 				if (request->getMethod() == HTTPTypes::REQUEST_METHOD_GET) {
 
@@ -821,14 +836,20 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 								// Skip directories starting with a '.'.
 # if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
                                 if (it2->path().filename().string().substr(0, 1) == ".") continue;
+                                ss << "<Reactor>"
+                                << "<ReactorType>" << it->path().filename().string() << "</ReactorType>"
+                                << "<Plugin>" << it2->path().filename().string() << "</Plugin>"
+                                << "</Reactor>";
+
 #else
                                 if (it2->path().leaf().substr(0, 1) == ".") continue;
+                                ss << "<Reactor>"
+                                << "<ReactorType>" << it->path().leaf() << "</ReactorType>"
+                                << "<Plugin>" << it2->path().leaf() << "</Plugin>"
+                                << "</Reactor>";
+
 #endif 
 
-								ss << "<Reactor>"
-								   << "<ReactorType>" << it->path().leaf() << "</ReactorType>"
-								   << "<Plugin>" << it2->path().leaf() << "</Plugin>"
-								   << "</Reactor>";
 							}
 						}
 					}
@@ -1240,9 +1261,15 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
                         if (it->path().leaf().substr(0, 1) == ".") continue;
 #endif 
 
+# if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
 						ss << "<Service>"
-						   << "<Plugin>" << it->path().leaf() << "</Plugin>"
+						   << "<Plugin>" << it->path().filename().string() << "</Plugin>"
 						   << "</Service>";
+#else
+                        ss << "<Service>"
+                        << "<Plugin>" << it->path().leaf() << "</Plugin>"
+                        << "</Service>";
+#endif 
 					}
 				}
 

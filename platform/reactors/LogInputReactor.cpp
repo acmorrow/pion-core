@@ -554,7 +554,12 @@ void LogInputReactor::recordLogFileAsDone() {
 #endif 
 		signal("FinishedLog", (void*) &log_leaf);
 	}
-	history_cache << log_file_path.leaf() << std::endl;
+# if defined(BOOST_FILESYSTEM_VERSION) && BOOST_FILESYSTEM_VERSION >= 3
+    history_cache << log_file_path.filename().string() << std::endl;
+#else
+    history_cache << log_file_path.leaf() << std::endl;
+#endif 
+	
 }
 	
 }	// end namespace plugins
