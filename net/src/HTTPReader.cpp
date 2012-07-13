@@ -19,7 +19,7 @@ namespace net {		// begin namespace net (Pion Network Library)
 
 // HTTPReader static members
 	
-const boost::uint32_t		HTTPReader::DEFAULT_READ_TIMEOUT = 10;
+const std::uint32_t		HTTPReader::DEFAULT_READ_TIMEOUT = 10;
 
 
 // HTTPReader member functions

@@ -37,9 +37,9 @@ using namespace pion::net;
 #endif
 
 static const std::string NEW_OUTPUT_LOG_FILE(LOG_FILE_DIR + "new.log");
-static const boost::uint64_t ONE_SECOND = 1000000000; // in nsec
-static const boost::uint64_t NUM_LINES_IN_DEFAULT_LOG_FILE = 4;
-static const boost::uint64_t NUM_LINES_IN_COMB_LOG_2 = 2;
+static const std::uint64_t ONE_SECOND = 1000000000; // in nsec
+static const std::uint64_t NUM_LINES_IN_DEFAULT_LOG_FILE = 4;
+static const std::uint64_t NUM_LINES_IN_COMB_LOG_2 = 2;
 static const std::string TIMESTAMPED_EXPECTED_A_FILE(LOG_FILE_DIR + "timestamped_expected_a.log");
 static const std::string LOG_EXPECTED_A_FILE(LOG_FILE_DIR + "log_expected_a.log");
 
@@ -170,11 +170,11 @@ public:
 		
 		return response_ptr;
 	}
-	boost::uint64_t extractNumEventsInFromResponse(const HTTPResponsePtr& response_ptr) {
+	std::uint64_t extractNumEventsInFromResponse(const HTTPResponsePtr& response_ptr) {
 		std::string response_content(response_ptr->getContent());
 		boost::smatch rx_matches;
 		BOOST_REQUIRE(boost::regex_match(response_content, rx_matches, boost::regex(".*<EventsIn>(\\d+)</EventsIn>.*")));
-		return boost::lexical_cast<boost::uint64_t>(rx_matches[1]);
+		return boost::lexical_cast<std::uint64_t>(rx_matches[1]);
 	}
 
 	pion::server::PlatformConfig		m_platform_cfg;
@@ -342,7 +342,7 @@ BOOST_AUTO_TEST_CASE(testSendRotateQueryToLogOutputReactorWithSomeInput) {
 	HTTPResponsePtr response_ptr = sendRequestAndGetResponse("/query/reactors/" + log_output_reactor_id + "/rotate");
 
 	// Extract from the query response the number of Events the LogOutputReactor had received at the time of rotation.
-	boost::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
+	std::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
 	BOOST_CHECK_EQUAL(num_events_in_at_rotation, NUM_LINES_IN_DEFAULT_LOG_FILE);
 	
 	// Check that the log file was timestamped.
@@ -390,7 +390,7 @@ BOOST_AUTO_TEST_CASE(testRotateQueryForCurrentlyGrowingLogFile) {
 	HTTPResponsePtr response_ptr = sendRequestAndGetResponse("/query/reactors/" + log_output_reactor_id + "/rotate");
 
 	// Extract from the query response the number of Events the LogOutputReactor had received at the time of rotation.
-	boost::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
+	std::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
 	BOOST_CHECK_GE(num_events_in_at_rotation, 10UL);
 
 	// Check that the log file was timestamped.
@@ -403,14 +403,14 @@ BOOST_AUTO_TEST_CASE(testRotateQueryForCurrentlyGrowingLogFile) {
 	// Wait for a few more Events to be processed and stop the LogInputReactor.
 	PionPlatformUnitTest::checkReactorEventsIn(m_platform_cfg.getReactionEngine(), log_output_reactor_id, num_events_in_at_rotation + 10UL, 5);
 	m_platform_cfg.getReactionEngine().stopReactor(log_input_reactor_id);
-	boost::uint64_t num_events_from_log_input_reactor = m_platform_cfg.getReactionEngine().getEventsOut(log_input_reactor_id);
+	std::uint64_t num_events_from_log_input_reactor = m_platform_cfg.getReactionEngine().getEventsOut(log_input_reactor_id);
 
 	// Wait until the LogOutputReactor has processed all Events sent by the LogInputReactor and then stop it.
 	PionPlatformUnitTest::checkReactorEventsIn(m_platform_cfg.getReactionEngine(), log_output_reactor_id, num_events_from_log_input_reactor, 5);
 	m_platform_cfg.getReactionEngine().stopReactor(log_output_reactor_id);
 
 	// Count the number of lines in the timestamped file.
-	boost::uint64_t num_events_in_timestamped_log_file = -4; // don't count header lines
+	std::uint64_t num_events_in_timestamped_log_file = -4; // don't count header lines
 	std::ifstream log_file_1(timestamped_log_files[0].c_str());
 	BOOST_REQUIRE(log_file_1.is_open());
 	const unsigned int BUF_SIZE = 1023;
@@ -421,7 +421,7 @@ BOOST_AUTO_TEST_CASE(testRotateQueryForCurrentlyGrowingLogFile) {
 	log_file_1.close();
 
 	// Count the number of lines in the current log file.
-	boost::uint64_t num_events_in_most_current_log_file = -4; // don't count header lines
+	std::uint64_t num_events_in_most_current_log_file = -4; // don't count header lines
 	std::ifstream log_file_2(NEW_OUTPUT_LOG_FILE.c_str());
 	BOOST_REQUIRE(log_file_2.is_open());
 	while (log_file_2.getline(buf, BUF_SIZE)) {
@@ -459,7 +459,7 @@ BOOST_AUTO_TEST_CASE(testRotateQueryWithJsonCodec) {
 	HTTPResponsePtr response_ptr = sendRequestAndGetResponse("/query/reactors/" + xml_log_output_reactor_id + "/rotate");
 
 	// Extract from the query response the number of Events the LogOutputReactor had received at the time of rotation.
-	boost::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
+	std::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
 	BOOST_CHECK_EQUAL(num_events_in_at_rotation, NUM_LINES_IN_DEFAULT_LOG_FILE);
 	
 	// Check that the log file was timestamped.
@@ -506,7 +506,7 @@ BOOST_AUTO_TEST_CASE(testRotateQueryWithXmlCodec) {
 	HTTPResponsePtr response_ptr = sendRequestAndGetResponse("/query/reactors/" + xml_log_output_reactor_id + "/rotate");
 
 	// Extract from the query response the number of Events the LogOutputReactor had received at the time of rotation.
-	boost::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
+	std::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
 	BOOST_CHECK_EQUAL(num_events_in_at_rotation, NUM_LINES_IN_DEFAULT_LOG_FILE);
 	
 	// Check that the log file was timestamped.
@@ -543,7 +543,7 @@ BOOST_AUTO_TEST_CASE(testRotateQueryForUnchangedLogFile) {
 	HTTPResponsePtr response_ptr = sendRequestAndGetResponse("/query/reactors/" + log_output_reactor_id + "/rotate");
 
 	// Extract from the query response the number of Events the LogOutputReactor had received at the time of rotation.
-	boost::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
+	std::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
 	BOOST_CHECK_EQUAL(num_events_in_at_rotation, NUM_LINES_IN_DEFAULT_LOG_FILE);
 	
 	// Check that the log file was timestamped.
@@ -591,7 +591,7 @@ BOOST_AUTO_TEST_CASE(testRapidFireRotateQueries) {
 
 	// Send several consecutive rotate requests to try to force a timestamp conflict.
 	HTTPResponsePtr response_ptr = sendRequestAndGetResponse("/query/reactors/" + log_output_reactor_id + "/rotate");
-	boost::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
+	std::uint64_t num_events_in_at_rotation = extractNumEventsInFromResponse(response_ptr);
 	bool expected_error_logged = false;
 	for (int i = 0; i < 10; ++i) {
 		// Wait for at least one more Event, so that the LogOutputReactor will attempt to rotate the log file.

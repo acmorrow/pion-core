@@ -74,7 +74,7 @@ public:
 																  this, std::ref(m_service)) ));
 			
 			// start multiple threads to handle async tasks
-			for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
+			for (std::uint32_t n = 0; n < m_num_threads; ++n) {
 				std::shared_ptr<std::thread> new_thread(new std::thread(
 					std::bind(&ReactionScheduler::processReactionQueue, this) ));
 				m_thread_pool.push_back(new_thread);

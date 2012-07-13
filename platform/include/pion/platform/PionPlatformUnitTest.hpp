@@ -168,8 +168,8 @@ struct PionPlatformUnitTest
 	}
 
 	static void checkReactorEventsIn(pion::platform::ReactionEngine& reaction_engine,
-		const std::string& reactor_id, const boost::uint64_t expected_value,
-		const boost::uint32_t wait_seconds = 1)
+		const std::string& reactor_id, const std::uint64_t expected_value,
+		const std::uint32_t wait_seconds = 1)
 	{
 		// wait up to one second for the number to exceed the expected value
 		const int num_checks_allowed = 10 * wait_seconds;
@@ -181,8 +181,8 @@ struct PionPlatformUnitTest
 	}
 
 	static void checkReactorEventsOut(pion::platform::ReactionEngine& reaction_engine,
-		const std::string& reactor_id, const boost::uint64_t expected_value,
-		const boost::uint32_t wait_seconds = 1)
+		const std::string& reactor_id, const std::uint64_t expected_value,
+		const std::uint32_t wait_seconds = 1)
 	{
 		// wait up to one second for the number to exceed the expected value
 		const int num_checks_allowed = 10 * wait_seconds;
@@ -193,13 +193,13 @@ struct PionPlatformUnitTest
 		BOOST_REQUIRE_GE( reaction_engine.getEventsOut(reactor_id), expected_value );
 	}
 	
-	static boost::uint64_t feedFileToReactor(pion::platform::ReactionEngine& reaction_engine,
+	static std::uint64_t feedFileToReactor(pion::platform::ReactionEngine& reaction_engine,
 		const std::string& reactor_id, pion::platform::Codec& codec_ref, const std::string& log_file)
 	{
 		std::ifstream in(log_file.c_str(), std::ios::in);
 		BOOST_REQUIRE(in.is_open());
 	
-		boost::uint64_t events_read = 0;
+		std::uint64_t events_read = 0;
 		pion::platform::EventPtr event_ptr;
 		pion::platform::EventFactory event_factory;
 

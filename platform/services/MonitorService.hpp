@@ -104,8 +104,8 @@ private:
 	TermRefSet							m_filtered_events;
 
 	/// Counters for visual changes (to help UI)
-	boost::uint32_t						m_event_counter;
-	boost::uint32_t						m_change_counter;
+	std::uint32_t						m_event_counter;
+	std::uint32_t						m_change_counter;
 
 	/// Age (last call by a browser)
 	boost::posix_time::ptime			m_age;

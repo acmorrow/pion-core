@@ -89,11 +89,11 @@ BOOST_FIXTURE_TEST_SUITE(TransformReactorTests_S, TransformReactorTests_F)
 
 BOOST_AUTO_TEST_CASE(checkTransformLogFile) {
 	// read in events from the log file
-	boost::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
+	std::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
 		m_platform_cfg.getReactionEngine(), m_transformer_id, *m_codec_ptr, CLF_LOG_FILE);
 
 	// make sure that all events were read from the log
-	BOOST_CHECK_EQUAL(events_read, static_cast<boost::uint64_t>(NUM_CLF_RECORDS));
+	BOOST_CHECK_EQUAL(events_read, static_cast<std::uint64_t>(NUM_CLF_RECORDS));
 
 	// make sure that the reactor received all of the events read
 	PionPlatformUnitTest::checkReactorEventsIn(m_platform_cfg.getReactionEngine(), m_transformer_id, events_read);
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(checkTransformLogFile) {
 
 	// check number of output events for each of the log reactors
 	// (make sure they have finished writing data)
-	PionPlatformUnitTest::checkReactorEventsOut(m_platform_cfg.getReactionEngine(), m_output_log_id, static_cast<boost::uint64_t>(NUM_CLF_RECORDS));
+	PionPlatformUnitTest::checkReactorEventsOut(m_platform_cfg.getReactionEngine(), m_output_log_id, static_cast<std::uint64_t>(NUM_CLF_RECORDS));
 
 	// make sure that the output files match what is expected
 	BOOST_CHECK(PionUnitTest::check_files_match(LOG_OUTPUT_FILE, CLF_LOG_EXPECTED_FILE_1));
@@ -196,7 +196,7 @@ BOOST_AUTO_TEST_CASE(checkTransformCLFLogFile) {
 		*m_reaction_engine, transformer_id, *clf_codec_ptr, CLF_LOG_FILE);
 
 	// Make sure the LogOutputReactor has finished writing the expected number of records.
-	PionPlatformUnitTest::checkReactorEventsOut(*m_reaction_engine, log_writer_id, static_cast<boost::uint64_t>(NUM_CLF_RECORDS));
+	PionPlatformUnitTest::checkReactorEventsOut(*m_reaction_engine, log_writer_id, static_cast<std::uint64_t>(NUM_CLF_RECORDS));
 
 	// Stop the LogOutputReactor and confirm that the log file it wrote has the expected contents.
 	m_reaction_engine->stopReactor(log_writer_id);
@@ -237,7 +237,7 @@ BOOST_AUTO_TEST_CASE(checkTransformStockPriceLogFile) {
 		*m_reaction_engine, transformer_id, *stock_codec_ptr, STOCK_PRICE_LOG_FILE);
 
 	// Make sure the LogOutputReactor has finished writing the expected number of records.
-	PionPlatformUnitTest::checkReactorEventsOut(*m_reaction_engine, log_writer_id, static_cast<boost::uint64_t>(NUM_STOCK_RECORDS));
+	PionPlatformUnitTest::checkReactorEventsOut(*m_reaction_engine, log_writer_id, static_cast<std::uint64_t>(NUM_STOCK_RECORDS));
 
 	// Stop the LogOutputReactor and confirm that the log file it wrote has the expected contents.
 	m_reaction_engine->stopReactor(log_writer_id);

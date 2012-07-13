@@ -162,28 +162,28 @@ BOOST_AUTO_TEST_CASE(checkInt16Comparisons) {
 	event_ptr->setInt(m_plain_int_term.term_ref, 100);
 	Comparison c(m_plain_int_term);
 	
-	c.configure(Comparison::TYPE_EQUALS, static_cast<boost::int32_t>(100));
+	c.configure(Comparison::TYPE_EQUALS, static_cast<std::int32_t>(100));
 	BOOST_CHECK(c.evaluate(*event_ptr));
 
-	c.configure(Comparison::TYPE_NOT_EQUALS, static_cast<boost::int32_t>(101));
+	c.configure(Comparison::TYPE_NOT_EQUALS, static_cast<std::int32_t>(101));
 	BOOST_CHECK(c.evaluate(*event_ptr));
 	
-	c.configure(Comparison::TYPE_GREATER_THAN, static_cast<boost::int32_t>(99));
+	c.configure(Comparison::TYPE_GREATER_THAN, static_cast<std::int32_t>(99));
 	BOOST_CHECK(c.evaluate(*event_ptr));
 
-	c.configure(Comparison::TYPE_LESS_THAN, static_cast<boost::int32_t>(101));
+	c.configure(Comparison::TYPE_LESS_THAN, static_cast<std::int32_t>(101));
 	BOOST_CHECK(c.evaluate(*event_ptr));
 
-	c.configure(Comparison::TYPE_GREATER_OR_EQUAL, static_cast<boost::int32_t>(100));
+	c.configure(Comparison::TYPE_GREATER_OR_EQUAL, static_cast<std::int32_t>(100));
 	BOOST_CHECK(c.evaluate(*event_ptr));
 	
-	c.configure(Comparison::TYPE_GREATER_OR_EQUAL, static_cast<boost::int32_t>(10));
+	c.configure(Comparison::TYPE_GREATER_OR_EQUAL, static_cast<std::int32_t>(10));
 	BOOST_CHECK(c.evaluate(*event_ptr));
 	
-	c.configure(Comparison::TYPE_LESS_OR_EQUAL, static_cast<boost::int32_t>(100));
+	c.configure(Comparison::TYPE_LESS_OR_EQUAL, static_cast<std::int32_t>(100));
 	BOOST_CHECK(c.evaluate(*event_ptr));
 
-	c.configure(Comparison::TYPE_LESS_OR_EQUAL, static_cast<boost::int32_t>(1000));
+	c.configure(Comparison::TYPE_LESS_OR_EQUAL, static_cast<std::int32_t>(1000));
 	BOOST_CHECK(c.evaluate(*event_ptr));
 }
 

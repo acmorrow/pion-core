@@ -115,7 +115,7 @@ public:
 private:
 
 	/// returns the next inserter to use for database insertion
-	boost::uint16_t nextInserter(void);
+	std::uint16_t nextInserter(void);
 	
 
 	/// name of the database element for Pion XML config files
@@ -140,7 +140,7 @@ private:
 	static const std::string				INSERTER_ELEMENT_NAME;
 
 	/// default number of database inserters to use
-	static const boost::uint16_t			DEFAULT_NUM_INSERTERS;
+	static const std::uint16_t			DEFAULT_NUM_INSERTERS;
 
 
 	/// data type for a database inserter smart pointer
@@ -151,10 +151,10 @@ private:
 	std::vector<DatabaseInserterPtr>		m_inserters;
 	
 	/// total number of database inserters being used
-	boost::uint16_t							m_num_inserters;
+	std::uint16_t							m_num_inserters;
 
 	/// database inserter to use for the next event received
-	boost::uint16_t							m_next_inserter;
+	std::uint16_t							m_next_inserter;
 
 	/// used to protect the Database inserters vector
 	mutable std::mutex					m_inserter_mutex;

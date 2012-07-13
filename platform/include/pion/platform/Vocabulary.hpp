@@ -48,14 +48,14 @@ public:
 	/// data type for the type of data that a term represents
 	enum DataType {
 		TYPE_NULL = 0,			///< NULL or undefined type
-		TYPE_INT8,				///< 8-bit, signed integer (uses boost::int32_t)
-		TYPE_UINT8,				///< 8-bit, unsigned integer (uses boost::uint32_t)
-		TYPE_INT16,				///< 16-bit, signed integer (uses boost::int32_t)
-		TYPE_UINT16,			///< 16-bit, unsigned integer (uses boost::uint32_t)
-		TYPE_INT32,				///< 32-bit, signed integer (uses boost::int32_t)
-		TYPE_UINT32,			///< 32-bit, unsigned integer (uses boost::uint32_t)
-		TYPE_INT64,				///< 64-bit, signed integer (uses boost::int64_t)
-		TYPE_UINT64,			///< 64-bit, unsigned integer (uses boost::uint64_t)
+		TYPE_INT8,				///< 8-bit, signed integer (uses std::int32_t)
+		TYPE_UINT8,				///< 8-bit, unsigned integer (uses std::uint32_t)
+		TYPE_INT16,				///< 16-bit, signed integer (uses std::int32_t)
+		TYPE_UINT16,			///< 16-bit, unsigned integer (uses std::uint32_t)
+		TYPE_INT32,				///< 32-bit, signed integer (uses std::int32_t)
+		TYPE_UINT32,			///< 32-bit, unsigned integer (uses std::uint32_t)
+		TYPE_INT64,				///< 64-bit, signed integer (uses std::int64_t)
+		TYPE_UINT64,			///< 64-bit, unsigned integer (uses std::uint64_t)
 		TYPE_FLOAT,				///< floating point number (uses float)
 		TYPE_DOUBLE,			///< large floating point number (uses double)
 		TYPE_LONG_DOUBLE,		///< very large floating point number (uses long double)

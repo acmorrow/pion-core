@@ -36,7 +36,7 @@ const std::string			DatabaseOutputReactor::EVENTS_QUEUED_ELEMENT_NAME = "EventsQ
 const std::string			DatabaseOutputReactor::KEY_CACHE_SIZE_ELEMENT_NAME = "KeyCacheSize";
 const std::string			DatabaseOutputReactor::NUM_INSERTERS_ELEMENT_NAME = "NumInserters";
 const std::string			DatabaseOutputReactor::INSERTER_ELEMENT_NAME = "Inserter";
-const boost::uint16_t		DatabaseOutputReactor::DEFAULT_NUM_INSERTERS = 1U;
+const std::uint16_t		DatabaseOutputReactor::DEFAULT_NUM_INSERTERS = 1U;
 
 // DatabaseOutputReactor member functions
 
@@ -61,7 +61,7 @@ void DatabaseOutputReactor::setConfig(const Vocabulary& v, const xmlNodePtr conf
 		
 		// initialize database inserters
 		m_inserters.clear();
-		for (boost::uint16_t n = 0; n < m_num_inserters; ++n) {
+		for (std::uint16_t n = 0; n < m_num_inserters; ++n) {
 			DatabaseInserterPtr inserter_ptr(new pion::platform::DatabaseInserter());
 			
 			// initialize inserter parameters
@@ -191,10 +191,10 @@ void DatabaseOutputReactor::process(const EventPtr& e)
 	deliverEvent(e);
 }
 
-boost::uint16_t DatabaseOutputReactor::nextInserter(void)
+std::uint16_t DatabaseOutputReactor::nextInserter(void)
 {
 	std::lock_guard<std::mutex> queue_lock(m_inserter_mutex);
-	const boost::uint16_t result = m_next_inserter;
+	const std::uint16_t result = m_next_inserter;
 	if (++m_next_inserter >= m_num_inserters)
 		m_next_inserter = 0;
 	return result;

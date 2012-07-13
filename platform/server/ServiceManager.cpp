@@ -33,7 +33,7 @@ namespace server {		// begin namespace server (Pion Server)
 
 // static members of ServiceManager
 	
-const boost::uint32_t		ServiceManager::DEFAULT_NUM_THREADS = 4;
+const std::uint32_t		ServiceManager::DEFAULT_NUM_THREADS = 4;
 const std::string			ServiceManager::DEFAULT_CONFIG_FILE = "services.xml";
 const std::string			ServiceManager::SERVER_ELEMENT_NAME = "Server";
 const std::string			ServiceManager::WEB_SERVICE_ELEMENT_NAME = "WebService";

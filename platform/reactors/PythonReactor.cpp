@@ -417,20 +417,20 @@ Event_getValue(const Event::ParameterValue& value, Vocabulary::DataType term_typ
 	case Vocabulary::TYPE_INT8:
 	case Vocabulary::TYPE_INT16:
 	case Vocabulary::TYPE_INT32:
-		retval = PyInt_FromLong(boost::get<boost::int32_t>(value));
+		retval = PyInt_FromLong(boost::get<std::int32_t>(value));
 		break;
 	case Vocabulary::TYPE_UINT8:
 	case Vocabulary::TYPE_UINT16:
-		retval = PyInt_FromLong(boost::get<boost::uint32_t>(value));
+		retval = PyInt_FromLong(boost::get<std::uint32_t>(value));
 		break;
 	case Vocabulary::TYPE_UINT32:
-		retval = PyLong_FromUnsignedLong(boost::get<boost::uint32_t>(value));
+		retval = PyLong_FromUnsignedLong(boost::get<std::uint32_t>(value));
 		break;
 	case Vocabulary::TYPE_INT64:
-		retval = PyLong_FromLongLong(boost::get<boost::int64_t>(value));
+		retval = PyLong_FromLongLong(boost::get<std::int64_t>(value));
 		break;
 	case Vocabulary::TYPE_UINT64:
-		retval = PyLong_FromUnsignedLongLong(boost::get<boost::uint64_t>(value));
+		retval = PyLong_FromUnsignedLongLong(boost::get<std::uint64_t>(value));
 		break;
 	case Vocabulary::TYPE_FLOAT:
 		retval = PyFloat_FromDouble(boost::get<float>(value));
@@ -1214,7 +1214,7 @@ const string			PythonReactor::OPEN_SESSIONS_ELEMENT_NAME = "OpenSessions";
 const string			PythonReactor::VOCAB_CLICKSTREAM_SESSION_EVENT="urn:vocab:clickstream#session-event";
 const string 			PythonReactor::VOCAB_CLICKSTREAM_SESSION_ID="urn:vocab:clickstream#session-id";
 std::mutex			PythonReactor::m_init_mutex;
-boost::uint32_t			PythonReactor::m_init_num = 0;
+std::uint32_t			PythonReactor::m_init_num = 0;
 PyInterpreterState *	PythonReactor::m_interp_ptr = NULL;
 boost::thread_specific_ptr<PyThreadState> *		PythonReactor::m_state_ptr = NULL;
 

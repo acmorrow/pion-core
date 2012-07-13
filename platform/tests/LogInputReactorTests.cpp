@@ -43,9 +43,9 @@ static const std::string NEW_OUTPUT_LOG_FILE(LOG_FILE_DIR + "new.log");
 static const std::string NEW_INPUT_LOG_FNAME("combined-new");
 
 
-const boost::uint64_t NUM_LINES_IN_DEFAULT_LOG_FILE = 4;
-const boost::uint64_t TOTAL_LINES_IN_ALL_CLF_LOG_FILES = 7;
-const boost::uint64_t NUM_LINES_IN_LARGE_LOG_FILE = 20000;
+const std::uint64_t NUM_LINES_IN_DEFAULT_LOG_FILE = 4;
+const std::uint64_t TOTAL_LINES_IN_ALL_CLF_LOG_FILES = 7;
+const std::uint64_t NUM_LINES_IN_LARGE_LOG_FILE = 20000;
 
 static const std::string expected_urls[] = {
 	// from combined.log
@@ -217,7 +217,7 @@ public:
 	}
 	bool waitToConsumeLogs(const std::string& reactor_id,
 		std::vector<std::string>& logs_expected,
-		const boost::uint32_t wait_seconds = 1)
+		const std::uint32_t wait_seconds = 1)
 	{
 		const int num_checks_allowed = 10 * wait_seconds;
 		std::vector<std::string> logs_consumed;
@@ -327,8 +327,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(testEmptyLogFile) {
 	BOOST_REQUIRE(this->waitToConsumeLogs(F::m_log_reader_id, logs_expected));
 
 	// Confirm that the number of input events and output events is zero.
-	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsIn(F::m_log_reader_id), static_cast<boost::uint64_t>(0));
-	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsOut(F::m_log_reader_id), static_cast<boost::uint64_t>(0));
+	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsIn(F::m_log_reader_id), static_cast<std::uint64_t>(0));
+	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsOut(F::m_log_reader_id), static_cast<std::uint64_t>(0));
 
 	// Stop the OutputLogReactor.  If, as expected, it's empty, it will be deleted.
 	F::m_reaction_engine->stopReactor(F::m_log_writer_id);
@@ -407,14 +407,14 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkConsumedFilesSkippedAfterRestart) {
 
 	// Restart the ReactionEngine and the LogInputReactor.
 	F::m_reaction_engine->start();
-	boost::uint64_t events_in_at_start = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
-	boost::uint64_t events_out_at_start = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
+	std::uint64_t events_in_at_start = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
+	std::uint64_t events_out_at_start = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
 	F::m_reaction_engine->startReactor(F::m_log_reader_id);
 
 	// Compute the expected totals of input events and output events.  After being restarted, the Reactor 
 	// should consume only the events from the new file, thus the totals should only increase by 2.
-	boost::uint64_t expected_events_in  = events_in_at_start  + num_lines_in_new_input_log_file;
-	boost::uint64_t expected_events_out = events_out_at_start + num_lines_in_new_input_log_file;
+	std::uint64_t expected_events_in  = events_in_at_start  + num_lines_in_new_input_log_file;
+	std::uint64_t expected_events_out = events_out_at_start + num_lines_in_new_input_log_file;
 
 	// Wait up to one second for the expected number of input events.
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, expected_events_in);
@@ -455,8 +455,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkConsumedFilesSkippedAfterEngineReload
 	F::m_reaction_engine->startReactor(F::m_log_reader_id);
 
 	// The LogInputReactor should consume only the events from the new file.
-	boost::uint64_t expected_events_in  = num_lines_in_new_input_log_file;
-	boost::uint64_t expected_events_out = num_lines_in_new_input_log_file;
+	std::uint64_t expected_events_in  = num_lines_in_new_input_log_file;
+	std::uint64_t expected_events_out = num_lines_in_new_input_log_file;
 
 	// Wait up to one second for the expected number of input events.
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, expected_events_in);
@@ -481,11 +481,11 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterRest
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, NUM_LINES_IN_LARGE_LOG_FILE / 100); // i.e. less than 1% read
 
 	// Stop and restart the LogInputReactor 10 times.
-	boost::uint64_t prev_num_events_in = 0;
+	std::uint64_t prev_num_events_in = 0;
 	for (unsigned int i = 0; i < 10; ++i) {
 		PionScheduler::sleep(0, num_nsec);
 		F::m_reaction_engine->stopReactor(F::m_log_reader_id);
-		boost::uint64_t num_events_in = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
+		std::uint64_t num_events_in = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
 		BOOST_CHECK_GT(num_events_in, prev_num_events_in); // i.e. at least one event was read
 		prev_num_events_in = num_events_in;
 		F::m_reaction_engine->startReactor(F::m_log_reader_id);
@@ -495,8 +495,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterRest
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, NUM_LINES_IN_LARGE_LOG_FILE, 20);
 
 	// Confirm that the LogInputReactor has the expected number of input events and output events.
-	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsIn(F::m_log_reader_id), static_cast<boost::uint64_t>(NUM_LINES_IN_LARGE_LOG_FILE));
-	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsOut(F::m_log_reader_id), static_cast<boost::uint64_t>(NUM_LINES_IN_LARGE_LOG_FILE));
+	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsIn(F::m_log_reader_id), static_cast<std::uint64_t>(NUM_LINES_IN_LARGE_LOG_FILE));
+	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsOut(F::m_log_reader_id), static_cast<std::uint64_t>(NUM_LINES_IN_LARGE_LOG_FILE));
 }
 
 BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterRestartingEngine) {
@@ -509,7 +509,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterRest
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, NUM_LINES_IN_LARGE_LOG_FILE / 100); // i.e. less than 1% read
 
 	// Stop and restart the ReactorEngine 10 times.
-	boost::uint64_t prev_num_events_in = 0;
+	std::uint64_t prev_num_events_in = 0;
 	for (unsigned int i = 0; i < 10; ++i) {
 		PionScheduler::sleep(0, num_nsec);
 
@@ -517,7 +517,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterRest
 		F::m_reaction_engine->stopReactor(F::m_log_reader_id);
 
 		F::m_reaction_engine->stop();
-		boost::uint64_t num_events_in = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
+		std::uint64_t num_events_in = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
 		BOOST_CHECK(num_events_in > prev_num_events_in); // i.e. at least one event was read
 		prev_num_events_in = num_events_in;
 		F::m_reaction_engine->start();
@@ -529,8 +529,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterRest
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, NUM_LINES_IN_LARGE_LOG_FILE, 20);
 
 	// Confirm that the Reactor has the expected number of input events and output events.
-	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsIn(F::m_log_reader_id), static_cast<boost::uint64_t>(NUM_LINES_IN_LARGE_LOG_FILE));
-	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsOut(F::m_log_reader_id), static_cast<boost::uint64_t>(NUM_LINES_IN_LARGE_LOG_FILE));
+	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsIn(F::m_log_reader_id), static_cast<std::uint64_t>(NUM_LINES_IN_LARGE_LOG_FILE));
+	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsOut(F::m_log_reader_id), static_cast<std::uint64_t>(NUM_LINES_IN_LARGE_LOG_FILE));
 }
 */
 
@@ -545,8 +545,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterEngi
 
 	// Stop the LogInputReactor and save the numbers of input events and output events.
 	F::m_reaction_engine->stopReactor(F::m_log_reader_id);
-	boost::uint64_t events_in_before_delete = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
-	boost::uint64_t events_out_before_delete = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
+	std::uint64_t events_in_before_delete = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
+	std::uint64_t events_out_before_delete = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
 
 	// Delete the ReactionEngine.  (This is needed to enable creating a new LogInputReactor with the same ID, 
 	// because IDs can only be specified in a configuration file, configuration files can only be read if 
@@ -564,8 +564,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterEngi
 
 	// Compute the expected numbers of input events and output events (which should be
 	// the number of lines in the log file that haven't yet been read).
-	boost::uint64_t expected_events_in  = NUM_LINES_IN_LARGE_LOG_FILE - events_in_before_delete;
-	boost::uint64_t expected_events_out = NUM_LINES_IN_LARGE_LOG_FILE - events_out_before_delete;
+	std::uint64_t expected_events_in  = NUM_LINES_IN_LARGE_LOG_FILE - events_in_before_delete;
+	std::uint64_t expected_events_out = NUM_LINES_IN_LARGE_LOG_FILE - events_out_before_delete;
 
 	// Wait up to 20 seconds for the expected number of input events.
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, expected_events_in, 20);
@@ -647,8 +647,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkConsumedFilesSkippedAfterRestartForMu
 
 	// Restart the ReactionEngine, check and save the number of input and output events, and restart the LogInputReactors.
 	F::m_reaction_engine->start();
-	boost::uint64_t events_in_at_start = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
-	boost::uint64_t events_out_at_start = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
+	std::uint64_t events_in_at_start = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
+	std::uint64_t events_out_at_start = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
 	BOOST_CHECK_EQUAL(events_in_at_start, NUM_LINES_IN_DEFAULT_LOG_FILE);
 	BOOST_CHECK_EQUAL(events_out_at_start, NUM_LINES_IN_DEFAULT_LOG_FILE);
 	BOOST_CHECK_EQUAL(F::m_reaction_engine->getEventsIn(log_reader_id_2), events_in_at_start);
@@ -658,8 +658,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkConsumedFilesSkippedAfterRestartForMu
 
 	// Compute the expected totals of input events and output events.  After being restarted, the LogInputReactors 
 	// should consume only the events from the new file, thus the totals should only increase by 2.
-	boost::uint64_t expected_events_in  = events_in_at_start  + num_lines_in_new_input_log_file;
-	boost::uint64_t expected_events_out = events_out_at_start + num_lines_in_new_input_log_file;
+	std::uint64_t expected_events_in  = events_in_at_start  + num_lines_in_new_input_log_file;
+	std::uint64_t expected_events_out = events_out_at_start + num_lines_in_new_input_log_file;
 
 	// Wait up to one second for the expected number of input events.
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, expected_events_in);
@@ -712,8 +712,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkConsumedFilesSkippedAfterEngineReload
 	F::m_reaction_engine->startReactor(log_reader_id_2);
 
 	// The LogInputReactors should consume only the events from the new file.
-	boost::uint64_t expected_events_in  = num_lines_in_new_input_log_file;
-	boost::uint64_t expected_events_out = num_lines_in_new_input_log_file;
+	std::uint64_t expected_events_in  = num_lines_in_new_input_log_file;
+	std::uint64_t expected_events_out = num_lines_in_new_input_log_file;
 
 	// Wait up to one second for the expected number of input events.
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, expected_events_in);
@@ -866,8 +866,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedCompressedFileResume
 
 	// Stop the LogInputReactor and save the numbers of input events and output events.
 	F::m_reaction_engine->stopReactor(F::m_log_reader_id);
-	boost::uint64_t events_in_before_delete = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
-	boost::uint64_t events_out_before_delete = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
+	std::uint64_t events_in_before_delete = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
+	std::uint64_t events_out_before_delete = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
 
 	// Delete the ReactionEngine.  (This is needed to enable creating a new LogInputReactor with the same ID, 
 	// because IDs can only be specified in a configuration file, configuration files can only be read if 
@@ -885,8 +885,8 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedCompressedFileResume
 
 	// Compute the expected numbers of input events and output events (which should be
 	// the number of lines in the log file that haven't yet been read).
-	boost::uint64_t expected_events_in  = NUM_LINES_IN_LARGE_LOG_FILE - events_in_before_delete;
-	boost::uint64_t expected_events_out = NUM_LINES_IN_LARGE_LOG_FILE - events_out_before_delete;
+	std::uint64_t expected_events_in  = NUM_LINES_IN_LARGE_LOG_FILE - events_in_before_delete;
+	std::uint64_t expected_events_out = NUM_LINES_IN_LARGE_LOG_FILE - events_out_before_delete;
 
 	// Wait up to 20 seconds for the expected number of input events.
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, expected_events_in, 20);
@@ -940,7 +940,7 @@ public:
 	virtual ~TwoRunningLogInputReactorsReadingLargeFile_F() {
 	}
 
-	boost::uint32_t m_num_nsec;
+	std::uint32_t m_num_nsec;
 	std::string m_log_reader_id_2;
 };
 
@@ -1007,10 +1007,10 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterEngi
 	// Stop the LogInputReactors and save the numbers of input events and output events.
 	F::m_reaction_engine->stopReactor(F::m_log_reader_id);
 	F::m_reaction_engine->stopReactor(F::m_log_reader_id_2);
-	boost::uint64_t events_in_before_delete_1  = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
-	boost::uint64_t events_out_before_delete_1 = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
-	boost::uint64_t events_in_before_delete_2  = F::m_reaction_engine->getEventsIn(F::m_log_reader_id_2);
-	boost::uint64_t events_out_before_delete_2 = F::m_reaction_engine->getEventsOut(F::m_log_reader_id_2);
+	std::uint64_t events_in_before_delete_1  = F::m_reaction_engine->getEventsIn(F::m_log_reader_id);
+	std::uint64_t events_out_before_delete_1 = F::m_reaction_engine->getEventsOut(F::m_log_reader_id);
+	std::uint64_t events_in_before_delete_2  = F::m_reaction_engine->getEventsIn(F::m_log_reader_id_2);
+	std::uint64_t events_out_before_delete_2 = F::m_reaction_engine->getEventsOut(F::m_log_reader_id_2);
 
 	// Delete the ReactionEngine.  (This is needed to enable creating new LogInputReactors with the same IDs, 
 	// because IDs can only be specified in a configuration file, configuration files can only be read if 
@@ -1029,10 +1029,10 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkPartiallyConsumedFileResumedAfterEngi
 
 	// Compute the expected numbers of input events and output events (which should be
 	// the number of lines in the log file that haven't yet been read).
-	boost::uint64_t expected_events_in_1  = NUM_LINES_IN_LARGE_LOG_FILE - events_in_before_delete_1;
-	boost::uint64_t expected_events_out_1 = NUM_LINES_IN_LARGE_LOG_FILE - events_out_before_delete_1;
-	boost::uint64_t expected_events_in_2  = NUM_LINES_IN_LARGE_LOG_FILE - events_in_before_delete_2;
-	boost::uint64_t expected_events_out_2 = NUM_LINES_IN_LARGE_LOG_FILE - events_out_before_delete_2;
+	std::uint64_t expected_events_in_1  = NUM_LINES_IN_LARGE_LOG_FILE - events_in_before_delete_1;
+	std::uint64_t expected_events_out_1 = NUM_LINES_IN_LARGE_LOG_FILE - events_out_before_delete_1;
+	std::uint64_t expected_events_in_2  = NUM_LINES_IN_LARGE_LOG_FILE - events_in_before_delete_2;
+	std::uint64_t expected_events_out_2 = NUM_LINES_IN_LARGE_LOG_FILE - events_out_before_delete_2;
 
 	// Wait up to 20 seconds for the expected number of input events.
 	PionPlatformUnitTest::checkReactorEventsIn(*F::m_reaction_engine, F::m_log_reader_id, expected_events_in_1, 20);

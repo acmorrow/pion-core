@@ -10,11 +10,11 @@
 #ifndef __PION_HTTPMESSAGE_HEADER__
 #define __PION_HTTPMESSAGE_HEADER__
 
+#include <cstdint>
 #include <cstring>
 #include <iosfwd>
 #include <memory>
 #include <vector>
-#include <boost/cstdint.hpp>
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -163,10 +163,10 @@ public:
 	}
 
 	/// returns the major HTTP version number
-	inline boost::uint16_t getVersionMajor(void) const { return m_version_major; }
+	inline std::uint16_t getVersionMajor(void) const { return m_version_major; }
 
 	/// returns the minor HTTP version number
-	inline boost::uint16_t getVersionMinor(void) const { return m_version_minor; }
+	inline std::uint16_t getVersionMinor(void) const { return m_version_minor; }
 
 	/// returns a string representation of the HTTP version (i.e. "HTTP/1.1")
 	inline std::string getVersionString(void) const {
@@ -270,13 +270,13 @@ public:
 	inline void setRemoteIp(const boost::asio::ip::address& ip) { m_remote_ip = ip; }
 
 	/// sets the major HTTP version number
-	inline void setVersionMajor(const boost::uint16_t n) {
+	inline void setVersionMajor(const std::uint16_t n) {
 		m_version_major = n;
 		clearFirstLine();
 	}
 
 	/// sets the minor HTTP version number
-	inline void setVersionMinor(const boost::uint16_t n) {
+	inline void setVersionMinor(const std::uint16_t n) {
 		m_version_minor = n;
 		clearFirstLine();
 	}
@@ -580,10 +580,10 @@ private:
 	boost::asio::ip::address		m_remote_ip;
 
 	/// HTTP major version number
-	boost::uint16_t					m_version_major;
+	std::uint16_t					m_version_major;
 
 	/// HTTP major version number
-	boost::uint16_t					m_version_minor;
+	std::uint16_t					m_version_minor;
 
 	/// the length of the payload content (in bytes)
 	std::size_t						m_content_length;

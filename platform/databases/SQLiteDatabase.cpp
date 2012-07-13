@@ -96,8 +96,8 @@ void SQLiteDatabase::open(unsigned partition)
 	sqlite3_busy_timeout(m_sqlite_db, 10000);
 
 	// Set up defaults for page & cache size
-	boost::uint64_t page_size = 1024;
-	boost::uint64_t cache_size = 2000;
+	std::uint64_t page_size = 1024;
+	std::uint64_t cache_size = 2000;
 	boost::regex regex_cache_size("pragma\\s+cache_size\\s+=\\s*([0-9]+)", boost::regex::extended | boost::regex::icase);
 	boost::regex regex_default_cache_size("pragma\\s+default_cache_size\\s+=\\s*([0-9]+)", boost::regex::extended | boost::regex::icase);
 	boost::regex regex_page_size("pragma\\s+page_size\\s+=\\s*([0-9]+)", boost::regex::extended | boost::regex::icase);
@@ -111,11 +111,11 @@ void SQLiteDatabase::open(unsigned partition)
 		if (regex_search(m_pre_sql[i], regex_default_cache_size))
 			s = regex_replace(m_pre_sql[i], regex_default_cache_size, "$1", boost::format_all | boost::format_first_only | boost::format_no_copy);
 		if (!s.empty())
-			cache_size = boost::lexical_cast<boost::uint64_t>(s);
+			cache_size = boost::lexical_cast<std::uint64_t>(s);
 		if (regex_search(m_pre_sql[i], regex_page_size)) {
 			s = regex_replace(m_pre_sql[i], regex_page_size, "$1", boost::format_all | boost::format_first_only | boost::format_no_copy);
 			if (!s.empty())
-				page_size = boost::lexical_cast<boost::uint64_t>(s);
+				page_size = boost::lexical_cast<std::uint64_t>(s);
 		}
 	}
 	m_cache_size = page_size * cache_size;

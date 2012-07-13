@@ -17,13 +17,13 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <cstdint>
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <thread>
 #include <vector>
 #include <boost/asio.hpp>
-#include <boost/cstdint.hpp>
-#include <thread>
 #include <boost/pool/pool.hpp>
 #include <boost/pool/pool_alloc.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
@@ -83,7 +83,7 @@ public:
 	typedef std::shared_ptr<std::thread>	ThreadPtr;
 	
 	/// data type for a container of counters
-	typedef std::vector<boost::uint64_t>		CounterContainer;
+	typedef std::vector<std::uint64_t>		CounterContainer;
 	
 	/// data type for a container of threads
 	typedef std::vector<ThreadPtr>			ThreadContainer;
@@ -137,11 +137,11 @@ protected:
 	inline void setCountDescription(const std::string& d) { m_count_description=d; }
 
 	/// sets the number of counter samples remaining
-	inline void setSamplesRemaining(const boost::uint32_t n) { m_samples_remaining=n; }
+	inline void setSamplesRemaining(const std::uint32_t n) { m_samples_remaining=n; }
 
 	
 	/// the current value of the counter
-	volatile boost::uint64_t			m_counter;
+	volatile std::uint64_t			m_counter;
 
 	/// true if the performance test is running
 	volatile bool						m_is_running;
@@ -150,7 +150,7 @@ protected:
 private:
 
 	/// returns the current counter value
-	virtual boost::uint64_t getCurrentCount(void) { return m_counter; }
+	virtual std::uint64_t getCurrentCount(void) { return m_counter; }
 
 	/// schedules a timer to print out the value of the counter
 	inline void scheduleSample(void) {
@@ -161,7 +161,7 @@ private:
 	/// gets a sample and prints out the value of the counter
 	inline void getSample(void) {
 		// get and print the value of the counter
-		const boost::uint64_t current_count(getCurrentCount());
+		const std::uint64_t current_count(getCurrentCount());
 		cout << m_count_description << ": " << (current_count-m_last_count) << endl;
 
 		// increase the counter sum and update last count
@@ -180,16 +180,16 @@ private:
 	}
 
 	/// the value of the counter when the last sample was taken
-	boost::uint64_t					m_last_count;
+	std::uint64_t					m_last_count;
 	
 	/// the sum of all of sample values
-	boost::uint64_t					m_sample_sum;
+	std::uint64_t					m_sample_sum;
 	
 	/// the total number of samples that have been taken
-	boost::uint32_t					m_total_samples;
+	std::uint32_t					m_total_samples;
 	
 	/// the number of samples remaining
-	boost::uint32_t					m_samples_remaining;
+	std::uint32_t					m_samples_remaining;
 	
 	/// a description of what the counter represents
 	std::string						m_count_description;
@@ -354,14 +354,14 @@ public:
 	void doNothing(void) {}
     
 	/// work function that just bumps the counter
-	void bumpCounter(boost::uint64_t& thread_counter) { ++thread_counter; }
+	void bumpCounter(std::uint64_t& thread_counter) { ++thread_counter; }
     
 
 protected:
 
 	/// returns the current counter value
-	virtual boost::uint64_t getCurrentCount(void) {
-		boost::uint64_t result = 0;
+	virtual std::uint64_t getCurrentCount(void) {
+		std::uint64_t result = 0;
 		if (ConsumerThreads == 0) {
 			for (unsigned int n = 0; n < ProducerThreads; ++n)
 				result += m_producer_counters[n];
@@ -386,10 +386,10 @@ protected:
 	}
 
 	/// thread function used to produce objects
-	virtual void produce(boost::uint64_t& thread_counter) = 0;
+	virtual void produce(std::uint64_t& thread_counter) = 0;
 
 	/// thread function used to consume objects
-	virtual void consume(boost::uint64_t& thread_counter) = 0;
+	virtual void consume(std::uint64_t& thread_counter) = 0;
 
 	
 	/// require that there is at least one producer thread
@@ -449,7 +449,7 @@ protected:
 	}
 	
 	/// thread function used to produce work
-	virtual void produce(boost::uint64_t& thread_counter) {
+	virtual void produce(std::uint64_t& thread_counter) {
 		WorkItem work(std::bind(&AllocTest<ProducerThreads, ConsumerThreads>::bumpCounter, this,
 								  std::ref(AllocTest<ProducerThreads, ConsumerThreads>::m_consumer_counters[0])));
 		while (PerformanceTest::isRunning()) {
@@ -460,7 +460,7 @@ protected:
 	}
 	
 	/// thread function used to consume work
-	virtual void consume(boost::uint64_t& thread_counter) {
+	virtual void consume(std::uint64_t& thread_counter) {
 		m_service.run();
 	}
 	
@@ -503,7 +503,7 @@ public:
 protected:
 	
 	/// thread function used to produce work
-	virtual void produce(boost::uint64_t& thread_counter) {
+	virtual void produce(std::uint64_t& thread_counter) {
 		WorkItem work(std::bind(&AllocTest<ProducerThreads, ConsumerThreads>::doNothing, this));
 		while (PerformanceTest::isRunning()) {
 			if (ConsumerThreads > 0)
@@ -513,7 +513,7 @@ protected:
 	}
 	
 	/// thread function used to consume work
-	virtual void consume(boost::uint64_t& thread_counter) {
+	virtual void consume(std::uint64_t& thread_counter) {
 		WorkItem work;
 		while (PerformanceTest::isRunning()) {
 			// sleep 1/8 second if the queue is empty
@@ -567,7 +567,7 @@ protected:
 	}
 
 	/// thread function used to consume objects
-	virtual void consume(boost::uint64_t& thread_counter) {
+	virtual void consume(std::uint64_t& thread_counter) {
 		WorkItem work;
 		typename QueueType<WorkItem>::ConsumerThread thread_info;
 		while (PerformanceTest::isRunning()) {
@@ -603,7 +603,7 @@ public:
 protected:
 
 	/// thread function used to produce objects
-	virtual void produce(boost::uint64_t& thread_counter) {
+	virtual void produce(std::uint64_t& thread_counter) {
 		Event *event_ptr(NULL);
 		while (PerformanceTest::isRunning()) {
 			event_ptr = new Event(Vocabulary::UNDEFINED_TERM_REF, NULL);
@@ -617,7 +617,7 @@ protected:
 	}
 	
 	/// thread function used to consume objects
-	virtual void consume(boost::uint64_t& thread_counter) {
+	virtual void consume(std::uint64_t& thread_counter) {
 		Event *event_ptr(NULL);
 		while (PerformanceTest::isRunning()) {
 			// sleep 1/8 second if the queue is empty
@@ -666,7 +666,7 @@ public:
 protected:
 
 	/// thread function used to produce objects
-	virtual void produce(boost::uint64_t& thread_counter) {
+	virtual void produce(std::uint64_t& thread_counter) {
 		void *mem_ptr(NULL);
 		Event *event_ptr(NULL);
 		while (PerformanceTest::isRunning()) {
@@ -683,7 +683,7 @@ protected:
 	}
 
 	/// thread function used to consume objects
-	virtual void consume(boost::uint64_t& thread_counter) {
+	virtual void consume(std::uint64_t& thread_counter) {
 		Event *event_ptr(NULL);
 		while (PerformanceTest::isRunning()) {
 			// sleep 1/8 second if the queue is empty
@@ -766,7 +766,7 @@ protected:
 	}
 	
 	/// thread function used to produce objects
-	virtual void produce(boost::uint64_t& thread_counter) {
+	virtual void produce(std::uint64_t& thread_counter) {
 		Event *event_ptr(NULL);
 		while (PerformanceTest::isRunning()) {
 			event_ptr = allocateEvent();
@@ -780,7 +780,7 @@ protected:
 	}
 	
 	/// thread function used to consume objects
-	virtual void consume(boost::uint64_t& thread_counter) {
+	virtual void consume(std::uint64_t& thread_counter) {
 		Event *event_ptr(NULL);
 		while (PerformanceTest::isRunning()) {
 			// sleep 1/8 second if the queue is empty
@@ -840,7 +840,7 @@ public:
 protected:
 	
 	/// thread function used to produce objects
-	virtual void produce(boost::uint64_t& thread_counter) {
+	virtual void produce(std::uint64_t& thread_counter) {
 		void *mem_ptr(NULL);
 		Event *event_ptr(NULL);
 		while (PerformanceTest::isRunning()) {
@@ -857,7 +857,7 @@ protected:
 	}
 	
 	/// thread function used to consume objects
-	virtual void consume(boost::uint64_t& thread_counter) {
+	virtual void consume(std::uint64_t& thread_counter) {
 		Event *event_ptr(NULL);
 		while (PerformanceTest::isRunning()) {
 			// sleep 1/8 second if the queue is empty
@@ -913,7 +913,7 @@ protected:
 	virtual void updateEvent(EventPtr& e) {}
 
 	/// thread function used to produce objects
-	virtual void produce(boost::uint64_t& thread_counter) {
+	virtual void produce(std::uint64_t& thread_counter) {
 		EventPtr e;
 		PerformanceTest::EventAllocatorPtr alloc_ptr(new EventAllocator);
 		this->addAllocator(alloc_ptr);
@@ -928,7 +928,7 @@ protected:
 	}
 
 	/// thread function used to consume objects
-	virtual void consume(boost::uint64_t& thread_counter) {
+	virtual void consume(std::uint64_t& thread_counter) {
 		EventPtr event_ptr;
 		while (PerformanceTest::isRunning()) {
 			// sleep 1/8 second if the queue is empty
@@ -1013,7 +1013,7 @@ public:
 protected:
 
 	/// thread function used to produce objects
-	virtual void produce(boost::uint64_t& thread_counter) {
+	virtual void produce(std::uint64_t& thread_counter) {
 		PerformanceTest::EventAllocatorPtr alloc_ptr(new EventAllocator);
 		this->addAllocator(alloc_ptr);
 		EventFactory f(*alloc_ptr);

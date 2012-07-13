@@ -228,7 +228,7 @@ void MonitorWriter::setQP(const HTTPTypes::QueryParams& qp)
 
     HTTPTypes::QueryParams::const_iterator qpi = qp.find("events");
     if (qpi != qp.end()) {
-        unsigned events = boost::lexical_cast<boost::uint32_t>(qpi->second);
+        unsigned events = boost::lexical_cast<std::uint32_t>(qpi->second);
 		if (events != m_size) {
 			// Remove (if necessary) first events, change capacity to match new
 			m_event_buffer.rset_capacity(m_size = events);
@@ -237,7 +237,7 @@ void MonitorWriter::setQP(const HTTPTypes::QueryParams& qp)
 
     qpi = qp.find("truncate");
     if (qpi != qp.end())
-		m_truncate = boost::lexical_cast<boost::uint32_t>(qpi->second);
+		m_truncate = boost::lexical_cast<std::uint32_t>(qpi->second);
 
     qpi = qp.find("scroll");
     if (qpi != qp.end())
@@ -391,7 +391,7 @@ void MonitorService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_c
 		} else {
 			// use local array to identify the reactor_id
 			// possibly a secondary id, for multiple instances per reactor_id
-			unsigned slot = boost::lexical_cast<boost::uint32_t>(branches[1]);
+			unsigned slot = boost::lexical_cast<std::uint32_t>(branches[1]);
 
 			if (slot < m_writers.size() && m_writers[slot]) {
 				// Check whether the User has permission for this Reactor.

@@ -152,13 +152,13 @@ public:
 	}
 
 	/// return a seed value for random number generators
-	static inline boost::uint32_t make_seed(void) {
+	static inline std::uint32_t make_seed(void) {
 		// this could probably be much better, but trying to KISS... 
 		typedef boost::mt19937 gen_type;
 		typedef boost::uniform_int<unsigned long> dist_type;
 		typedef boost::variate_generator<gen_type,dist_type> die_type;
 		// initialize a static generator with seed based upon system time
-		static boost::uint64_t seed_seed_64 = (time(NULL) * 1000000) + boost::posix_time::microsec_clock::local_time().time_of_day().total_microseconds();
+		static std::uint64_t seed_seed_64 = (time(NULL) * 1000000) + boost::posix_time::microsec_clock::local_time().time_of_day().total_microseconds();
 		// Convert to 32 bits, keeping most of the available entropy.
 		static gen_type::result_type seed_seed_32 = boost::numeric_cast<gen_type::result_type>((seed_seed_64 >> 32) ^ (seed_seed_64 & 0xFFFFFFFF));
 		static gen_type rng_gen(seed_seed_32);

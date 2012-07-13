@@ -868,21 +868,21 @@ inline void Comparison::configure(const ComparisonType type,
 		case Vocabulary::TYPE_INT8:
 		case Vocabulary::TYPE_INT16:
 		case Vocabulary::TYPE_INT32:
-			if (boost::get<boost::int32_t>(&m_value) == NULL)
+			if (boost::get<std::int32_t>(&m_value) == NULL)
 				throw InvalidValueForTypeException();
 			break;
 		case Vocabulary::TYPE_UINT8:
 		case Vocabulary::TYPE_UINT16:
 		case Vocabulary::TYPE_UINT32:
-			if (boost::get<boost::uint32_t>(&m_value) == NULL)
+			if (boost::get<std::uint32_t>(&m_value) == NULL)
 				throw InvalidValueForTypeException();
 			break;
 		case Vocabulary::TYPE_INT64:
-			if (boost::get<boost::int64_t>(&m_value) == NULL)
+			if (boost::get<std::int64_t>(&m_value) == NULL)
 				throw InvalidValueForTypeException();
 			break;
 		case Vocabulary::TYPE_UINT64:
-			if (boost::get<boost::uint64_t>(&m_value) == NULL)
+			if (boost::get<std::uint64_t>(&m_value) == NULL)
 				throw InvalidValueForTypeException();
 			break;
 		case Vocabulary::TYPE_FLOAT:
@@ -982,13 +982,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_INT16:
 				case Vocabulary::TYPE_INT32:
 				{
-					CompareEquals<boost::int32_t> comparison_func(m_value);
+					CompareEquals<std::int32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_INT64:
 				{
-					CompareEquals<boost::int64_t> comparison_func(m_value);
+					CompareEquals<std::int64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
@@ -996,13 +996,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_UINT16:
 				case Vocabulary::TYPE_UINT32:
 				{
-					CompareEquals<boost::uint32_t> comparison_func(m_value);
+					CompareEquals<std::uint32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_UINT64:
 				{
-					CompareEquals<boost::uint64_t> comparison_func(m_value);
+					CompareEquals<std::uint64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
@@ -1037,13 +1037,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_INT16:
 				case Vocabulary::TYPE_INT32:
 				{
-					CompareGreaterThan<boost::int32_t> comparison_func(m_value);
+					CompareGreaterThan<std::int32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_INT64:
 				{
-					CompareGreaterThan<boost::int64_t> comparison_func(m_value);
+					CompareGreaterThan<std::int64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
@@ -1051,13 +1051,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_UINT16:
 				case Vocabulary::TYPE_UINT32:
 				{
-					CompareGreaterThan<boost::uint32_t> comparison_func(m_value);
+					CompareGreaterThan<std::uint32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_UINT64:
 				{
-					CompareGreaterThan<boost::uint64_t> comparison_func(m_value);
+					CompareGreaterThan<std::uint64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
@@ -1090,13 +1090,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_INT16:
 				case Vocabulary::TYPE_INT32:
 				{
-					CompareLessThan<boost::int32_t> comparison_func(m_value);
+					CompareLessThan<std::int32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_INT64:
 				{
-					CompareLessThan<boost::int64_t> comparison_func(m_value);
+					CompareLessThan<std::int64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
@@ -1104,13 +1104,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_UINT16:
 				case Vocabulary::TYPE_UINT32:
 				{
-					CompareLessThan<boost::uint32_t> comparison_func(m_value);
+					CompareLessThan<std::uint32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_UINT64:
 				{
-					CompareLessThan<boost::uint64_t> comparison_func(m_value);
+					CompareLessThan<std::uint64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
@@ -1143,13 +1143,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_INT16:
 				case Vocabulary::TYPE_INT32:
 				{
-					CompareGreaterOrEqual<boost::int32_t> comparison_func(m_value);
+					CompareGreaterOrEqual<std::int32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_INT64:
 				{
-					CompareGreaterOrEqual<boost::int64_t> comparison_func(m_value);
+					CompareGreaterOrEqual<std::int64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
@@ -1157,13 +1157,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_UINT16:
 				case Vocabulary::TYPE_UINT32:
 				{
-					CompareGreaterOrEqual<boost::uint32_t> comparison_func(m_value);
+					CompareGreaterOrEqual<std::uint32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_UINT64:
 				{
-					CompareGreaterOrEqual<boost::uint64_t> comparison_func(m_value);
+					CompareGreaterOrEqual<std::uint64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
@@ -1196,13 +1196,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_INT16:
 				case Vocabulary::TYPE_INT32:
 				{
-					CompareLessOrEqual<boost::int32_t> comparison_func(m_value);
+					CompareLessOrEqual<std::int32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_INT64:
 				{
-					CompareLessOrEqual<boost::int64_t> comparison_func(m_value);
+					CompareLessOrEqual<std::int64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
@@ -1210,13 +1210,13 @@ inline bool Comparison::evaluateRange(const Event::ValuesRange& values_range)
 				case Vocabulary::TYPE_UINT16:
 				case Vocabulary::TYPE_UINT32:
 				{
-					CompareLessOrEqual<boost::uint32_t> comparison_func(m_value);
+					CompareLessOrEqual<std::uint32_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}
 				case Vocabulary::TYPE_UINT64:
 				{
-					CompareLessOrEqual<boost::uint64_t> comparison_func(m_value);
+					CompareLessOrEqual<std::uint64_t> comparison_func(m_value);
 					result = checkComparison(comparison_func, values_range);
 					break;
 				}

@@ -554,9 +554,9 @@ public:
 	/**
 	 * returns the total number operations performed by all managed Reactors
 	 *
-	 * @return boost::uint64_t number of operations performed
+	 * @return std::uint64_t number of operations performed
 	 */
-	inline boost::uint64_t getTotalOperations(void) const {
+	inline std::uint64_t getTotalOperations(void) const {
 		return m_plugins.getStatistic(std::bind(&Reactor::getEventsIn, std::placeholders::_1));
 	}
 	
@@ -564,9 +564,9 @@ public:
 	 * returns the total number of Events received by a Reactor
 	 *
 	 * @param reactor_id unique identifier associated with the Reactor
-	 * @return boost::uint64_t number of Events received
+	 * @return std::uint64_t number of Events received
 	 */
-	inline boost::uint64_t getEventsIn(const std::string& reactor_id) const {
+	inline std::uint64_t getEventsIn(const std::string& reactor_id) const {
 		return m_plugins.getStatistic(reactor_id, std::bind(&Reactor::getEventsIn, std::placeholders::_1));
 	}
 	
@@ -574,9 +574,9 @@ public:
 	 * returns the total number of Events delivered by a Reactor
 	 *
 	 * @param reactor_id unique identifier associated with the Reactor
-	 * @return boost::uint64_t number of Events delivered
+	 * @return std::uint64_t number of Events delivered
 	 */
-	inline boost::uint64_t getEventsOut(const std::string& reactor_id) const {
+	inline std::uint64_t getEventsOut(const std::string& reactor_id) const {
 		return m_plugins.getStatistic(reactor_id, std::bind(&Reactor::getEventsOut, std::placeholders::_1));
 	}
 	
@@ -605,10 +605,10 @@ public:
 	inline void post(WorkFunction work_func) { m_scheduler.post(work_func); }
 	
 	/// returns the number of threads currently in use
-	inline boost::uint32_t getNumThreads(void) const { return m_scheduler.getNumThreads(); }
+	inline std::uint32_t getNumThreads(void) const { return m_scheduler.getNumThreads(); }
 	
 	/// sets the number of threads used to route and process Events
-	inline void setNumThreads(const boost::uint32_t n) { m_scheduler.setNumThreads(n); }
+	inline void setNumThreads(const std::uint32_t n) { m_scheduler.setNumThreads(n); }
 	
 	/// returns the value of the "multithreaded branches" setting
 	inline bool getMultithreadBranches(void) const { return m_multithread_branches; }
@@ -778,7 +778,7 @@ private:
 
 	
 	/// default number of worker threads in the thread pool
-	static const boost::uint32_t	DEFAULT_NUM_THREADS;
+	static const std::uint32_t	DEFAULT_NUM_THREADS;
 	
 	/// default name of the reactor config file
 	static const std::string		DEFAULT_CONFIG_FILE;

@@ -15,10 +15,10 @@ namespace pion {	// begin namespace pion
 
 // static members of PionScheduler
 	
-const boost::uint32_t	PionScheduler::DEFAULT_NUM_THREADS = 8;
-const boost::uint32_t	PionScheduler::NSEC_IN_SECOND = 1000000000;	// (10^9)
-const boost::uint32_t	PionScheduler::MICROSEC_IN_SECOND = 1000000;	// (10^6)
-const boost::uint32_t	PionScheduler::KEEP_RUNNING_TIMER_SECONDS = 5;
+const std::uint32_t	PionScheduler::DEFAULT_NUM_THREADS = 8;
+const std::uint32_t	PionScheduler::NSEC_IN_SECOND = 1000000000;	// (10^9)
+const std::uint32_t	PionScheduler::MICROSEC_IN_SECOND = 1000000;	// (10^6)
+const std::uint32_t	PionScheduler::KEEP_RUNNING_TIMER_SECONDS = 5;
 
 
 // PionScheduler member functions
@@ -127,7 +127,7 @@ void PionSingleServiceScheduler::startup(void)
 		keepRunning(m_service, m_timer);
 		
 		// start multiple threads to handle async tasks
-		for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
+		for (std::uint32_t n = 0; n < m_num_threads; ++n) {
 			std::shared_ptr<std::thread> new_thread(new std::thread( std::bind(&PionScheduler::processServiceWork,
 																					   this, std::ref(m_service)) ));
 			m_thread_pool.push_back(new_thread);
@@ -159,7 +159,7 @@ void PionOneToOneScheduler::startup(void)
 		}
 		
 		// start multiple threads to handle async tasks
-		for (boost::uint32_t n = 0; n < m_num_threads; ++n) {
+		for (std::uint32_t n = 0; n < m_num_threads; ++n) {
 			std::shared_ptr<std::thread> new_thread(new std::thread( std::bind(&PionScheduler::processServiceWork,
 																					   this, std::ref(m_service_pool[n]->first)) ));
 			m_thread_pool.push_back(new_thread);

@@ -32,7 +32,7 @@ namespace platform {	// begin namespace platform (Pion Platform Library)
 struct comparison_info {
 	Comparison::ComparisonType	type;		// must equal the index, i.e. comparison_table[i].type == i
 	const char*					name;		// Comparison term in UI
-	boost::uint8_t				arity;		// how many arguments
+	std::uint8_t				arity;		// how many arguments
 	bool						is_generic;					// is the comparison applicable to any type of Term
 	bool						applies_to_numeric_terms;	// is the comparison applicable to Terms of category numeric
 	bool						applies_to_string_terms;	// is the comparison applicable to Terms of category string
@@ -276,18 +276,18 @@ void Comparison::configure(const ComparisonType type,
 				case Vocabulary::TYPE_INT8:
 				case Vocabulary::TYPE_INT16:
 				case Vocabulary::TYPE_INT32:
-					m_value = boost::lexical_cast<boost::int32_t>(value);
+					m_value = boost::lexical_cast<std::int32_t>(value);
 					break;
 				case Vocabulary::TYPE_INT64:
-					m_value = boost::lexical_cast<boost::int64_t>(value);
+					m_value = boost::lexical_cast<std::int64_t>(value);
 					break;
 				case Vocabulary::TYPE_UINT8:
 				case Vocabulary::TYPE_UINT16:
 				case Vocabulary::TYPE_UINT32:
-					m_value = boost::lexical_cast<boost::uint32_t>(value);
+					m_value = boost::lexical_cast<std::uint32_t>(value);
 					break;
 				case Vocabulary::TYPE_UINT64:
-					m_value = boost::lexical_cast<boost::uint64_t>(value);
+					m_value = boost::lexical_cast<std::uint64_t>(value);
 					break;
 				case Vocabulary::TYPE_FLOAT:
 					m_value = boost::lexical_cast<float>(value);

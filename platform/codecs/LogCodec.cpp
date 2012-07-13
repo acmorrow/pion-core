@@ -248,7 +248,7 @@ void LogCodec::setConfig(const Vocabulary& v, const xmlNodePtr config_ptr)
 	PionDateTime::time_duration_type time_offset(0, 0, 0);
 	std::string time_offset_option;
 	if (ConfigManager::getConfigOption(TIME_OFFSET_ELEMENT_NAME, time_offset_option, config_ptr)) {
-		m_time_offset = boost::lexical_cast<boost::int32_t>(time_offset_option);
+		m_time_offset = boost::lexical_cast<std::int32_t>(time_offset_option);
 		if (m_time_offset != 0) {
 			do_time_offset = true;
 			time_offset = PionDateTime::time_duration_type(0, m_time_offset, 0);

@@ -213,7 +213,7 @@ void PlatformConfig::openConfigFile(void)
 		if (ConfigManager::getConfigOption(MAX_THREADS_ELEMENT_NAME, max_threads_str,
 										   reaction_engine_node->children))
 		{
-			const boost::uint32_t max_threads = boost::lexical_cast<boost::uint32_t>(max_threads_str);
+			const std::uint32_t max_threads = boost::lexical_cast<std::uint32_t>(max_threads_str);
 			if (max_threads == 0) {
 				PION_LOG_ERROR(m_logger, "Platform config has invalid MaxThreads setting for ReactionEngine (using default)");
 			} else {
@@ -249,7 +249,7 @@ void PlatformConfig::openConfigFile(void)
 		if (ConfigManager::getConfigOption(MAX_THREADS_ELEMENT_NAME, max_threads_str,
 										   service_manager_node->children))
 		{
-			const boost::uint32_t max_threads = boost::lexical_cast<boost::uint32_t>(max_threads_str);
+			const std::uint32_t max_threads = boost::lexical_cast<std::uint32_t>(max_threads_str);
 			if (max_threads == 0) {
 				PION_LOG_ERROR(m_logger, "Platform config has invalid MaxThreads setting for ServiceManager (using default)");
 			} else {

@@ -87,19 +87,19 @@ void JSONCodec::write(std::ostream& out, const Event& e)
 				case pion::platform::Vocabulary::TYPE_INT8:
 				case pion::platform::Vocabulary::TYPE_INT16:
 				case pion::platform::Vocabulary::TYPE_INT32:
-					yajl_gen_integer(m_yajl_generator, boost::get<boost::int32_t>(i2->value));
+					yajl_gen_integer(m_yajl_generator, boost::get<std::int32_t>(i2->value));
 					break;
 				case pion::platform::Vocabulary::TYPE_INT64:
-					value_str = boost::lexical_cast<std::string>(boost::get<boost::int64_t>(i2->value));
+					value_str = boost::lexical_cast<std::string>(boost::get<std::int64_t>(i2->value));
 					yajl_gen_string(m_yajl_generator, (unsigned char*)value_str.c_str(), value_str.size());
 					break;
 				case pion::platform::Vocabulary::TYPE_UINT8:
 				case pion::platform::Vocabulary::TYPE_UINT16:
 				case pion::platform::Vocabulary::TYPE_UINT32:
-					yajl_gen_integer(m_yajl_generator, boost::get<boost::uint32_t>(i2->value));
+					yajl_gen_integer(m_yajl_generator, boost::get<std::uint32_t>(i2->value));
 					break;
 				case pion::platform::Vocabulary::TYPE_UINT64:
-					value_str = boost::lexical_cast<std::string>(boost::get<boost::uint64_t>(i2->value));
+					value_str = boost::lexical_cast<std::string>(boost::get<std::uint64_t>(i2->value));
 					yajl_gen_string(m_yajl_generator, (unsigned char*)value_str.c_str(), value_str.size());
 					break;
 				case pion::platform::Vocabulary::TYPE_FLOAT:
@@ -337,18 +337,18 @@ bool JSONCodec::read(std::istream& in, Event& e)
 			case pion::platform::Vocabulary::TYPE_INT8:
 			case pion::platform::Vocabulary::TYPE_INT16:
 			case pion::platform::Vocabulary::TYPE_INT32:
-				e.setInt(term_ref, boost::lexical_cast<boost::int32_t>(value_str));
+				e.setInt(term_ref, boost::lexical_cast<std::int32_t>(value_str));
 				break;
 			case pion::platform::Vocabulary::TYPE_INT64:
-				e.setBigInt(term_ref, boost::lexical_cast<boost::int64_t>(value_str));
+				e.setBigInt(term_ref, boost::lexical_cast<std::int64_t>(value_str));
 				break;
 			case pion::platform::Vocabulary::TYPE_UINT8:
 			case pion::platform::Vocabulary::TYPE_UINT16:
 			case pion::platform::Vocabulary::TYPE_UINT32:
-				e.setUInt(term_ref, boost::lexical_cast<boost::uint32_t>(value_str));
+				e.setUInt(term_ref, boost::lexical_cast<std::uint32_t>(value_str));
 				break;
 			case pion::platform::Vocabulary::TYPE_UINT64:
-				e.setUBigInt(term_ref, boost::lexical_cast<boost::uint64_t>(value_str));
+				e.setUBigInt(term_ref, boost::lexical_cast<std::uint64_t>(value_str));
 				break;
 			case pion::platform::Vocabulary::TYPE_FLOAT:
 				e.setFloat(term_ref, boost::lexical_cast<float>(value_str));

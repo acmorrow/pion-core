@@ -321,7 +321,7 @@ BOOST_AUTO_TEST_CASE(testHTTPParser_MultipleResponseFrames)
     HTTPResponse http_response;
 	boost::system::error_code ec;
 
-	boost::uint64_t total_bytes = 0;
+	std::uint64_t total_bytes = 0;
     for (int i=0; i <  frame_cnt - 1; i++ ) {
         response_parser.setReadBuffer((const char*)frames[i], sizes[i]);
 		BOOST_CHECK( boost::indeterminate(response_parser.parse(http_response, ec)) );

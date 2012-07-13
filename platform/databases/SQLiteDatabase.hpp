@@ -115,7 +115,7 @@ public:
 	}
 
 	/// get various database related configuration parameters
-	virtual boost::uint64_t getCache(CACHEPARAM what)
+	virtual std::uint64_t getCache(CACHEPARAM what)
 	{
 		switch (what) {
 			case CACHE_INDEX_ROW_OVERHEAD:
@@ -323,7 +323,7 @@ protected:
 		 * @param param the query parameter number to which the value will be bound (starting with 0)
 		 * @param value the value to bind to the query parameter
 		 */
-		virtual void bindInt(unsigned int param, const boost::int32_t value) {
+		virtual void bindInt(unsigned int param, const std::int32_t value) {
 			if (sqlite3_bind_int(m_sqlite_stmt, param+1, value) != SQLITE_OK)
 				SQLiteDatabase::throwAPIException(m_sqlite_db);
 		}
@@ -334,7 +334,7 @@ protected:
 		 * @param param the query parameter number to which the value will be bound (starting with 0)
 		 * @param value the value to bind to the query parameter
 		 */
-		virtual void bindUInt(unsigned int param, const boost::uint32_t value) {
+		virtual void bindUInt(unsigned int param, const std::uint32_t value) {
 			if (sqlite3_bind_int(m_sqlite_stmt, param+1, value) != SQLITE_OK)
 				SQLiteDatabase::throwAPIException(m_sqlite_db);
 		}
@@ -345,7 +345,7 @@ protected:
 		 * @param param the query parameter number to which the value will be bound (starting with 0)
 		 * @param value the value to bind to the query parameter
 		 */
-		virtual void bindBigInt(unsigned int param, const boost::int64_t value) {
+		virtual void bindBigInt(unsigned int param, const std::int64_t value) {
 			if (sqlite3_bind_int64(m_sqlite_stmt, param+1, value) != SQLITE_OK)
 				SQLiteDatabase::throwAPIException(m_sqlite_db);
 		}
@@ -356,7 +356,7 @@ protected:
 		 * @param param the query parameter number to which the value will be bound (starting with 0)
 		 * @param value the value to bind to the query parameter
 		 */
-		virtual void bindUBigInt(unsigned int param, const boost::uint64_t value) {
+		virtual void bindUBigInt(unsigned int param, const std::uint64_t value) {
 			if (sqlite3_bind_int64(m_sqlite_stmt, param+1, value) != SQLITE_OK)
 				SQLiteDatabase::throwAPIException(m_sqlite_db);
 		}
@@ -456,22 +456,22 @@ protected:
 		}
 
 		/// Fetch an int from a column
-		virtual boost::int32_t fetchInt(unsigned int param) {
+		virtual std::int32_t fetchInt(unsigned int param) {
 			return sqlite3_column_int(m_sqlite_stmt, param);
 		}
 
 		/// Fetch an unsigned int from a column
-		virtual boost::uint32_t fetchUInt(unsigned int param) {
+		virtual std::uint32_t fetchUInt(unsigned int param) {
 			return sqlite3_column_int(m_sqlite_stmt, param);
 		}
 
 		/// Fetch a long int from a column
-		virtual boost::int64_t fetchBigInt(unsigned int param) {
+		virtual std::int64_t fetchBigInt(unsigned int param) {
 			return sqlite3_column_int64(m_sqlite_stmt, param);
 		}
 
 		/// Fetch an unsigned long int from a column
-		virtual boost::uint64_t fetchUBigInt(unsigned int param) {
+		virtual std::uint64_t fetchUBigInt(unsigned int param) {
 			return sqlite3_column_int64(m_sqlite_stmt, param);
 		}
 
@@ -584,7 +584,7 @@ private:
 	char *							m_error_ptr;
 
 	/// calculated page cache size
-	boost::uint64_t					m_cache_size;
+	std::uint64_t					m_cache_size;
 
 	/// local copy of partition#
 	unsigned						m_partition;

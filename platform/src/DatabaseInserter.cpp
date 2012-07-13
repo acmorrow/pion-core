@@ -29,9 +29,9 @@ namespace platform {	// begin namespace platform (Pion Platform Library)
 
 // static members of DatabaseInserter
 
-const boost::uint32_t		DatabaseInserter::DEFAULT_QUEUE_SIZE = 10000;
-const boost::uint32_t		DatabaseInserter::DEFAULT_QUEUE_TIMEOUT = 5;
-const boost::uint32_t		DatabaseInserter::DEFAULT_RECOVERY_INTERVAL = 5;
+const std::uint32_t		DatabaseInserter::DEFAULT_QUEUE_SIZE = 10000;
+const std::uint32_t		DatabaseInserter::DEFAULT_QUEUE_TIMEOUT = 5;
+const std::uint32_t		DatabaseInserter::DEFAULT_RECOVERY_INTERVAL = 5;
 const std::string			DatabaseInserter::DEFAULT_IGNORE = "false";
 const std::string			DatabaseInserter::DATABASE_ELEMENT_NAME = "Database";
 const std::string			DatabaseInserter::TABLE_ELEMENT_NAME = "Table";
@@ -45,7 +45,7 @@ const std::string			DatabaseInserter::SQL_ATTRIBUTE_NAME = "sql";
 const char *				DatabaseInserter::CHARSET_FOR_TABLES = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
 const std::string			DatabaseInserter::IGNORE_INSERT_ELEMENT_NAME = "IgnoreInsert";
 const std::string			DatabaseInserter::MAX_KEY_AGE_ELEMENT_NAME = "KeyCacheMaxAge";
-const boost::uint32_t		DatabaseInserter::DEFAULT_MAX_AGE = 0;
+const std::uint32_t		DatabaseInserter::DEFAULT_MAX_AGE = 0;
 const std::string			DatabaseInserter::EVENT_AGE_ELEMENT_NAME = "KeyCacheAgeTerm";
 
 
@@ -299,7 +299,7 @@ void DatabaseInserter::insert(const EventPtr& e)
 			KeyHash::iterator ki = m_keys.find(boost::get<const Event::BlobType&>(*param_ptr));
 			
 			// Update timestamp used for pruning
-			boost::uint32_t event_timestamp;
+			std::uint32_t event_timestamp;
 			if (e->getUInt(m_timestamp_term_ref, event_timestamp) && event_timestamp > m_last_time) {
 				m_last_time = event_timestamp;
 			}
@@ -317,7 +317,7 @@ void DatabaseInserter::insert(const EventPtr& e)
 		}
 
 		for (unsigned i = 0; i < m_cache_terms.size(); i++) {
-			boost::uint32_t size = 0;
+			std::uint32_t size = 0;
 			switch (m_cache_terms[i].term_type) {
 				case Vocabulary::TYPE_NULL:
 				case Vocabulary::TYPE_OBJECT:
@@ -575,10 +575,10 @@ void DatabaseInserter::insertEvents(std::unique_ptr<EventQueue>& insert_queue_pt
 	
 	// Pruning needed?
 	if (m_max_age) {
-		boost::uint32_t size_before, size_after;
+		std::uint32_t size_before, size_after;
 		{
 			std::lock_guard<std::mutex> queue_lock(m_queue_mutex);
-			boost::uint32_t min_age = m_last_time - m_max_age;
+			std::uint32_t min_age = m_last_time - m_max_age;
 			size_before = m_keys.size();
 			KeyHash::iterator cur_it;
 			KeyHash::iterator i = m_keys.begin();

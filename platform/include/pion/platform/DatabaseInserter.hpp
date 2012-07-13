@@ -223,12 +223,12 @@ public:
 		return true;
 	}
 
-	boost::uint32_t getRotate(void) const
+	std::uint32_t getRotate(void) const
 	{
 		return m_cache_size ? (m_cache_consumption * 100UL / m_cache_size) : 0;
 	}
 
-	boost::uint64_t getTableSize(void) const { return m_table_size; }
+	std::uint64_t getTableSize(void) const { return m_table_size; }
 
 	/// returns a copy of the mapping of database fields to event terms
 	Query::FieldMap getFieldMap(void) const { return m_field_map; }
@@ -306,13 +306,13 @@ private:
 
 
 	/// default maximum number of events that may be queued for insertion
-	static const boost::uint32_t			DEFAULT_QUEUE_SIZE;
+	static const std::uint32_t			DEFAULT_QUEUE_SIZE;
 
 	/// default number of seconds before the queue is automatically flushed due to timeout
-	static const boost::uint32_t			DEFAULT_QUEUE_TIMEOUT;
+	static const std::uint32_t			DEFAULT_QUEUE_TIMEOUT;
 
 	/// default number of seconds in between database connection recovery attempts
-	static const boost::uint32_t			DEFAULT_RECOVERY_INTERVAL;
+	static const std::uint32_t			DEFAULT_RECOVERY_INTERVAL;
 
 	/// name of the database element for Pion XML config files
 	static const std::string				DATABASE_ELEMENT_NAME;
@@ -357,7 +357,7 @@ private:
 	static const std::string				EVENT_AGE_ELEMENT_NAME;
 
 	/// Default max_age is 0, so it won't trigger when not necessary
-	static const boost::uint32_t			DEFAULT_MAX_AGE;
+	static const std::uint32_t			DEFAULT_MAX_AGE;
 
 	/// primary logging interface used by this class
 	mutable PionLogger						m_logger;
@@ -393,13 +393,13 @@ private:
 	std::unique_ptr<EventQueue>			m_event_queue_ptr;
 
 	/// maximum number of events that may be queued for insertion
-	boost::uint32_t							m_queue_max;
+	std::uint32_t							m_queue_max;
 
 	/// number of seconds before the queue is automatically flushed due to timeout
-	boost::uint32_t							m_queue_timeout;
+	std::uint32_t							m_queue_timeout;
 
 	/// number of seconds in between database connection recovery attempts
-	boost::uint32_t							m_recovery_interval;
+	std::uint32_t							m_recovery_interval;
 
 	/// used to protect the Event queue
 	mutable std::mutex					m_queue_mutex;
@@ -429,41 +429,41 @@ private:
 	pion::platform::RuleChain				m_rules;
 
 	/// Hash map; incomplete, time bounded "unique key" vs. "age" -- for avoiding multiple inserts
-	typedef std::unordered_map<pion::platform::Event::BlobType, boost::uint32_t> KeyHash;
+	typedef std::unordered_map<pion::platform::Event::BlobType, std::uint32_t> KeyHash;
 	KeyHash									m_keys;
 
 	/// The term ref, that has a unique index
 	Vocabulary::TermRef						m_key_term_ref;
 
 	/// MaxAge of keys in hash map (if configured)
-	boost::uint32_t							m_max_age;
+	std::uint32_t							m_max_age;
 
 	/// Term ref to use for finding the timestamp from an event
 	Vocabulary::TermRef						m_timestamp_term_ref;
 
 	/// most recent timestamp used for key cache pruning
-	boost::uint32_t							m_last_time;
+	std::uint32_t							m_last_time;
 	
 	/// timestamp for next connection attempt (0 if connected)
 	std::time_t								m_next_connect;
 
 	/// Counter for index cache consumption
-	boost::uint64_t							m_cache_consumption;
+	std::uint64_t							m_cache_consumption;
 
 	/// Cache overhead (per item)
-	boost::uint32_t							m_cache_overhead;
+	std::uint32_t							m_cache_overhead;
 
 	/// Name of term to count stats on
 	std::vector<Vocabulary::Term>			m_cache_terms;
 
 	/// How many rows have been inserted
-	boost::uint64_t							m_cache_rows;
+	std::uint64_t							m_cache_rows;
 
 	/// How big is the database cache
-	boost::uint64_t							m_cache_size;
+	std::uint64_t							m_cache_size;
 
 	/// How big is the database file
-	boost::uint64_t							m_table_size;
+	std::uint64_t							m_table_size;
 };
 
 

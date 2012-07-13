@@ -111,19 +111,19 @@ void XMLCodec::write(std::ostream& out, const Event& e)
 				case pion::platform::Vocabulary::TYPE_INT8:
 				case pion::platform::Vocabulary::TYPE_INT16:
 				case pion::platform::Vocabulary::TYPE_INT32:
-					rc = xmlTextWriterWriteFormatElement(m_xml_writer, field_name, "%d", boost::get<boost::int32_t>(i2->value));
+					rc = xmlTextWriterWriteFormatElement(m_xml_writer, field_name, "%d", boost::get<std::int32_t>(i2->value));
 					break;
 				case pion::platform::Vocabulary::TYPE_INT64:
-					value_str = boost::lexical_cast<std::string>(boost::get<boost::int64_t>(i2->value));
+					value_str = boost::lexical_cast<std::string>(boost::get<std::int64_t>(i2->value));
 					rc = xmlTextWriterWriteElement(m_xml_writer, field_name, (xmlChar*)value_str.c_str());
 					break;
 				case pion::platform::Vocabulary::TYPE_UINT8:
 				case pion::platform::Vocabulary::TYPE_UINT16:
 				case pion::platform::Vocabulary::TYPE_UINT32:
-					rc = xmlTextWriterWriteFormatElement(m_xml_writer, field_name, "%d", boost::get<boost::uint32_t>(i2->value));
+					rc = xmlTextWriterWriteFormatElement(m_xml_writer, field_name, "%d", boost::get<std::uint32_t>(i2->value));
 					break;
 				case pion::platform::Vocabulary::TYPE_UINT64:
-					value_str = boost::lexical_cast<std::string>(boost::get<boost::uint64_t>(i2->value));
+					value_str = boost::lexical_cast<std::string>(boost::get<std::uint64_t>(i2->value));
 					rc = xmlTextWriterWriteElement(m_xml_writer, field_name, (xmlChar*)value_str.c_str());
 					break;
 				case pion::platform::Vocabulary::TYPE_FLOAT:
@@ -389,18 +389,18 @@ bool XMLCodec::read(std::istream& in, Event& e)
 				case pion::platform::Vocabulary::TYPE_INT8:
 				case pion::platform::Vocabulary::TYPE_INT16:
 				case pion::platform::Vocabulary::TYPE_INT32:
-					e.setInt(term.term_ref, boost::lexical_cast<boost::int32_t>(value_str));
+					e.setInt(term.term_ref, boost::lexical_cast<std::int32_t>(value_str));
 					break;
 				case pion::platform::Vocabulary::TYPE_INT64:
-					e.setBigInt(term.term_ref, boost::lexical_cast<boost::int64_t>(value_str));
+					e.setBigInt(term.term_ref, boost::lexical_cast<std::int64_t>(value_str));
 					break;
 				case pion::platform::Vocabulary::TYPE_UINT8:
 				case pion::platform::Vocabulary::TYPE_UINT16:
 				case pion::platform::Vocabulary::TYPE_UINT32:
-					e.setUInt(term.term_ref, boost::lexical_cast<boost::uint32_t>(value_str));
+					e.setUInt(term.term_ref, boost::lexical_cast<std::uint32_t>(value_str));
 					break;
 				case pion::platform::Vocabulary::TYPE_UINT64:
-					e.setUBigInt(term.term_ref, boost::lexical_cast<boost::uint64_t>(value_str));
+					e.setUBigInt(term.term_ref, boost::lexical_cast<std::uint64_t>(value_str));
 					break;
 				case pion::platform::Vocabulary::TYPE_FLOAT:
 					e.setFloat(term.term_ref, boost::lexical_cast<float>(value_str));

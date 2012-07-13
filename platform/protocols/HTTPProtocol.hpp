@@ -428,10 +428,10 @@ private:
 		boost::regex						m_type_regex;
 
 		/// maximum size (in bytes) of content to save (0 = do not save)
-		boost::uint32_t						m_max_size;
+		std::uint32_t						m_max_size;
 
 		/// maximum matches to extract from source using format (0 = unlimited)
-		boost::uint32_t						m_max_extracts;
+		std::uint32_t						m_max_extracts;
 
 		/// Is this rule running?
 		bool								m_running;
@@ -495,16 +495,16 @@ private:
 	pion::PionDateTime			m_response_ack_time;
 
 	/// total number of request data packets
-	boost::uint32_t				m_cs_data_packets;
+	std::uint32_t				m_cs_data_packets;
 
 	/// total number of response data packets
-	boost::uint32_t				m_sc_data_packets;
+	std::uint32_t				m_sc_data_packets;
 
 	/// total number of missing request data packets
-	boost::uint32_t				m_cs_missing_packets;
+	std::uint32_t				m_cs_missing_packets;
 
 	/// total number of missing response data packets
-	boost::uint32_t				m_sc_missing_packets;
+	std::uint32_t				m_sc_missing_packets;
 
 	/// collection of rules used to extract content
 	ExtractionRuleVector		m_extraction_rules;
@@ -790,7 +790,7 @@ template <typename RangePair>
 inline void HTTPProtocol::ExtractionRule::process(pion::platform::EventPtr& event_ptr_ref,
 	RangePair range, bool url_decode) const
 {
-	boost::uint32_t num_extracts;
+	std::uint32_t num_extracts;
 	std::string::const_iterator first, last;
 	boost::match_results<std::string::const_iterator> mr;
 	while (range.first != range.second) {
@@ -841,7 +841,7 @@ inline void HTTPProtocol::ExtractionRule::setTermValueFromFinalContent(
 	if ( m_match.empty() ) {
 		setTruncatedString(event_ptr_ref, content_ptr, content_length, final_content_is_utf8);
 	} else {
-		boost::uint32_t num_extracts = 0U;
+		std::uint32_t num_extracts = 0U;
 		const char *end_ptr = content_ptr + content_length;
 		while (1) {
 			try {

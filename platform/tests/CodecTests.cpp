@@ -560,7 +560,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkReadOutputOfWrite) {
 	std::istringstream in(output_str);
 	EventPtr event_ptr_2(event_factory.create(F::p->getEventType()));
 	BOOST_CHECK(F::p->read(in, *event_ptr_2));
-	BOOST_CHECK_EQUAL(event_ptr_2->getUBigInt(bytes_ref), static_cast<boost::uint64_t>(42));
+	BOOST_CHECK_EQUAL(event_ptr_2->getUBigInt(bytes_ref), static_cast<std::uint64_t>(42));
 	BOOST_CHECK(*event_ptr == *event_ptr_2);
 }
 
@@ -576,7 +576,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkReadOutputOfWriteAfterFinish) {
 	std::istringstream in(output_str);
 	EventPtr event_ptr_2(event_factory.create(F::p->getEventType()));
 	BOOST_CHECK(F::p->read(in, *event_ptr_2));
-	BOOST_CHECK_EQUAL(event_ptr_2->getUBigInt(bytes_ref), static_cast<boost::uint64_t>(42));
+	BOOST_CHECK_EQUAL(event_ptr_2->getUBigInt(bytes_ref), static_cast<std::uint64_t>(42));
 	BOOST_CHECK(*event_ptr == *event_ptr_2);
 
 	BOOST_CHECK(!F::p->read(in, *event_ptr_2));
@@ -680,7 +680,7 @@ BOOST_AUTO_TEST_CASE_FIXTURE_TEMPLATE(checkReadOutputOfWrite) {
 	std::istringstream in(output_str);
 	EventPtr event_ptr_2(event_factory.create(F::p->getEventType()));
 	BOOST_CHECK(F::p->read(in, *event_ptr_2));
-	BOOST_CHECK_EQUAL(event_ptr_2->getInt(term_ref_A), static_cast<boost::int32_t>(42));
+	BOOST_CHECK_EQUAL(event_ptr_2->getInt(term_ref_A), static_cast<std::int32_t>(42));
 	BOOST_CHECK_EQUAL(event_ptr_2->getFloat(term_ref_B), 1.23F);
 	BOOST_CHECK(*event_ptr == *event_ptr_2);
 }
@@ -694,18 +694,18 @@ static const std::string FIELD_TERM_UINT_64 = "urn:vocab:test#big-int";
 static const std::string FIELD_NAME_UINT_64 = "big-int";
 static const std::string FIELD_TERM_DATE    = "urn:vocab:test#date";
 static const std::string FIELD_NAME_DATE    = "date";
-static const boost::int16_t  E1_FIELD_VALUE_INT_16  = 500;
+static const std::int16_t  E1_FIELD_VALUE_INT_16  = 500;
 #if _MSC_VER == 1500  // 1500 == VC++ 9.0
 // This value uses all 64 bits, but only 18 decimal digits, thus avoiding a bug
 // in VC9 that occurs with 19 decimal digit numbers.
 // Boost regression test lexical_cast_test is also failing because of this bug; 
 // see http://www.boost.org/development/tests/release-1_35_0/developer/conversion.html.
-static const boost::uint64_t E1_FIELD_VALUE_UINT_64 = 0x8A00FF00FF00FF00ULL;
+static const std::uint64_t E1_FIELD_VALUE_UINT_64 = 0x8A00FF00FF00FF00ULL;
 #else
-static const boost::uint64_t E1_FIELD_VALUE_UINT_64 = 0xFF00FF00FF00FF00ULL;
+static const std::uint64_t E1_FIELD_VALUE_UINT_64 = 0xFF00FF00FF00FF00ULL;
 #endif
-static const boost::int16_t  E2_FIELD_VALUE_INT_16  = 0;
-static const boost::uint64_t E2_FIELD_VALUE_UINT_64 = 0x0123456789ABCDEFULL;
+static const std::int16_t  E2_FIELD_VALUE_INT_16  = 0;
+static const std::uint64_t E2_FIELD_VALUE_UINT_64 = 0x0123456789ABCDEFULL;
 
 template<const char* plugin_type, LINEAGE lineage>
 class CodecPtrWithVariousFieldTerms_F : public ConfiguredCodecPtr_F<plugin_type, lineage> {
@@ -835,13 +835,13 @@ BOOST_AUTO_TEST_CASE(checkReadWithEmptyEventArray) {
 }
 
 BOOST_AUTO_TEST_CASE(checkReadOneEvent) {
-	const boost::int16_t FIELD_VALUE_INT_16 = 500;
+	const std::int16_t FIELD_VALUE_INT_16 = 500;
 #if _MSC_VER == 1500  // 1500 == VC++ 9.0
 	BOOST_WARN_MESSAGE(false, "working around a bug in VC9");
 	// This value uses all 64 bits, but only 18 decimal digits; see comments for E1_FIELD_VALUE_UINT_64.
-	const boost::uint64_t FIELD_VALUE_UINT_64 = 0x8A00FF00FF00FF00ULL;
+	const std::uint64_t FIELD_VALUE_UINT_64 = 0x8A00FF00FF00FF00ULL;
 #else
-	const boost::uint64_t FIELD_VALUE_UINT_64 = 0xFF00FF00FF00FF00ULL;
+	const std::uint64_t FIELD_VALUE_UINT_64 = 0xFF00FF00FF00FF00ULL;
 #endif
 	const int YEAR = 2008;
 	const int MONTH = 6;
@@ -863,13 +863,13 @@ BOOST_AUTO_TEST_CASE(checkReadOneEvent) {
 }
 
 BOOST_AUTO_TEST_CASE(checkReadOneEventWithTermOrderChanged) {
-	const boost::int16_t FIELD_VALUE_INT_16 = 500;
+	const std::int16_t FIELD_VALUE_INT_16 = 500;
 #if _MSC_VER == 1500  // 1500 == VC++ 9.0
 	BOOST_WARN_MESSAGE(false, "working around a bug in VC9");
 	// This value uses all 64 bits, but only 18 decimal digits; see comments for E1_FIELD_VALUE_UINT_64.
-	const boost::uint64_t FIELD_VALUE_UINT_64 = 0x8A00FF00FF00FF00ULL;
+	const std::uint64_t FIELD_VALUE_UINT_64 = 0x8A00FF00FF00FF00ULL;
 #else
-	const boost::uint64_t FIELD_VALUE_UINT_64 = 0xFF00FF00FF00FF00ULL;
+	const std::uint64_t FIELD_VALUE_UINT_64 = 0xFF00FF00FF00FF00ULL;
 #endif
 
 	// This time, the terms are not in the order in which they appear in the configuration.
@@ -913,9 +913,9 @@ BOOST_AUTO_TEST_CASE(checkReadTwoEvents) {
 
 	// iterate through the event to confirm that the values are in the configured order, and that there are no other values
 	Event::ConstIterator it = m_event_ptr->begin();
-	BOOST_CHECK_EQUAL(boost::get<boost::int32_t>( it->value), E1_FIELD_VALUE_INT_16);
+	BOOST_CHECK_EQUAL(boost::get<std::int32_t>( it->value), E1_FIELD_VALUE_INT_16);
 	it++;
-	BOOST_CHECK_EQUAL(boost::get<boost::uint64_t>(it->value), E1_FIELD_VALUE_UINT_64);
+	BOOST_CHECK_EQUAL(boost::get<std::uint64_t>(it->value), E1_FIELD_VALUE_UINT_64);
 	it++;
 	BOOST_CHECK(it == m_event_ptr->end());
 
@@ -926,9 +926,9 @@ BOOST_AUTO_TEST_CASE(checkReadTwoEvents) {
 
 	// iterate through the event to confirm that the values are in the configured order, and that there are no other values
 	it = m_event_ptr->begin();
-	BOOST_CHECK_EQUAL(boost::get<boost::int32_t>( it->value), E2_FIELD_VALUE_INT_16);
+	BOOST_CHECK_EQUAL(boost::get<std::int32_t>( it->value), E2_FIELD_VALUE_INT_16);
 	it++;
-	BOOST_CHECK_EQUAL(boost::get<boost::uint64_t>(it->value), E2_FIELD_VALUE_UINT_64);
+	BOOST_CHECK_EQUAL(boost::get<std::uint64_t>(it->value), E2_FIELD_VALUE_UINT_64);
 	it++;
 	BOOST_CHECK(it == m_event_ptr->end());
 }
@@ -949,9 +949,9 @@ BOOST_AUTO_TEST_CASE(checkReadWithMultipleValuesForATerm) {
 	Event::ValuesRange range = m_event_ptr->equal_range(multiple_valued_term_ref);
 	Event::ConstIterator i = range.first;
 	BOOST_REQUIRE(i != range.second);
-	BOOST_CHECK(boost::get<boost::int32_t>(i->value) % 100 == 5);
+	BOOST_CHECK(boost::get<std::int32_t>(i->value) % 100 == 5);
 	BOOST_REQUIRE(++i != range.second);
-	BOOST_CHECK(boost::get<boost::int32_t>(i->value) % 100 == 5);
+	BOOST_CHECK(boost::get<std::int32_t>(i->value) % 100 == 5);
 	BOOST_REQUIRE(++i == range.second);
 
 	// Finally, check the value of the non-multiple valued term.
@@ -1077,8 +1077,8 @@ BOOST_AUTO_TEST_CASE(checkReadWithEmptyRootElement) {
 }
 
 BOOST_AUTO_TEST_CASE(checkReadOneEvent) {
-	const boost::int16_t FIELD_VALUE_INT_16 = 500;
-	const boost::uint64_t FIELD_VALUE_UINT_64 = E1_FIELD_VALUE_UINT_64;
+	const std::int16_t FIELD_VALUE_INT_16 = 500;
+	const std::uint64_t FIELD_VALUE_UINT_64 = E1_FIELD_VALUE_UINT_64;
 	const int YEAR = 2008;
 	const int MONTH = 6;
 	const int DAY = 16;
@@ -1100,8 +1100,8 @@ BOOST_AUTO_TEST_CASE(checkReadOneEvent) {
 }
 
 BOOST_AUTO_TEST_CASE(checkReadOneEventWithTermOrderChanged) {
-	const boost::int16_t FIELD_VALUE_INT_16 = 500;
-	const boost::uint64_t FIELD_VALUE_UINT_64 = E1_FIELD_VALUE_UINT_64;
+	const std::int16_t FIELD_VALUE_INT_16 = 500;
+	const std::uint64_t FIELD_VALUE_UINT_64 = E1_FIELD_VALUE_UINT_64;
 
 	// This time, the terms are not in the order in which they appear in the configuration.
 	std::ostringstream oss;
@@ -1147,9 +1147,9 @@ BOOST_AUTO_TEST_CASE(checkReadTwoEvents) {
 
 	// iterate through the event to confirm that the values are in the configured order, and that there are no other values
 	Event::ConstIterator it = m_event_ptr->begin();
-	BOOST_CHECK_EQUAL(boost::get<boost::int32_t>( it->value), E1_FIELD_VALUE_INT_16);
+	BOOST_CHECK_EQUAL(boost::get<std::int32_t>( it->value), E1_FIELD_VALUE_INT_16);
 	it++;
-	BOOST_CHECK_EQUAL(boost::get<boost::uint64_t>(it->value), E1_FIELD_VALUE_UINT_64);
+	BOOST_CHECK_EQUAL(boost::get<std::uint64_t>(it->value), E1_FIELD_VALUE_UINT_64);
 	it++;
 	BOOST_CHECK(it == m_event_ptr->end());
 
@@ -1160,9 +1160,9 @@ BOOST_AUTO_TEST_CASE(checkReadTwoEvents) {
 
 	// iterate through the event to confirm that the values are in the configured order, and that there are no other values
 	it = m_event_ptr->begin();
-	BOOST_CHECK_EQUAL(boost::get<boost::int32_t>( it->value), E2_FIELD_VALUE_INT_16);
+	BOOST_CHECK_EQUAL(boost::get<std::int32_t>( it->value), E2_FIELD_VALUE_INT_16);
 	it++;
-	BOOST_CHECK_EQUAL(boost::get<boost::uint64_t>(it->value), E2_FIELD_VALUE_UINT_64);
+	BOOST_CHECK_EQUAL(boost::get<std::uint64_t>(it->value), E2_FIELD_VALUE_UINT_64);
 	it++;
 	BOOST_CHECK(it == m_event_ptr->end());
 }
@@ -1184,9 +1184,9 @@ BOOST_AUTO_TEST_CASE(checkReadWithMultipleValuesForATerm) {
 	Event::ValuesRange range = m_event_ptr->equal_range(multiple_valued_term_ref);
 	Event::ConstIterator i = range.first;
 	BOOST_REQUIRE(i != range.second);
-	BOOST_CHECK(boost::get<boost::int32_t>(i->value) % 100 == 5);
+	BOOST_CHECK(boost::get<std::int32_t>(i->value) % 100 == 5);
 	BOOST_REQUIRE(++i != range.second);
-	BOOST_CHECK(boost::get<boost::int32_t>(i->value) % 100 == 5);
+	BOOST_CHECK(boost::get<std::int32_t>(i->value) % 100 == 5);
 	BOOST_REQUIRE(++i == range.second);
 
 	// Finally, check the value of the non-multiple valued term.
@@ -1334,8 +1334,8 @@ BOOST_AUTO_TEST_CASE(checkReadWithEmptyRootElement) {
 }
 
 BOOST_AUTO_TEST_CASE(checkReadOneEvent) {
-	const boost::int16_t FIELD_VALUE_INT_16 = 500;
-	const boost::uint64_t FIELD_VALUE_UINT_64 = E1_FIELD_VALUE_UINT_64;
+	const std::int16_t FIELD_VALUE_INT_16 = 500;
+	const std::uint64_t FIELD_VALUE_UINT_64 = E1_FIELD_VALUE_UINT_64;
 	const int YEAR = 2008;
 	const int MONTH = 6;
 	const int DAY = 16;

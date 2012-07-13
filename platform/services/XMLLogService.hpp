@@ -62,7 +62,7 @@ private:
 	static const unsigned int				DEFAULT_TRUNCATION_LENGTH;
 
 	/// Count of events logged.
-	static boost::uint32_t					m_event_count;
+	static std::uint32_t					m_event_count;
 
 	/// maximum number of events cached in memory
 	unsigned int							m_max_events;

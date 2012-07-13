@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(checkEventAssignmentValues) {
 
 	const Event::ParameterValue *value_ptr = event_ptr->getPointer(m_plain_int_term.term_ref);
 	BOOST_REQUIRE(value_ptr != NULL);
-	BOOST_CHECK_EQUAL(boost::get<boost::int32_t>(*value_ptr), 24);
+	BOOST_CHECK_EQUAL(boost::get<std::int32_t>(*value_ptr), 24);
 	BOOST_CHECK_EQUAL(event_ptr->getUBigInt(m_big_int_term.term_ref), 0x1FFFFFFFFFFFFFFFULL);
 	BOOST_CHECK_EQUAL(event_ptr->getString(m_fixed_term.term_ref), short_msg_str);
 	BOOST_CHECK_EQUAL(event_ptr->getBlob(m_fixed_term.term_ref).get(), short_msg_str);
@@ -217,11 +217,11 @@ BOOST_AUTO_TEST_CASE(checkEventAssignmentValues) {
 	BOOST_CHECK_EQUAL(pdt.date().month(), 4);
 	BOOST_CHECK_EQUAL(pdt.date().day(), 5);
 
-	boost::uint32_t n;
+	std::uint32_t n;
 	BOOST_CHECK(event_ptr->getInt(m_plain_int_term.term_ref, n));
 	BOOST_CHECK_EQUAL(n, 24UL);
 
-	boost::uint64_t n64;
+	std::uint64_t n64;
 	BOOST_CHECK(event_ptr->getUBigInt(m_big_int_term.term_ref, n64));
 	BOOST_CHECK_EQUAL(n64, 0x1FFFFFFFFFFFFFFFULL);
 
@@ -285,16 +285,16 @@ BOOST_AUTO_TEST_CASE(checkMultipleTermValues) {
 
 	Event::ConstIterator i = range.first;
 	BOOST_REQUIRE(i != event_ptr->end());
-	BOOST_CHECK_EQUAL(boost::get<boost::int32_t>(i->value), 10);
+	BOOST_CHECK_EQUAL(boost::get<std::int32_t>(i->value), 10);
 	++i;
 	BOOST_REQUIRE(i != range.second);
-	BOOST_CHECK_EQUAL(boost::get<boost::int32_t>(i->value), 100);
+	BOOST_CHECK_EQUAL(boost::get<std::int32_t>(i->value), 100);
 	++i;
 	BOOST_REQUIRE(i != range.second);
-	BOOST_CHECK_EQUAL(boost::get<boost::int32_t>(i->value), 1000);
+	BOOST_CHECK_EQUAL(boost::get<std::int32_t>(i->value), 1000);
 	++i;
 	BOOST_REQUIRE(i != range.second);
-	BOOST_CHECK_EQUAL(boost::get<boost::int32_t>(i->value), 10000);
+	BOOST_CHECK_EQUAL(boost::get<std::int32_t>(i->value), 10000);
 	++i;
 	BOOST_CHECK(i == range.second);
 	BOOST_CHECK(i == event_ptr->end());
@@ -349,10 +349,10 @@ BOOST_AUTO_TEST_CASE(checkEventCopyValues) {
 
 	Event::ConstIterator i = range.first;
 	BOOST_REQUIRE(i != a_ptr->end());
-	BOOST_CHECK_EQUAL(boost::get<boost::uint64_t>(i->value), 2025221224UL);
+	BOOST_CHECK_EQUAL(boost::get<std::uint64_t>(i->value), 2025221224UL);
 	++i;
 	BOOST_REQUIRE(i != range.second);
-	BOOST_CHECK_EQUAL(boost::get<boost::uint64_t>(i->value), 25UL);
+	BOOST_CHECK_EQUAL(boost::get<std::uint64_t>(i->value), 25UL);
 	++i;
 	BOOST_CHECK(i == range.second);
 	BOOST_CHECK(i == a_ptr->end());
@@ -383,11 +383,11 @@ BOOST_AUTO_TEST_CASE(checkEventSetWrite2) {
 }
 
 BOOST_AUTO_TEST_CASE(checkParameterValueOperatorEquals) {
-	Event::ParameterValue pv1 = boost::int32_t(4);
-	Event::ParameterValue pv2 = boost::int32_t(4);
+	Event::ParameterValue pv1 = std::int32_t(4);
+	Event::ParameterValue pv2 = std::int32_t(4);
 	BOOST_CHECK(pv1 == pv2);
 
-	pv2 = boost::int32_t(5);
+	pv2 = std::int32_t(5);
 	//BOOST_CHECK(pv1 != pv2); // can't use this because boost::variant doesn't define operator!=
 	BOOST_CHECK(!(pv1 == pv2));
 
@@ -434,16 +434,16 @@ BOOST_AUTO_TEST_CASE(checkParameterValueCreatedWithBlobParams) {
 	BOOST_CHECK(! str.unique());
 	BOOST_CHECK_EQUAL(str.use_count(), 2);
 
-	pv2 = boost::uint32_t(42);	// should destruct BlobType copy
-	BOOST_CHECK_EQUAL(boost::get<boost::uint32_t>(pv2), 42U);
+	pv2 = std::uint32_t(42);	// should destruct BlobType copy
+	BOOST_CHECK_EQUAL(boost::get<std::uint32_t>(pv2), 42U);
 	BOOST_CHECK(str.unique());
 	BOOST_CHECK_EQUAL(str.use_count(), 1);
 }
 
 BOOST_AUTO_TEST_CASE(checkParameterValueConstructedFromValue) {
-	boost::uint32_t num(42);
+	std::uint32_t num(42);
 	Event::ParameterValue pv1(num);
-	BOOST_CHECK_EQUAL(num, boost::get<boost::uint32_t>(pv1));
+	BOOST_CHECK_EQUAL(num, boost::get<std::uint32_t>(pv1));
 
 	std::string abc_str("abc");
 	Event::BlobType::BlobParams bp(m_event_factory.getAllocator(), "abc", 3);

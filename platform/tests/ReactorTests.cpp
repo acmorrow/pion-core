@@ -17,6 +17,10 @@
 // along with Pion.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <cstdint>
+#include <fstream>
+#include <string>
+#include <thread>
 #include <pion/PionConfig.hpp>
 #include <pion/PionPlugin.hpp>
 #include <pion/PionScheduler.hpp>
@@ -28,15 +32,11 @@
 #include <pion/platform/ProtocolFactory.hpp>
 #include <pion/platform/DatabaseManager.hpp>
 #include <boost/regex.hpp>
-#include <boost/cstdint.hpp>
-#include <thread>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/mpl/list.hpp>
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/lambda.hpp>
-#include <fstream>
-#include <string>
 
 using namespace pion;
 using namespace pion::platform;
@@ -678,11 +678,11 @@ BOOST_AUTO_TEST_CASE(checkNumberofIERequestsInLogFile) {
 
 
 	// push events from the log file into the IE filter reactor
-	boost::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
+	std::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
 		m_reaction_engine, m_ie_filter_id, *m_combined_codec, COMBINED_LOG_FILE);
 		
 	// make sure that four events were read from the log
-	BOOST_CHECK_EQUAL(events_read, static_cast<boost::uint64_t>(4));
+	BOOST_CHECK_EQUAL(events_read, static_cast<std::uint64_t>(4));
 	
 	// check the IE Filter Reactor
 	PionPlatformUnitTest::checkReactorEventsIn(m_reaction_engine, m_ie_filter_id, 4UL);
@@ -702,7 +702,7 @@ BOOST_AUTO_TEST_CASE(checkNumberofIERequestsInLogFile) {
 	BOOST_CHECK_EQUAL(m_reaction_engine.getEventsIn(m_do_nothing_id), 1UL);
 	BOOST_CHECK_EQUAL(m_reaction_engine.getEventsIn(m_clickstream_id), 0UL);
 
-	BOOST_CHECK_EQUAL(m_reaction_engine.getTotalOperations(), static_cast<boost::uint64_t>(21));
+	BOOST_CHECK_EQUAL(m_reaction_engine.getTotalOperations(), static_cast<std::uint64_t>(21));
 	
 	//
 	// check the contents of the new log file
@@ -731,11 +731,11 @@ BOOST_AUTO_TEST_CASE(checkNumberofIERequestsInLogFile) {
 BOOST_AUTO_TEST_CASE(checkExtractRSSChannelsUsingFissionReactor) {
 
 	// push events from the log file into the IE filter reactor
-	boost::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
+	std::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
 		m_reaction_engine, m_rss_channels_fission_id, *m_request_content_codec, RSS_REQUEST_LOG_FILE);
 		
 	// make sure that the event was read from the log
-	BOOST_CHECK_EQUAL(events_read, static_cast<boost::uint64_t>(1));
+	BOOST_CHECK_EQUAL(events_read, static_cast<std::uint64_t>(1));
 	
 	// check the RSS Fission Reactor
 	PionPlatformUnitTest::checkReactorEventsIn(m_reaction_engine, m_rss_channels_fission_id, 1UL);
@@ -755,11 +755,11 @@ BOOST_AUTO_TEST_CASE(checkExtractRSSChannelsUsingFissionReactor) {
 BOOST_AUTO_TEST_CASE(checkExtractRSSItemsUsingFissionReactor) {
 
 	// push events from the log file into the IE filter reactor
-	boost::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
+	std::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
 		m_reaction_engine, m_rss_items_fission_id, *m_request_content_codec, RSS_REQUEST_LOG_FILE);
 		
 	// make sure that the event was read from the log
-	BOOST_CHECK_EQUAL(events_read, static_cast<boost::uint64_t>(1));
+	BOOST_CHECK_EQUAL(events_read, static_cast<std::uint64_t>(1));
 	
 	// check the RSS Fission Reactor
 	PionPlatformUnitTest::checkReactorEventsIn(m_reaction_engine, m_rss_items_fission_id, 1UL);
@@ -779,11 +779,11 @@ BOOST_AUTO_TEST_CASE(checkExtractRSSItemsUsingFissionReactor) {
 BOOST_AUTO_TEST_CASE(checkExtractAtomFeedsUsingFissionReactor) {
 
 	// push events from the log file into the IE filter reactor
-	boost::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
+	std::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
 		m_reaction_engine, m_atom_feeds_fission_id, *m_request_content_codec, ATOM_REQUEST_LOG_FILE);
 		
 	// make sure that the event was read from the log
-	BOOST_CHECK_EQUAL(events_read, static_cast<boost::uint64_t>(1));
+	BOOST_CHECK_EQUAL(events_read, static_cast<std::uint64_t>(1));
 	
 	// check the Atom Fission Reactor
 	PionPlatformUnitTest::checkReactorEventsIn(m_reaction_engine, m_atom_feeds_fission_id, 1UL);
@@ -803,11 +803,11 @@ BOOST_AUTO_TEST_CASE(checkExtractAtomFeedsUsingFissionReactor) {
 BOOST_AUTO_TEST_CASE(checkExtractAtomEntriesUsingFissionReactor) {
 
 	// push events from the log file into the IE filter reactor
-	boost::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
+	std::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
 		m_reaction_engine, m_atom_entries_fission_id, *m_request_content_codec, ATOM_REQUEST_LOG_FILE);
 		
 	// make sure that the event was read from the log
-	BOOST_CHECK_EQUAL(events_read, static_cast<boost::uint64_t>(1));
+	BOOST_CHECK_EQUAL(events_read, static_cast<std::uint64_t>(1));
 	
 	// check the Atom Fission Reactor
 	PionPlatformUnitTest::checkReactorEventsIn(m_reaction_engine, m_atom_entries_fission_id, 1UL);
@@ -826,11 +826,11 @@ BOOST_AUTO_TEST_CASE(checkExtractAtomEntriesUsingFissionReactor) {
 
 BOOST_AUTO_TEST_CASE(checkDatabaseOutputReactor) {
 	// push events from the log file into the data store reactor
-	boost::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
+	std::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
 		m_reaction_engine, m_clickstream_id, *m_combined_codec, COMBINED_LOG_FILE);
 	
 	// make sure that four events were read from the log
-	BOOST_CHECK_EQUAL(events_read, static_cast<boost::uint64_t>(4));
+	BOOST_CHECK_EQUAL(events_read, static_cast<std::uint64_t>(4));
 	
 	// make sure that the reactor received all of the events read
 	PionPlatformUnitTest::checkReactorEventsOut(m_reaction_engine, m_clickstream_id, events_read);

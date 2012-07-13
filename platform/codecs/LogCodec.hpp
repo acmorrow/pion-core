@@ -402,7 +402,7 @@ private:
 	bool							m_wrote_elf_headers;
 
 	/// time offset in minutes
-	boost::int32_t					m_time_offset;
+	std::int32_t					m_time_offset;
 
 	/// the event split set for the log file
 	std::string						m_event_split;
@@ -577,18 +577,18 @@ inline void LogCodec::LogField::write(std::ostream& out, const pion::platform::E
 		case pion::platform::Vocabulary::TYPE_INT8:
 		case pion::platform::Vocabulary::TYPE_INT16:
 		case pion::platform::Vocabulary::TYPE_INT32:
-			oss << boost::get<boost::int32_t>(value);
+			oss << boost::get<std::int32_t>(value);
 			break;
 		case pion::platform::Vocabulary::TYPE_INT64:
-			oss << boost::get<boost::int64_t>(value);
+			oss << boost::get<std::int64_t>(value);
 			break;
 		case pion::platform::Vocabulary::TYPE_UINT8:
 		case pion::platform::Vocabulary::TYPE_UINT16:
 		case pion::platform::Vocabulary::TYPE_UINT32:
-			oss << boost::get<boost::uint32_t>(value);
+			oss << boost::get<std::uint32_t>(value);
 			break;
 		case pion::platform::Vocabulary::TYPE_UINT64:
-			oss << boost::get<boost::uint64_t>(value);
+			oss << boost::get<std::uint64_t>(value);
 			break;
 		case pion::platform::Vocabulary::TYPE_FLOAT:
 			oss << boost::get<float>(value);
@@ -680,18 +680,18 @@ inline void LogCodec::LogField::read(const char *buf, pion::platform::Event& e)
 		case pion::platform::Vocabulary::TYPE_INT8:
 		case pion::platform::Vocabulary::TYPE_INT16:
 		case pion::platform::Vocabulary::TYPE_INT32:
-			e.setInt(log_term.term_ref, boost::lexical_cast<boost::int32_t>(buf));
+			e.setInt(log_term.term_ref, boost::lexical_cast<std::int32_t>(buf));
 			break;
 		case pion::platform::Vocabulary::TYPE_INT64:
-			e.setBigInt(log_term.term_ref, boost::lexical_cast<boost::int64_t>(buf));
+			e.setBigInt(log_term.term_ref, boost::lexical_cast<std::int64_t>(buf));
 			break;
 		case pion::platform::Vocabulary::TYPE_UINT8:
 		case pion::platform::Vocabulary::TYPE_UINT16:
 		case pion::platform::Vocabulary::TYPE_UINT32:
-			e.setUInt(log_term.term_ref, boost::lexical_cast<boost::uint32_t>(buf));
+			e.setUInt(log_term.term_ref, boost::lexical_cast<std::uint32_t>(buf));
 			break;
 		case pion::platform::Vocabulary::TYPE_UINT64:
-			e.setUBigInt(log_term.term_ref, boost::lexical_cast<boost::uint64_t>(buf));
+			e.setUBigInt(log_term.term_ref, boost::lexical_cast<std::uint64_t>(buf));
 			break;
 		case pion::platform::Vocabulary::TYPE_FLOAT:
 			e.setFloat(log_term.term_ref, boost::lexical_cast<float>(buf));

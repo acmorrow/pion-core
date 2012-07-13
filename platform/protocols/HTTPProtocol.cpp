@@ -458,7 +458,7 @@ void HTTPProtocol::generateEvent(EventPtr& event_ptr_ref)
 			  : 0 ) );
 
 		// save sc_ack_time for next calculation
-		const boost::uint32_t sc_ack_time = ( m_response_ack_time > m_response_end_time ?
+		const std::uint32_t sc_ack_time = ( m_response_ack_time > m_response_end_time ?
 			  (m_response_ack_time - m_response_end_time).total_microseconds() : 0 );
 		(*event_ptr_ref).setUInt(m_sc_ack_time_term_ref, sc_ack_time);
 
@@ -563,7 +563,7 @@ void HTTPProtocol::setConfig(const Vocabulary& v, const xmlNodePtr config_ptr)
 	Protocol::setConfig(v, config_ptr);
 	
 	// parse maximum request content length
-	boost::uint64_t max_content_length = 0;
+	std::uint64_t max_content_length = 0;
 	if (ConfigManager::getConfigOption(MAX_REQUEST_CONTENT_LENGTH_ELEMENT_NAME,
 		max_content_length, config_ptr))
 	{
@@ -754,12 +754,12 @@ void HTTPProtocol::setConfig(const Vocabulary& v, const xmlNodePtr config_ptr)
 		}
 		
 		// get MaxSize parameter
-		rule_ptr->m_max_size = boost::uint32_t(-1);	// default is undefined/none
+		rule_ptr->m_max_size = std::uint32_t(-1);	// default is undefined/none
 		if (ConfigManager::getConfigOption(MAX_SIZE_ELEMENT_NAME, temp_str,
 										   extract_node->children))
 		{
 			try {
-				rule_ptr->m_max_size = boost::lexical_cast<boost::uint32_t>(temp_str);
+				rule_ptr->m_max_size = boost::lexical_cast<std::uint32_t>(temp_str);
 			} catch (...) {}	// ignore failed casts (keep default)
 		}
 
@@ -769,7 +769,7 @@ void HTTPProtocol::setConfig(const Vocabulary& v, const xmlNodePtr config_ptr)
 										   extract_node->children))
 		{
 			try {
-				rule_ptr->m_max_extracts = boost::lexical_cast<boost::uint32_t>(temp_str);
+				rule_ptr->m_max_extracts = boost::lexical_cast<std::uint32_t>(temp_str);
 			} catch (...) {}	// ignore failed casts (keep default)
 		}
 

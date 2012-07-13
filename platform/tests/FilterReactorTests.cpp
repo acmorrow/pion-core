@@ -110,12 +110,12 @@ BOOST_AUTO_TEST_CASE(checkFilterCLFLogFile) {
 
 	// Read in events from a CLF log file.
 	CodecPtr clf_codec_ptr = m_codec_factory.getCodec("3f49f2da-bfe3-11dc-8875-0016cb926e68");
-	boost::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
+	std::uint64_t events_read = PionPlatformUnitTest::feedFileToReactor(
 		*m_reaction_engine, reactor_id, *clf_codec_ptr, CLF_LOG_FILE);
 	BOOST_CHECK_EQUAL(events_read, 16UL);
 
 	// Check that exactly 7 events passed the filter.
-	PionPlatformUnitTest::checkReactorEventsOut(*m_reaction_engine, log_writer_id, static_cast<boost::uint64_t>(7));
+	PionPlatformUnitTest::checkReactorEventsOut(*m_reaction_engine, log_writer_id, static_cast<std::uint64_t>(7));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

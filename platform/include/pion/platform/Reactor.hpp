@@ -276,10 +276,10 @@ public:
 	inline void setMultithreadBranches(bool b) { m_multithread_branches = b; }
 
 	/// returns the total number of Events received by this Reactor
-	inline boost::uint32_t getEventsIn(void) const { return m_events_in; }
+	inline std::uint32_t getEventsIn(void) const { return m_events_in; }
 
 	/// returns the total number of Events delivered by this Reactor
-	inline boost::uint32_t getEventsOut(void) const { return m_events_out; }
+	inline std::uint32_t getEventsOut(void) const { return m_events_out; }
 
 	/// returns true if the Reactor is running
 	inline bool isRunning(void) const { return m_is_running; }
@@ -315,7 +315,7 @@ protected:
 		ConfigReadLock(const Reactor& r)
 			: m_reactor_ref(r)
 		{
-			boost::uint16_t sleep_times = 0;
+			std::uint16_t sleep_times = 0;
 			do {
 				while (m_reactor_ref.m_config_change_pending) {
 					if (++sleep_times > 50)
@@ -346,7 +346,7 @@ protected:
 			: m_reactor_ref(r), m_already_locked(r.m_config_change_pending)
 		{
 			if (! m_already_locked) {
-				boost::uint16_t sleep_times = 0;
+				std::uint16_t sleep_times = 0;
 				m_reactor_ref.m_config_change_pending = true;
 				while (m_reactor_ref.m_config_num_readers > 0) {
 					if (++sleep_times > 50) {

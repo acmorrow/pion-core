@@ -20,11 +20,11 @@
 #ifndef __PION_PLATFORMCONFIG_HEADER__
 #define __PION_PLATFORMCONFIG_HEADER__
 
+#include <cstdint>
+#include <mutex>
 #include <string>
 #include <vector>
 #include <libxml/tree.h>
-#include <boost/cstdint.hpp>
-#include <mutex>
 #include <pion/PionConfig.hpp>
 #include <pion/PionException.hpp>
 #include <pion/platform/ConfigManager.hpp>

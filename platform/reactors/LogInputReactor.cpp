@@ -53,7 +53,7 @@ namespace plugins {		// begin namespace plugins
 
 // static members of LogInputReactor
 	
-const boost::uint32_t		LogInputReactor::DEFAULT_FREQUENCY = 1;
+const std::uint32_t		LogInputReactor::DEFAULT_FREQUENCY = 1;
 const std::string			LogInputReactor::CODEC_ELEMENT_NAME = "Codec";
 const std::string			LogInputReactor::DIRECTORY_ELEMENT_NAME = "Directory";
 const std::string			LogInputReactor::FILENAME_ELEMENT_NAME = "Filename";
@@ -118,7 +118,7 @@ void LogInputReactor::setConfig(const Vocabulary& v, const xmlNodePtr config_ptr
 	// get the frequency to check for new logs (if defined)
 	std::string frequency_str;
 	if (ConfigManager::getConfigOption(FREQUENCY_ELEMENT_NAME, frequency_str, config_ptr)) {
-		const boost::uint32_t frequency_value = boost::lexical_cast<boost::uint32_t>(frequency_str);
+		const std::uint32_t frequency_value = boost::lexical_cast<std::uint32_t>(frequency_str);
 		if (frequency_value <= 0)
 			throw BadFrequencyException(getId());
 		m_frequency = frequency_value;
@@ -233,7 +233,7 @@ void LogInputReactor::stop(void)
 	}
 }
 
-void LogInputReactor::scheduleLogFileCheck(boost::uint32_t seconds)
+void LogInputReactor::scheduleLogFileCheck(std::uint32_t seconds)
 {
 	std::unique_lock<std::mutex> worker_lock(m_worker_mutex);
 	if (! m_is_running) {
@@ -351,7 +351,7 @@ void LogInputReactor::checkForLogFiles(void)
 			PION_LOG_DEBUG(m_logger, "Found a new log file to consume: " << m_log_file);
 			m_current_stream_data = StreamData(
 				std::shared_ptr<boost::iostreams::filtering_istream>(new boost::iostreams::filtering_istream), 
-				std::shared_ptr<boost::uint64_t>(new boost::uint64_t(0)));
+				std::shared_ptr<std::uint64_t>(new std::uint64_t(0)));
 			m_open_streams[m_log_file] = m_current_stream_data;
 			scheduleReadFromLog();
 		}
@@ -373,7 +373,7 @@ void LogInputReactor::readFromLog(void)
 	std::shared_ptr<boost::iostreams::filtering_istream> log_stream = m_current_stream_data.first;
 	try {
 		// open up the log file for reading (if not open already)
-		boost::uint64_t num_events_to_skip = 0;
+		std::uint64_t num_events_to_skip = 0;
 		bool compressed = false;
 		bool already_open = log_stream->is_complete();  // is_complete() returns true if a Device, in this case a file, is attached to the stream.
 		if (! already_open) {
@@ -402,7 +402,7 @@ void LogInputReactor::readFromLog(void)
 			}
 
 			// If there were any previously read Events, we need to skip over them, because the log file has been reopened since they were read.
-			std::map<std::string, boost::uint64_t>::iterator it = m_num_events_read_previously.find(m_log_file);
+			std::map<std::string, std::uint64_t>::iterator it = m_num_events_read_previously.find(m_log_file);
 			if (it != m_num_events_read_previously.end()) {
 				num_events_to_skip = it->second;
 				PION_LOG_DEBUG(m_logger, "Resuming log file parsing by skipping " << num_events_to_skip << " events");

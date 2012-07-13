@@ -160,7 +160,7 @@ private:
 
 	/// holds an open input stream and the number of Events read for a log file
 	typedef std::pair<std::shared_ptr<boost::iostreams::filtering_istream>, 
-					  std::shared_ptr<boost::uint64_t> >			StreamData;
+					  std::shared_ptr<std::uint64_t> >			StreamData;
 
 	/// maps the names of open log files to information about the corresponding streams
 	typedef std::map<std::string, StreamData>						StreamMap;
@@ -170,7 +170,7 @@ private:
 	 *
 	 * @param seconds the number of seconds to wait before checking for new logs
 	 */
-	void scheduleLogFileCheck(boost::uint32_t seconds);
+	void scheduleLogFileCheck(std::uint32_t seconds);
 	
 	/// checks for new log files
 	void checkForLogFiles(void);
@@ -215,7 +215,7 @@ private:
 
 	
 	/// default frequency that the Reactor will check for new logs (in seconds)
-	static const boost::uint32_t		DEFAULT_FREQUENCY;
+	static const std::uint32_t		DEFAULT_FREQUENCY;
 	
 	/// name of the Codec element for Pion XML config files
 	static const std::string			CODEC_ELEMENT_NAME;
@@ -252,7 +252,7 @@ private:
 	bool								m_tail_f;
 
 	/// frequency that the Reactor will check for new logs (in seconds)
-	boost::uint32_t						m_frequency;
+	std::uint32_t						m_frequency;
 
 	/// directory that the Reactor will periodically check for new log files
 	std::string							m_log_directory;
@@ -282,7 +282,7 @@ private:
 	std::string							m_current_log_file_cache_filename;
 
 	/// maps filenames to the number of Events that had previously been read from that file, 
-	std::map<std::string, boost::uint64_t>	m_num_events_read_previously;
+	std::map<std::string, std::uint64_t>	m_num_events_read_previously;
 
 	/// protects the consumed logs collection
 	std::mutex						m_logs_consumed_mutex;

@@ -27,6 +27,7 @@
 #define BOOST_ZLIB_BINARY "zdll.lib"
 #endif
 
+#include <cstdint>
 #include <cstdio>
 #include <string>
 
@@ -36,7 +37,6 @@
 #include <boost/iostreams/filter/zlib.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 
-#include <boost/cstdint.hpp>
 #include <boost/noncopyable.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/platform/Vocabulary.hpp>
@@ -147,9 +147,9 @@ public:
 	 * @param param the query parameter number to which the value will be bound (starting with 0)
 	 * @param value the value to bind to the query parameter
 	 */
-	virtual void bindInt(unsigned int param, const boost::int32_t value) = 0;
+	virtual void bindInt(unsigned int param, const std::int32_t value) = 0;
 
-	virtual boost::int32_t fetchInt(unsigned int param) = 0;
+	virtual std::int32_t fetchInt(unsigned int param) = 0;
 
 	/**
 	 * binds an unsigned integer value to a query parameter
@@ -157,9 +157,9 @@ public:
 	 * @param param the query parameter number to which the value will be bound (starting with 0)
 	 * @param value the value to bind to the query parameter
 	 */
-	virtual void bindUInt(unsigned int param, const boost::uint32_t value) = 0;
+	virtual void bindUInt(unsigned int param, const std::uint32_t value) = 0;
 
-	virtual boost::uint32_t fetchUInt(unsigned int param) = 0;
+	virtual std::uint32_t fetchUInt(unsigned int param) = 0;
 
 	/**
 	 * binds a big integer value to a query parameter
@@ -167,9 +167,9 @@ public:
 	 * @param param the query parameter number to which the value will be bound (starting with 0)
 	 * @param value the value to bind to the query parameter
 	 */
-	virtual void bindBigInt(unsigned int param, const boost::int64_t value) = 0;
+	virtual void bindBigInt(unsigned int param, const std::int64_t value) = 0;
 
-	virtual boost::int64_t fetchBigInt(unsigned int param) = 0;
+	virtual std::int64_t fetchBigInt(unsigned int param) = 0;
 
 	/**
 	 * binds an unsigned big integer value to a query parameter
@@ -177,9 +177,9 @@ public:
 	 * @param param the query parameter number to which the value will be bound (starting with 0)
 	 * @param value the value to bind to the query parameter
 	 */
-	virtual void bindUBigInt(unsigned int param, const boost::uint64_t value) = 0;
+	virtual void bindUBigInt(unsigned int param, const std::uint64_t value) = 0;
 
-	virtual boost::uint64_t fetchUBigInt(unsigned int param) = 0;
+	virtual std::uint64_t fetchUBigInt(unsigned int param) = 0;
 
 	/**
 	 * binds a floating point number value to a query parameter
@@ -419,18 +419,18 @@ inline void Query::bindEvent(const FieldMap& field_map, const Event& e, bool cop
 				case Vocabulary::TYPE_INT8:
 				case Vocabulary::TYPE_INT16:
 				case Vocabulary::TYPE_INT32:
-					bindInt(param, boost::get<boost::int32_t>(*value_ptr));
+					bindInt(param, boost::get<std::int32_t>(*value_ptr));
 					break;
 				case Vocabulary::TYPE_INT64:
-					bindBigInt(param, boost::get<boost::int64_t>(*value_ptr));
+					bindBigInt(param, boost::get<std::int64_t>(*value_ptr));
 					break;
 				case Vocabulary::TYPE_UINT8:
 				case Vocabulary::TYPE_UINT16:
 				case Vocabulary::TYPE_UINT32:
-					bindUInt(param, boost::get<boost::uint32_t>(*value_ptr));
+					bindUInt(param, boost::get<std::uint32_t>(*value_ptr));
 					break;
 				case Vocabulary::TYPE_UINT64:
-					bindUBigInt(param, boost::get<boost::uint64_t>(*value_ptr));
+					bindUBigInt(param, boost::get<std::uint64_t>(*value_ptr));
 					break;
 				case Vocabulary::TYPE_FLOAT:
 					bindFloat(param, boost::get<float>(*value_ptr));

@@ -174,7 +174,7 @@ public:
 	};
 
 	/// Get various cache related parameters
-	virtual boost::uint64_t getCache(CACHEPARAM what) = 0;
+	virtual std::uint64_t getCache(CACHEPARAM what) = 0;
 
 	/// returns true if the database connection is open
 	virtual bool is_open(void) const = 0;

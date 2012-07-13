@@ -15,7 +15,7 @@
 #include <mutex>
 #include <new>
 #include <thread>
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include <boost/noncopyable.hpp>
 #include <boost/detail/atomic_count.hpp>
 #include <pion/PionConfig.hpp>
@@ -39,8 +39,8 @@ namespace pion {	// begin namespace pion
 /// PionLockedQueue: a thread-safe, two-lock concurrent FIFO queue
 /// 
 template <typename T,
-	boost::uint32_t MaxSize = 250000,
-	boost::uint32_t SleepMilliSec = 10 >
+	std::uint32_t MaxSize = 250000,
+	std::uint32_t SleepMilliSec = 10 >
 class PionLockedQueue :
 	private boost::noncopyable
 {
@@ -50,7 +50,7 @@ protected:
 	struct QueueNode {
 		T		data;		//< data wrapped by the node item
 		QueueNode *	next;		//< points to the next node in the queue
-		boost::uint32_t	version;	//< the node item's version number
+		std::uint32_t	version;	//< the node item's version number
 	};
 
 	/// returns a new queue node item for use in the queue
@@ -85,11 +85,11 @@ protected:
 	 * dequeues the next item from the top of the queue
 	 *
 	 * @param t assigned to the item at the top of the queue, if it is not empty
-	 * @param boost::uint32_t version number of the item retrieved, or head node if none
+	 * @param std::uint32_t version number of the item retrieved, or head node if none
 	 *
 	 * @return true if an item was retrieved; false if the queue is empty
 	 */
-	inline bool dequeue(T& t, boost::uint32_t& version) {
+	inline bool dequeue(T& t, std::uint32_t& version) {
 		// just return if the list is empty
 		std::unique_lock<std::mutex> head_lock(m_head_mutex);
 		QueueNode *new_head_ptr = m_head_ptr->next;
@@ -257,7 +257,7 @@ public:
 	 * @return true if an item was retrieved, false if the queue is empty
 	 */
 	bool pop(T& t, ConsumerThread& thread_info) {
-		boost::uint32_t last_known_version;
+		std::uint32_t last_known_version;
 		while (thread_info.isRunning()) {
 			// try to get the next value
 			if ( dequeue(t, last_known_version) )
@@ -291,7 +291,7 @@ public:
 	 *
 	 * @return true if an item was retrieved, false if the queue is empty
 	 */
-	inline bool pop(T& t) { boost::uint32_t version; return dequeue(t, version); }
+	inline bool pop(T& t) { std::uint32_t version; return dequeue(t, version); }
 	
 
 private:
@@ -317,7 +317,7 @@ private:
 	ConsumerThread *				m_idle_ptr;
 
 	/// value of the next tail version number
-	boost::uint32_t					m_next_version;
+	std::uint32_t					m_next_version;
 	
 	/// used to keep track of the number of items in the queue
 	boost::detail::atomic_count		m_size;

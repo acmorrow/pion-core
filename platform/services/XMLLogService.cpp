@@ -28,7 +28,7 @@ namespace plugins {		// begin namespace plugins
 
 const unsigned int		XMLLogServiceAppender::DEFAULT_MAX_EVENTS = 100;
 const unsigned int		XMLLogServiceAppender::DEFAULT_TRUNCATION_LENGTH = 100;
-boost::uint32_t			XMLLogServiceAppender::m_event_count = 0;
+std::uint32_t			XMLLogServiceAppender::m_event_count = 0;
 
 
 // XMLLogServiceAppender member functions
@@ -127,7 +127,7 @@ void XMLLogService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 	if (request->getMethod() == HTTPTypes::REQUEST_METHOD_GET) {
 		qpi = qp.find("truncate");
 		if (qpi != qp.end())
-			getLogAppender().setTruncationLength(boost::lexical_cast<boost::uint32_t>(qpi->second));
+			getLogAppender().setTruncationLength(boost::lexical_cast<std::uint32_t>(qpi->second));
 
 		getLogAppender().writeLogEvents(writer);
 		writer->send();

@@ -309,8 +309,8 @@ public:
 	/// it works similar to a union in that the allocation of a
 	/// ParameterValue reserves enough space for any of the
 	/// possible values assigned to it
-	typedef boost::variant<boost::int32_t, boost::uint32_t,
-		boost::int64_t, boost::uint64_t, float, double, long double,
+	typedef boost::variant<std::int32_t, std::uint32_t,
+		std::int64_t, std::uint64_t, float, double, long double,
 		PionDateTime, BlobType>				ParameterValue;
 	
 	/// data type used to contain the information for a single Event parameter.
@@ -335,7 +335,7 @@ public:
 		/// pointer to right node (used by rbtree algorithms)
 		ParameterNode *			m_right_ptr;
 		/// color value for this node (used by rbtree algorithms)
-		boost::uint8_t			m_tree_color;
+		std::uint8_t			m_tree_color;
 
 		/// Term reference id for the parameter
 		Vocabulary::TermRef		term_ref;
@@ -513,44 +513,44 @@ public:
 	 * shorthand for retrieving the (const) value of an integer field
 	 * 
 	 * @param term_ref numeric identifier for the term
-	 * @return const boost::int32_t& the value of the field
+	 * @return const std::int32_t& the value of the field
 	 */
-	inline const boost::int32_t& getInt(const Vocabulary::TermRef& term_ref) const {
-		PION_ASSERT(getPointer(term_ref)!=NULL && boost::get<boost::int32_t>(getPointer(term_ref)));
-		return boost::get<const boost::int32_t&>(*getPointer(term_ref));
+	inline const std::int32_t& getInt(const Vocabulary::TermRef& term_ref) const {
+		PION_ASSERT(getPointer(term_ref)!=NULL && boost::get<std::int32_t>(getPointer(term_ref)));
+		return boost::get<const std::int32_t&>(*getPointer(term_ref));
 	}
 	
 	/**
 	 * shorthand for retrieving the (const) value of an unsigned integer field
 	 * 
 	 * @param term_ref numeric identifier for the term
-	 * @return const boost::uint32_t& the value of the field
+	 * @return const std::uint32_t& the value of the field
 	 */
-	inline const boost::uint32_t& getUInt(const Vocabulary::TermRef& term_ref) const {
-		PION_ASSERT(getPointer(term_ref)!=NULL && boost::get<boost::uint32_t>(getPointer(term_ref)));
-		return boost::get<const boost::uint32_t&>(*getPointer(term_ref));
+	inline const std::uint32_t& getUInt(const Vocabulary::TermRef& term_ref) const {
+		PION_ASSERT(getPointer(term_ref)!=NULL && boost::get<std::uint32_t>(getPointer(term_ref)));
+		return boost::get<const std::uint32_t&>(*getPointer(term_ref));
 	}
 	
 	/**
 	 * shorthand for retrieving the (const) value of a big integer field
 	 * 
 	 * @param term_ref numeric identifier for the term
-	 * @return const boost::int64_t& the value of the field
+	 * @return const std::int64_t& the value of the field
 	 */
-	inline const boost::int64_t& getBigInt(const Vocabulary::TermRef& term_ref) const {
-		PION_ASSERT(getPointer(term_ref)!=NULL && boost::get<boost::int64_t>(getPointer(term_ref)));
-		return boost::get<const boost::int64_t&>(*getPointer(term_ref));
+	inline const std::int64_t& getBigInt(const Vocabulary::TermRef& term_ref) const {
+		PION_ASSERT(getPointer(term_ref)!=NULL && boost::get<std::int64_t>(getPointer(term_ref)));
+		return boost::get<const std::int64_t&>(*getPointer(term_ref));
 	}
 	
 	/**
 	 * shorthand for retrieving the (const) value of an unsigned big integer field
 	 * 
 	 * @param term_ref numeric identifier for the term
-	 * @return const boost::uint64_t& the value of the field
+	 * @return const std::uint64_t& the value of the field
 	 */
-	inline const boost::uint64_t& getUBigInt(const Vocabulary::TermRef& term_ref) const {
-		PION_ASSERT(getPointer(term_ref)!=NULL && boost::get<boost::uint64_t>(getPointer(term_ref)));
-		return boost::get<const boost::uint64_t&>(*getPointer(term_ref));
+	inline const std::uint64_t& getUBigInt(const Vocabulary::TermRef& term_ref) const {
+		PION_ASSERT(getPointer(term_ref)!=NULL && boost::get<std::uint64_t>(getPointer(term_ref)));
+		return boost::get<const std::uint64_t&>(*getPointer(term_ref));
 	}
 	
 	/**
@@ -631,7 +631,7 @@ public:
 	inline bool getInt(const Vocabulary::TermRef& term_ref, T& v) const {
 		const ParameterValue *param_ptr = getPointer(term_ref);
 		if (param_ptr) {
-			v = boost::get<const boost::int32_t&>(*param_ptr);
+			v = boost::get<const std::int32_t&>(*param_ptr);
 			return true;
 		}
 		return false;
@@ -649,7 +649,7 @@ public:
 	inline bool getUInt(const Vocabulary::TermRef& term_ref, T& v) const {
 		const ParameterValue *param_ptr = getPointer(term_ref);
 		if (param_ptr) {
-			v = boost::get<const boost::uint32_t&>(*param_ptr);
+			v = boost::get<const std::uint32_t&>(*param_ptr);
 			return true;
 		}
 		return false;
@@ -667,7 +667,7 @@ public:
 	inline bool getBigInt(const Vocabulary::TermRef& term_ref, T& v) const {
 		const ParameterValue *param_ptr = getPointer(term_ref);
 		if (param_ptr) {
-			v = boost::get<const boost::int64_t&>(*param_ptr);
+			v = boost::get<const std::int64_t&>(*param_ptr);
 			return true;
 		}
 		return false;
@@ -685,7 +685,7 @@ public:
 	inline bool getUBigInt(const Vocabulary::TermRef& term_ref, T& v) const {
 		const ParameterValue *param_ptr = getPointer(term_ref);
 		if (param_ptr) {
-			v = boost::get<const boost::uint64_t&>(*param_ptr);
+			v = boost::get<const std::uint64_t&>(*param_ptr);
 			return true;
 		}
 		return false;
@@ -831,7 +831,7 @@ public:
 	 */
 	template <typename T>
 	inline void setInt(const Vocabulary::TermRef& term_ref, T value) {
-		insert(term_ref, boost::int32_t(value));
+		insert(term_ref, std::int32_t(value));
 	}
 
 	/**
@@ -841,7 +841,7 @@ public:
 	 * @param value new value assigned to the term
 	 */
 	inline void setInt(const Vocabulary::TermRef& term_ref, const std::string& value) {
-		insert(term_ref, boost::lexical_cast<boost::int32_t>(value));
+		insert(term_ref, boost::lexical_cast<std::int32_t>(value));
 	}
 
 	/**
@@ -852,7 +852,7 @@ public:
 	 */
 	template <typename T>
 	inline void setUInt(const Vocabulary::TermRef& term_ref, T value) {
-		insert(term_ref, boost::uint32_t(value));
+		insert(term_ref, std::uint32_t(value));
 	}
 	
 	/**
@@ -862,7 +862,7 @@ public:
 	 * @param value new value assigned to the term
 	 */
 	inline void setUInt(const Vocabulary::TermRef& term_ref, const std::string& value) {
-		insert(term_ref, boost::lexical_cast<boost::uint32_t>(value));
+		insert(term_ref, boost::lexical_cast<std::uint32_t>(value));
 	}
 	
 	/**
@@ -873,7 +873,7 @@ public:
 	 */
 	template <typename T>
 	inline void setBigInt(const Vocabulary::TermRef& term_ref, T value) {
-		insert(term_ref, boost::int64_t(value));
+		insert(term_ref, std::int64_t(value));
 	}
 	
 	/**
@@ -883,7 +883,7 @@ public:
 	 * @param value new value assigned to the term
 	 */
 	inline void setBigInt(const Vocabulary::TermRef& term_ref, const std::string& value) {
-		insert(term_ref, boost::lexical_cast<boost::int64_t>(value));
+		insert(term_ref, boost::lexical_cast<std::int64_t>(value));
 	}
 	
 	/**
@@ -894,7 +894,7 @@ public:
 	 */
 	template <typename T>
 	inline void setUBigInt(const Vocabulary::TermRef& term_ref, T value) {
-		insert(term_ref, boost::uint64_t(value));
+		insert(term_ref, std::uint64_t(value));
 	}
 	
 	/**
@@ -904,7 +904,7 @@ public:
 	 * @param value new value assigned to the term
 	 */
 	inline void setUBigInt(const Vocabulary::TermRef& term_ref, const std::string& value) {
-		insert(term_ref, boost::lexical_cast<boost::uint64_t>(value));
+		insert(term_ref, boost::lexical_cast<std::uint64_t>(value));
 	}
 	
 	/**
@@ -1164,18 +1164,18 @@ public:
 		case Vocabulary::TYPE_INT8:
 		case Vocabulary::TYPE_INT16:
 		case Vocabulary::TYPE_INT32:
-			str << boost::get<const boost::int32_t&>(value);
+			str << boost::get<const std::int32_t&>(value);
 			break;
 		case Vocabulary::TYPE_UINT8:
 		case Vocabulary::TYPE_UINT16:
 		case Vocabulary::TYPE_UINT32:
-			str << boost::get<const boost::uint32_t&>(value);
+			str << boost::get<const std::uint32_t&>(value);
 			break;
 		case Vocabulary::TYPE_INT64:
-			str << boost::get<const boost::int64_t&>(value);
+			str << boost::get<const std::int64_t&>(value);
 			break;
 		case Vocabulary::TYPE_UINT64:
-			str << boost::get<const boost::uint64_t&>(value);
+			str << boost::get<const std::uint64_t&>(value);
 			break;
 		case Vocabulary::TYPE_FLOAT:
 			str << boost::get<const float&>(value);
@@ -1224,18 +1224,18 @@ public:
 		case Vocabulary::TYPE_INT8:
 		case Vocabulary::TYPE_INT16:
 		case Vocabulary::TYPE_INT32:
-			str = boost::lexical_cast<std::string>( boost::get<const boost::int32_t&>(value) );
+			str = boost::lexical_cast<std::string>( boost::get<const std::int32_t&>(value) );
 			break;
 		case Vocabulary::TYPE_UINT8:
 		case Vocabulary::TYPE_UINT16:
 		case Vocabulary::TYPE_UINT32:
-			str = boost::lexical_cast<std::string>( boost::get<const boost::uint32_t&>(value) );
+			str = boost::lexical_cast<std::string>( boost::get<const std::uint32_t&>(value) );
 			break;
 		case Vocabulary::TYPE_INT64:
-			str = boost::lexical_cast<std::string>( boost::get<const boost::int64_t&>(value) );
+			str = boost::lexical_cast<std::string>( boost::get<const std::int64_t&>(value) );
 			break;
 		case Vocabulary::TYPE_UINT64:
-			str = boost::lexical_cast<std::string>( boost::get<const boost::uint64_t&>(value) );
+			str = boost::lexical_cast<std::string>( boost::get<const std::uint64_t&>(value) );
 			break;
 		case Vocabulary::TYPE_FLOAT:
 			str = boost::lexical_cast<std::string>( boost::get<const float&>(value) );
@@ -1338,7 +1338,7 @@ public:
 	}
 
 	/// returns the number of references to this Event
-	inline boost::uint32_t getReferences(void) const { return m_references; }
+	inline std::uint32_t getReferences(void) const { return m_references; }
 	
 	
 protected:
@@ -1353,7 +1353,7 @@ protected:
 	inline void addReference(void) { ++m_references; }
 	
 	/// decrements the reference count for this Event
-	inline boost::uint32_t removeReference(void) { return --m_references; }
+	inline std::uint32_t removeReference(void) { return --m_references; }
 	
 	/// returns a pointer to the Event's allocator
 	inline AllocType *getAllocator(void) { return m_alloc_ptr; }
@@ -1422,7 +1422,7 @@ protected:
 		typedef ParameterNode				node;
 		typedef ParameterNode *				node_ptr;
 		typedef const ParameterNode *		const_node_ptr;
-		typedef boost::uint8_t				color;
+		typedef std::uint8_t				color;
 		static node_ptr get_parent(const_node_ptr n)       {  return n->m_parent_ptr;   }  
 		static void set_parent(node_ptr n, node_ptr parent){  n->m_parent_ptr = parent; }  
 		static node_ptr get_left(const_node_ptr n)         {  return n->m_left_ptr;     }  

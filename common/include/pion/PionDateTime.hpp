@@ -38,7 +38,7 @@ public:
 	// Function that converts a ptime into a time_t
 	// Note: this is quick & dirty -- does not handle invalid dates,
 	//		other calendars, pre-epoch dates, ...
-	static inline boost::uint32_t to_time_t(const PionDateTime& t)
+	static inline std::uint32_t to_time_t(const PionDateTime& t)
 	{
 		static const boost::posix_time::ptime start(boost::gregorian::date(1970,1,1));
 		return (t-start).total_seconds();

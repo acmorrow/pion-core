@@ -186,10 +186,10 @@ public:
 	inline boost::asio::io_service& getIOService(void) { return m_scheduler.getIOService(); }
 	
 	/// returns the number of threads currently in use
-	inline boost::uint32_t getNumThreads(void) const { return m_scheduler.getNumThreads(); }
+	inline std::uint32_t getNumThreads(void) const { return m_scheduler.getNumThreads(); }
 	
 	/// sets the number of threads used all of the HTTP servers & services
-	inline void setNumThreads(const boost::uint32_t n) { m_scheduler.setNumThreads(n); }
+	inline void setNumThreads(const std::uint32_t n) { m_scheduler.setNumThreads(n); }
 		
 	/// this notifies all the service plug-ins that the Codecs were updated
 	void updateCodecs(void);
@@ -308,7 +308,7 @@ private:
 	
 	
 	/// default number of worker threads in the thread pool
-	static const boost::uint32_t	DEFAULT_NUM_THREADS;
+	static const std::uint32_t	DEFAULT_NUM_THREADS;
 	
 	/// default name of the vocabulary config file
 	static const std::string		DEFAULT_CONFIG_FILE;

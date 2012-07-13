@@ -175,10 +175,10 @@ public:
 	}
 	
 	/// convert microseconds into boost fractional seconds
-	static inline boost::uint64_t boost_msec_to_fsec(boost::uint64_t n);
+	static inline std::uint64_t boost_msec_to_fsec(std::uint64_t n);
 
 	/// convert boost fractional seconds into microseconds
-	static inline boost::uint64_t boost_fsec_to_msec(boost::uint64_t n);
+	static inline std::uint64_t boost_fsec_to_msec(std::uint64_t n);
 
 	
 protected:
@@ -305,7 +305,7 @@ private:
 	static std::mutex				m_init_mutex;
 	
 	/// total number of PythonReactor instances
-	static boost::uint32_t			m_init_num;
+	static std::uint32_t			m_init_num;
 
 	/// string containing python source code to execute
 	std::string						m_source;
@@ -358,7 +358,7 @@ private:
 
 // inline functions for PythonReactor
 
-inline boost::uint64_t PythonReactor::boost_msec_to_fsec(boost::uint64_t n) {
+inline std::uint64_t PythonReactor::boost_msec_to_fsec(std::uint64_t n) {
 	switch (boost::posix_time::time_duration::resolution()) {
 	case boost::date_time::sec:
 		n /= 1000000;
@@ -388,7 +388,7 @@ inline boost::uint64_t PythonReactor::boost_msec_to_fsec(boost::uint64_t n) {
 	return n;
 }
 
-inline boost::uint64_t PythonReactor::boost_fsec_to_msec(boost::uint64_t n) {
+inline std::uint64_t PythonReactor::boost_fsec_to_msec(std::uint64_t n) {
 	switch (boost::posix_time::time_duration::resolution()) {
 	case boost::date_time::sec:
 		n *= 1000000;

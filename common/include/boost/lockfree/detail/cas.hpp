@@ -9,12 +9,11 @@
 #ifndef BOOST_LOCKFREE_CAS_HPP_INCLUDED
 #define BOOST_LOCKFREE_CAS_HPP_INCLUDED
 
+#include <cstdint>
 #include <boost/lockfree/detail/prefix.hpp>
 #include <boost/interprocess/detail/atomic.hpp>
 #include <boost/detail/lightweight_mutex.hpp>
 #include <boost/static_assert.hpp>
-
-#include <boost/cstdint.hpp>
 
 #include <boost/mpl/map.hpp>
 #include <boost/mpl/at.hpp>
@@ -88,8 +87,8 @@ inline bool atomic_cas_emulation(C * addr, C old, C nw)
     return atomic_cas_emulator<C>::cas(addr, old, nw);
 }
 
-using boost::uint32_t;
-using boost::uint64_t;
+using std::uint32_t;
+using std::uint64_t;
 
 struct atomic_cas32
 {
@@ -100,7 +99,7 @@ struct atomic_cas32
 #if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) ) || defined(__INTEL_COMPILER)
         return __sync_bool_compare_and_swap(addr, old, nw);
 #else
-        return boost::interprocess::detail::atomic_cas32(addr, old, nw) == old;
+        return std::interprocess::detail::atomic_cas32(addr, old, nw) == old;
 #endif
     }
     typedef uint32_t cas_type;

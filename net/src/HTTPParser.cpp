@@ -22,16 +22,16 @@ namespace net {		// begin namespace net (Pion Network Library)
 
 // static members of HTTPParser
 
-const boost::uint32_t	HTTPParser::STATUS_MESSAGE_MAX = 1024;	// 1 KB
-const boost::uint32_t	HTTPParser::METHOD_MAX = 1024;	// 1 KB
-const boost::uint32_t	HTTPParser::RESOURCE_MAX = 256 * 1024;	// 256 KB
-const boost::uint32_t	HTTPParser::QUERY_STRING_MAX = 1024 * 1024;	// 1 MB
-const boost::uint32_t	HTTPParser::HEADER_NAME_MAX = 1024;	// 1 KB
-const boost::uint32_t	HTTPParser::HEADER_VALUE_MAX = 1024 * 1024;	// 1 MB
-const boost::uint32_t	HTTPParser::QUERY_NAME_MAX = 1024;	// 1 KB
-const boost::uint32_t	HTTPParser::QUERY_VALUE_MAX = 1024 * 1024;	// 1 MB
-const boost::uint32_t	HTTPParser::COOKIE_NAME_MAX = 1024;	// 1 KB
-const boost::uint32_t	HTTPParser::COOKIE_VALUE_MAX = 1024 * 1024;	// 1 MB
+const std::uint32_t	HTTPParser::STATUS_MESSAGE_MAX = 1024;	// 1 KB
+const std::uint32_t	HTTPParser::METHOD_MAX = 1024;	// 1 KB
+const std::uint32_t	HTTPParser::RESOURCE_MAX = 256 * 1024;	// 256 KB
+const std::uint32_t	HTTPParser::QUERY_STRING_MAX = 1024 * 1024;	// 1 MB
+const std::uint32_t	HTTPParser::HEADER_NAME_MAX = 1024;	// 1 KB
+const std::uint32_t	HTTPParser::HEADER_VALUE_MAX = 1024 * 1024;	// 1 MB
+const std::uint32_t	HTTPParser::QUERY_NAME_MAX = 1024;	// 1 KB
+const std::uint32_t	HTTPParser::QUERY_VALUE_MAX = 1024 * 1024;	// 1 MB
+const std::uint32_t	HTTPParser::COOKIE_NAME_MAX = 1024;	// 1 KB
+const std::uint32_t	HTTPParser::COOKIE_VALUE_MAX = 1024 * 1024;	// 1 MB
 const std::size_t		HTTPParser::DEFAULT_CONTENT_MAX = 1024 * 1024;	// 1 MB
 HTTPParser::ErrorCategory *	HTTPParser::m_error_category_ptr = NULL;
 std::once_flag			HTTPParser::m_instance_flag;

@@ -247,27 +247,27 @@ private:
 ///                    WARNING: T::operator=() must be thread safe!
 /// 
 template <typename T,
-	boost::uint16_t MaxSize = 50000,
-	boost::uint32_t SleepMilliSec = 10 >
+	std::uint16_t MaxSize = 50000,
+	std::uint32_t SleepMilliSec = 10 >
 class PionLockFreeQueue :
 	private boost::noncopyable
 {
 protected:
 
 	/// make sure that the type used for CAS is at least as large as our structure
-	BOOST_STATIC_ASSERT(sizeof(boost::uint32_t) >= (sizeof(boost::uint16_t) * 2));
+	BOOST_STATIC_ASSERT(sizeof(std::uint32_t) >= (sizeof(std::uint16_t) * 2));
 
 	/// an object used to point to a QueueNode
 	union QueueNodePtr {
 		/// the actual data contained within the QueueNodePtr object
 		struct {
 			/// index for the QueueNode object that is pointed to
-			boost::uint16_t		index;
+			std::uint16_t		index;
 			/// used to check compare and swap operations & protect against ABA problems
-			boost::uint16_t		counter;
+			std::uint16_t		counter;
 		} data;
 		/// the 32-bit value of the QueueNode object, used for CAS operations
-		boost::int32_t		value;
+		std::int32_t		value;
 	};	
 
 	/// an object used to wrap each item in the queue
@@ -301,7 +301,7 @@ protected:
 	 * @return bool if the cas operation was successful, or false if not changed
 	 */
 	static inline bool cas(volatile QueueNodePtr& cur_ptr, QueueNodePtr old_ptr,
-		boost::uint16_t new_index)
+		std::uint16_t new_index)
 	{
 		QueueNodePtr new_ptr;
 		new_ptr.data.index = new_index;
@@ -310,10 +310,10 @@ protected:
 	}
 	
 	/// returns the index position for a QueueNode that is available for use (may block)
-	inline boost::uint16_t acquireNode(void) {
+	inline std::uint16_t acquireNode(void) {
 		QueueNodePtr	current_free_ptr;
-		boost::uint16_t	new_free_index;
-		boost::uint16_t	avail_index;
+		std::uint16_t	new_free_index;
+		std::uint16_t	avail_index;
 
 		while (true) {
 			while (true) {
@@ -347,9 +347,9 @@ protected:
 	}
 
 	/// releases a QueueNode that is no longer in use
-	inline void releaseNode(const boost::uint16_t node_index) {
+	inline void releaseNode(const std::uint16_t node_index) {
 		QueueNodePtr	current_free_ptr;
-		boost::uint16_t	new_free_index;
+		std::uint16_t	new_free_index;
 
 		while (true) {
 			// get current free_ptr value
@@ -386,13 +386,13 @@ public:
 		// initialize free_ptr to zero
 		m_free_ptr.value = 0;
 		// initialize free_nodes to zero
-		for (boost::uint16_t n = 0; n < MaxSize; ++n)
+		for (std::uint16_t n = 0; n < MaxSize; ++n)
 			m_free_nodes[n] = 0;
 		// initialize next values to zero
-		for (boost::uint16_t n = 0; n < MaxSize+2; ++n)
+		for (std::uint16_t n = 0; n < MaxSize+2; ++n)
 			m_nodes[n].m_next.value = 0;
 		// push everything but the first two nodes into the available stack
-		for (boost::uint16_t n = 2; n < MaxSize+2; ++n)
+		for (std::uint16_t n = 2; n < MaxSize+2; ++n)
 			releaseNode(n);
 	}
 	
@@ -400,7 +400,7 @@ public:
 	inline bool empty(void) const { return m_free_ptr.data.index == 0; }
 
 	/// returns the number of items that are currently in the queue
-	inline boost::uint16_t size(void) const { return m_free_ptr.data.index; }
+	inline std::uint16_t size(void) const { return m_free_ptr.data.index; }
 	
 	/**
 	 * pushes a new item into the back of the queue
@@ -409,7 +409,7 @@ public:
 	 */
 	inline void push(const T& t) {
 		// retrieve a new list node for the queue item
-		const boost::uint16_t node_index(acquireNode());
+		const std::uint16_t node_index(acquireNode());
 
 		// prepare it to be added to the list
 		QueueNode& node_ref = m_nodes[node_index];
@@ -479,7 +479,7 @@ public:
 		}
 
 		// item successfully retrieved
-		releaseNode(const_cast<boost::uint16_t&>(head_ptr.data.index));
+		releaseNode(const_cast<std::uint16_t&>(head_ptr.data.index));
 		return true;
 	}
 
@@ -490,7 +490,7 @@ private:
 	std::array<QueueNode, MaxSize+2>		m_nodes;
 	
 	/// keeps track of all the QueueNode objects that are available for use
-	std::array<volatile boost::uint16_t, MaxSize>	m_free_nodes;
+	std::array<volatile std::uint16_t, MaxSize>	m_free_nodes;
 	
 	/// pointer to the first item in the list
 	volatile QueueNodePtr					m_head_ptr;

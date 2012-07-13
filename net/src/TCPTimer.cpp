@@ -23,7 +23,7 @@ TCPTimer::TCPTimer(TCPConnectionPtr& conn_ptr)
 {
 }
 
-void TCPTimer::start(const boost::uint32_t seconds)
+void TCPTimer::start(const std::uint32_t seconds)
 {
 	std::lock_guard<std::mutex> timer_lock(m_mutex);
 	m_timer_active = true;

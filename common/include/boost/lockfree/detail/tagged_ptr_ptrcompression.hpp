@@ -15,8 +15,7 @@
 #include <boost/lockfree/detail/branch_hints.hpp>
 
 #include <cstddef>              /* for std::size_t */
-
-#include <boost/cstdint.hpp>
+#include <cstdint>
 
 namespace boost
 {
@@ -28,8 +27,8 @@ namespace lockfree
 template <class T>
 class BOOST_LOCKFREE_DCAS_ALIGNMENT tagged_ptr
 {
-    typedef boost::uint64_t compressed_ptr_t;
-    typedef boost::uint16_t tag_t;
+    typedef std::uint64_t compressed_ptr_t;
+    typedef std::uint16_t tag_t;
 
 private:
     union cast_unit
