@@ -200,15 +200,18 @@ void LogOutputReactor::closeLogFileNoLock(void)
 {
 	// close the log file if it is open
 	if (m_log_stream.is_open()) {
+		PION_ASSERT(m_codec_ptr);
 		m_codec_ptr->finish(m_log_stream);
 		m_codec_ptr.reset();
 		m_log_stream.close();
 		// remove the log file if no events were written to it
-		if (boost::filesystem::file_size(m_log_filename) == 0) {
-			boost::filesystem::remove(m_log_filename);
-			PION_LOG_DEBUG(m_logger, "Closing empty output log (removing file): " << m_log_filename);
-		} else {
-			PION_LOG_DEBUG(m_logger, "Closing output log file: " << m_log_filename);
+		if (boost::filesystem::exists(m_log_filename)) {
+			if (boost::filesystem::file_size(m_log_filename) == 0) {
+				boost::filesystem::remove(m_log_filename);
+				PION_LOG_DEBUG(m_logger, "Closing empty output log (removing file): " << m_log_filename);
+			} else {
+				PION_LOG_DEBUG(m_logger, "Closing output log file: " << m_log_filename);
+			}
 		}
 		// clear any pending error flags to be safe
 		m_log_stream.clear();

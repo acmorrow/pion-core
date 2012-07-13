@@ -21,6 +21,7 @@
 #define __PION_CONFIGSERVICE_HEADER__
 
 #include <pion/PionConfig.hpp>
+#include <boost/thread/mutex.hpp>
 #include "PlatformService.hpp"
 
 
@@ -96,6 +97,9 @@ private:
 
 	/// directory containing the UI files
 	std::string						m_ui_directory;
+
+	/// used to prevent multiple threads from updating reactor config at same time
+	mutable boost::mutex			m_reactors_mutex;
 };
 
 	
