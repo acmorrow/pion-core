@@ -20,13 +20,13 @@
 #ifndef __PION_MONITORSERVICE_HEADER__
 #define __PION_MONITORSERVICE_HEADER__
 
-#include <memory>
-#include <string>
 #include <iosfwd>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <unordered_map>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/circular_buffer.hpp>
-#include <mutex>
-#include <boost/unordered_map.hpp>
 #include <pion/net/HTTPTypes.hpp>
 #include <pion/PionConfig.hpp>
 #include <pion/PionLogger.hpp>
@@ -112,7 +112,7 @@ private:
 
 public:
 
-	typedef boost::unordered_map<pion::platform::Vocabulary::TermRef, unsigned> TermCol;
+	typedef std::unordered_map<pion::platform::Vocabulary::TermRef, unsigned> TermCol;
 	
 	/// destructor
 	~MonitorWriter()

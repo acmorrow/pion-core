@@ -20,8 +20,8 @@
 #ifndef __PION_CONFIGSERVICE_HEADER__
 #define __PION_CONFIGSERVICE_HEADER__
 
+#include <mutex>
 #include <pion/PionConfig.hpp>
-#include <boost/thread/mutex.hpp>
 #include "PlatformService.hpp"
 
 
@@ -99,7 +99,7 @@ private:
 	std::string						m_ui_directory;
 
 	/// used to prevent multiple threads from updating reactor config at same time
-	mutable boost::mutex			m_reactors_mutex;
+	mutable std::mutex			m_reactors_mutex;
 };
 
 	

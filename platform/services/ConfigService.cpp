@@ -755,7 +755,7 @@ void ConfigService::operator()(HTTPRequestPtr& request, TCPConnectionPtr& tcp_co
 			// because it allows "write locks" to be obtained multiple times by the same thread.
 			// Since it doesn't ensure that the thread is the same, we need to try to ensure it here
 			// by preventing multiple threads from modifying reactor configuration at the same time
-			boost::mutex::scoped_lock queue_lock(m_reactors_mutex);
+			std::unique_lock<std::mutex> queue_lock(m_reactors_mutex);
 			
 			if (branches.size() == 1) {
 				if (request->getMethod() == HTTPTypes::REQUEST_METHOD_GET) {
